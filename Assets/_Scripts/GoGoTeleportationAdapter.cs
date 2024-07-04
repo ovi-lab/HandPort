@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Hands;
+using UnityEngine.XR.Interaction.Toolkit;
+
 
 public class GoGoTeleportationAdapter : MonoBehaviour
 {
     private XRHandSubsystem m_HandSubsystem;
     public XRRayInteractor rayInteractor;
     public Transform xrOrigin;
+    public  float baseVelocity = 1f; 
+    public float velocityMultiplier = 150f; 
 
     void Start()
     {
@@ -46,39 +48,36 @@ public class GoGoTeleportationAdapter : MonoBehaviour
             case XRHandSubsystem.UpdateType.Dynamic:
                 // Update game logic that uses hand data
                 LogWristPosition();
-                Debug.Log("Hand update (dynamic)");
                 break;
             case XRHandSubsystem.UpdateType.BeforeRender:
                 // Update visual objects that use hand data
-                Debug.Log("Hand update (BeforeRender)");
                 break;
         }
+        
     }
+    
     private void LogWristPosition()
     {
         if (m_HandSubsystem.rightHand.isTracked)
         {
-        var wristJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.Wrist);
-            
+            var wristJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.Wrist);
+
             if (wristJoint.TryGetPose(out Pose pose))
             {
-                Debug.Log($"{m_HandSubsystem.rightHand.handedness} wrist position: {pose.position}, rotation: {pose.rotation}");
-                // var localWristPos = pose.position;
-                // var globalWristPos = transform.TransformPoint(localWristPos);
-                // var globalXrOriginPos = xrOrigin.position;
+                //Debug.Log($"{m_HandSubsystem.rightHand.handedness} palm position: {pose.position}, rotation: {pose.rotation}");
 
-                // var adjustedVec = new Vector3(globalXrOriginPos.x, globalXrOriginPos.y, globalWristPos.z);
-
-                // Debug.Log("posePos "+localWristPos);
-                // Debug.Log("globalWristPos "+globalWristPos);
-                // Debug.Log("globalXrOriginPos "+globalXrOriginPos);
+                Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(pose.position);
+                Vector3 headsetPosition = Camera.main.transform.position;
+                worldWristPosition.y = headsetPosition.y;
                 
-
-                // float distance = Vector3.Distance(adjustedVec, globalXrOriginPos);
-                // float velocity = Mathf.Clamp(5f + (distance) * 50, 5f, 40f);
-                // rayInteractor.velocity = velocity;
-                // Debug.Log("distance "+distance);
-                // Debug.Log("velocity "+velocity);
+                //Debug.Log("origin"+headsetPosition);
+                
+                float distance = Vector3.Distance(worldWristPosition, headsetPosition);
+                
+                rayInteractor.velocity = baseVelocity + velocityMultiplier * Mathf.Pow(distance, 2);
+                
+                Debug.Log("Distance to wrist (XZ plane): " + Mathf.Pow(distance, 2) + " meters");
+                
             }
             else
             {
