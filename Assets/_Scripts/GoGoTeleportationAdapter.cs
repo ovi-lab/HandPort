@@ -9,8 +9,12 @@ public class GoGoTeleportationAdapter : MonoBehaviour
     private XRHandSubsystem m_HandSubsystem;
     public XRRayInteractor rayInteractor;
     public Transform xrOrigin;
-    public  float baseVelocity = 1f; 
-    public float velocityMultiplier = 150f; 
+    public  float minVelocity = 5f; 
+    public float maxVelocity = 200f;
+
+    public float minDistance = 0.1f;
+    public float maxDistance = 0.6f;
+    public float p = 4.0f;
 
     void Start()
     {
@@ -38,7 +42,6 @@ public class GoGoTeleportationAdapter : MonoBehaviour
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
     }
-
     void OnUpdatedHands(XRHandSubsystem subsystem,
         XRHandSubsystem.UpdateSuccessFlags updateSuccessFlags,
         XRHandSubsystem.UpdateType updateType)
@@ -46,11 +49,9 @@ public class GoGoTeleportationAdapter : MonoBehaviour
         switch (updateType)
         {
             case XRHandSubsystem.UpdateType.Dynamic:
-                // Update game logic that uses hand data
                 LogWristPosition();
                 break;
             case XRHandSubsystem.UpdateType.BeforeRender:
-                // Update visual objects that use hand data
                 break;
         }
         
@@ -61,23 +62,23 @@ public class GoGoTeleportationAdapter : MonoBehaviour
         if (m_HandSubsystem.rightHand.isTracked)
         {
             var wristJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.Wrist);
-
             if (wristJoint.TryGetPose(out Pose pose))
             {
-                //Debug.Log($"{m_HandSubsystem.rightHand.handedness} palm position: {pose.position}, rotation: {pose.rotation}");
-
                 Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(pose.position);
                 Vector3 headsetPosition = Camera.main.transform.position;
                 worldWristPosition.y = headsetPosition.y;
                 
-                //Debug.Log("origin"+headsetPosition);
-                
                 float distance = Vector3.Distance(worldWristPosition, headsetPosition);
-                
-                rayInteractor.velocity = baseVelocity + velocityMultiplier * Mathf.Pow(distance, 2);
-                
-                Debug.Log("Distance to wrist (XZ plane): " + Mathf.Pow(distance, 2) + " meters");
-                
+
+
+                float scaledDistance = (distance - minDistance) / (maxDistance - minDistance);
+                //float virtualDistance = minDistance + Mathf.Pow(scaledDistance, p) * (maxDistance - minDistance); 
+
+                float velocity = minVelocity + Mathf.Pow(scaledDistance, 4) * (maxVelocity - minVelocity);
+                rayInteractor.velocity = velocity;
+
+                Debug.Log("Distance headset to wrist: " + distance);
+
             }
             else
             {
@@ -85,4 +86,5 @@ public class GoGoTeleportationAdapter : MonoBehaviour
             }
         }
     }
+
 }
