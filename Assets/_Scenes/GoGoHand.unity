@@ -223,7 +223,7 @@ Transform:
   m_GameObject: {fileID: 6071013}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 35, y: 0.5, z: -2.5}
+  m_LocalPosition: {x: 0, y: 0.25, z: 25}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -3306,8 +3306,8 @@ GameObject:
   - component: {fileID: 2761784064773523029}
   - component: {fileID: 2761784064773523028}
   - component: {fileID: 7708679389206192698}
-  - component: {fileID: 7708679389206192700}
   - component: {fileID: 7708679389206192699}
+  - component: {fileID: 7708679389206192700}
   m_Layer: 0
   m_Name: Teleport Interactor
   m_TagString: Untagged
@@ -6542,10 +6542,10 @@ MonoBehaviour:
   rayInteractor: {fileID: 2761784064773523034}
   xrOrigin: {fileID: 5653664473091237891}
   minVelocity: 5
-  maxVelocity: 200
+  maxVelocity: 80
   minDistance: 0.1
   maxDistance: 0.6
-  p: 6
+  p: 4
 --- !u!114 &7708679389206192700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6555,7 +6555,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2761784064773523030}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6648049aadead45229a55321fe9be94c, type: 3}
+  m_Script: {fileID: 11500000, guid: caff514de9b15ad48ab85dcff5508221, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_UpdateTrackingType: 0
@@ -6771,6 +6771,7 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 0}
+  m_ButtonPressPoint: 0.5
 --- !u!114 &7842292562084701553
 MonoBehaviour:
   m_ObjectHideFlags: 0

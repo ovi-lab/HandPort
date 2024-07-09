@@ -4,21 +4,21 @@ using UnityEngine.XR.Hands;
 using UnityEngine.XR.Interaction.Toolkit;
 
 
-public class GoGoTeleportationAdapter : MonoBehaviour
+public class GoGoDetachAdapter : MonoBehaviour
 {
     private XRHandSubsystem m_HandSubsystem;
-    public XRRayInteractor rayInteractor;
     public Transform xrOrigin;
-    public  float minVelocity = 5f; 
-    public float maxVelocity = 200f;
+    private  float minVirtDistance = 0.1f; 
+    private float maxVirtDistance = 40f;
+    private float thresholdDistance = 0.1f;
 
-    public float minDistance = 0.1f;
+    public float minDistance = 0.15f;
     public float maxDistance = 0.6f;
-    public float p = 4.0f;
+    public float p = 2.0f;
+    public XRInteractionGroup xr;
 
     void Start()
     {
-        rayInteractor = GetComponent<XRRayInteractor>();
         var handSubsystems = new List<XRHandSubsystem>();
         SubsystemManager.GetSubsystems(handSubsystems);
 
@@ -49,7 +49,7 @@ public class GoGoTeleportationAdapter : MonoBehaviour
         switch (updateType)
         {
             case XRHandSubsystem.UpdateType.Dynamic:
-                LogWristPosition();
+                ScaleUpWristPos();
                 break;
             case XRHandSubsystem.UpdateType.BeforeRender:
                 break;
@@ -57,7 +57,7 @@ public class GoGoTeleportationAdapter : MonoBehaviour
         
     }
     
-    private void LogWristPosition()
+    private void ScaleUpWristPos()
     {
         if (m_HandSubsystem.rightHand.isTracked)
         {
@@ -68,16 +68,31 @@ public class GoGoTeleportationAdapter : MonoBehaviour
                 Vector3 headsetPosition = Camera.main.transform.position;
                 worldWristPosition.y = headsetPosition.y;
                 
-                float distance = Vector3.Distance(worldWristPosition, headsetPosition);
+                // Calculate the forward direction of the headset
+                Vector3 headsetForward = Camera.main.transform.forward;
+                headsetForward.y = 0; // Ensure the forward vector is on the XZ plane
+                headsetForward.Normalize();
+            
+                // Calculate the direction from the headset to the wrist
+                Vector3 directionToWrist = worldWristPosition - headsetPosition;
+                directionToWrist.y = xr.transform.position.y; // Ensure the direction vector is on the XZ plane
+            
+                // Project the directionToWrist onto the headsetForward
+                float forwardDistance = Vector3.Dot(directionToWrist, headsetForward);
+                
+                
+                if (Mathf.Abs(forwardDistance) > thresholdDistance)
+                {
+                    // Adjust the sensitivity by changing the power or scaling factor
+                    float scaledDistance = (forwardDistance - minDistance) / (maxDistance - minDistance);
+                    float virtualDistance = minVirtDistance + Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
+        
+                    Vector3 newPosition = worldWristPosition + headsetForward * virtualDistance;
+                    newPosition.y = 0; // Adjust as needed to keep the hand at desired height
+        
+                    xr.transform.position = newPosition;
+                }
 
-
-                float scaledDistance = (distance - minDistance) / (maxDistance - minDistance);
-                //float virtualDistance = minDistance + Mathf.Pow(scaledDistance, p) * (maxDistance - minDistance); 
-
-                float velocity = minVelocity + Mathf.Pow(scaledDistance, 4) * (maxVelocity - minVelocity);
-                rayInteractor.velocity = velocity;
-
-                Debug.Log("Distance headset to wrist: " + distance);
 
             }
             else

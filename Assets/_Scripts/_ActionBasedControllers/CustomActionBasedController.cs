@@ -385,7 +385,6 @@ namespace UnityEngine.XR.Interaction.Toolkit
                 // Extract yaw (rotation around the up axis)
                 Vector3 euler = rotation.eulerAngles;
                 euler.x = 0; // Remove pitch
-                //euler.z = 0; // Remove roll
                 Quaternion yawOnlyRotation = Quaternion.Euler(euler);
 
                 controllerState.rotation = yawOnlyRotation;
@@ -398,7 +397,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             base.UpdateInput(controllerState);
             if (controllerState == null)
                 return;
-
+            
             // Warn the user if using referenced actions and they are disabled
             if (!m_HasCheckedDisabledInputReferenceActions &&
                 (m_SelectAction.action != null || m_ActivateAction.action != null || m_UIPressAction.action != null))
