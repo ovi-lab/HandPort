@@ -4,19 +4,24 @@ using UnityEngine.XR.Hands;
 using UnityEngine.XR.Interaction.Toolkit;
 
 
-public class GoGoDetachAdapter : MonoBehaviour
+public class GoGoDetachAdapterStable2 : MonoBehaviour
 {
     private XRHandSubsystem m_HandSubsystem;
     public Transform xrOrigin;
     private  float minVirtDistance = 0.15f; 
-    private float maxVirtDistance = 70f;
+    private float maxVirtDistance = 80f;
     private float thresholdDistance = 0.1f;
 
-    public float minDistance = 0.15f;
+    public bool rayStabilized = false;
+    public float minDistance = 0.1f;
     public float maxDistance = 0.6f;
     public float p = 2.0f;
-    public XRInteractionGroup xr;
-
+    public XRInteractionGroup rightHand;
+    
+    private float previousForwardDistance = 0f;
+    private const float distanceChangeThreshold = 0.0005f;
+    private Vector3 storedHeadsetForward;
+    
     void Start()
     {
         var handSubsystems = new List<XRHandSubsystem>();
@@ -54,7 +59,6 @@ public class GoGoDetachAdapter : MonoBehaviour
             case XRHandSubsystem.UpdateType.BeforeRender:
                 break;
         }
-        
     }
     
     private void ScaleUpWristPos()
@@ -75,25 +79,43 @@ public class GoGoDetachAdapter : MonoBehaviour
             
                 // Calculate the direction from the headset to the wrist
                 Vector3 directionToWrist = worldWristPosition - headsetPosition;
-                directionToWrist.y = xr.transform.position.y; // Ensure the direction vector is on the XZ plane
+                directionToWrist.y = rightHand.transform.position.y; // Ensure the direction vector is on the XZ plane
             
                 // Project the directionToWrist onto the headsetForward
                 float forwardDistance = Vector3.Dot(directionToWrist, headsetForward);
                 
-                
-                if (Mathf.Abs(forwardDistance) > thresholdDistance)
+                // Stabilize ray over certain threshold
+                if (forwardDistance > 0.25f)
                 {
+                    if (!rayStabilized)
+                    {
+                        rayStabilized = true;
+                        storedHeadsetForward = headsetForward;
+                    }
+                    headsetForward = storedHeadsetForward; 
+                }
+                else
+                {
+                    rayStabilized = false;
+                }
+                
+                if (Mathf.Abs(forwardDistance - previousForwardDistance) > distanceChangeThreshold)
+                {
+                    previousForwardDistance = forwardDistance;
+
                     // Adjust the sensitivity by changing the power or scaling factor
                     float scaledDistance = (forwardDistance - minDistance) / (maxDistance - minDistance);
-                    float virtualDistance = minVirtDistance + Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
-        
-                    Vector3 newPosition = worldWristPosition + headsetForward * virtualDistance;
-                    newPosition.y = 0; // Adjust as needed to keep the hand at desired height
-        
-                    xr.transform.position = newPosition;
+                    if (scaledDistance > 0)
+                    {
+                        float virtualDistance = minVirtDistance +
+                                                Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
+
+                        Vector3 newPosition = worldWristPosition + headsetForward * virtualDistance;
+                        newPosition.y = 0; // Adjust as needed to keep the hand at desired height
+
+                        rightHand.transform.position = newPosition;
+                    }
                 }
-
-
             }
             else
             {
@@ -101,5 +123,4 @@ public class GoGoDetachAdapter : MonoBehaviour
             }
         }
     }
-
 }

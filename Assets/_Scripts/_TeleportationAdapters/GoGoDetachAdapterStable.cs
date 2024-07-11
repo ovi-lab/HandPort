@@ -9,7 +9,7 @@ public class GoGoDetachAdapterStable : MonoBehaviour
     private XRHandSubsystem m_HandSubsystem;
     public Transform xrOrigin;
     private  float minVirtDistance = 0.1f; 
-    private float maxVirtDistance = 50f;
+    private float maxVirtDistance = 70f;
     private float thresholdDistance = 0.1f;
 
     public bool rayStabilized = false;
@@ -19,9 +19,8 @@ public class GoGoDetachAdapterStable : MonoBehaviour
     public XRInteractionGroup rightHand;
     
     private float previousForwardDistance = 0f;
-    private const float distanceChangeThreshold = 0.001f;
+    private const float distanceChangeThreshold = 0.0005f;
     
-
     void Start()
     {
         var handSubsystems = new List<XRHandSubsystem>();
@@ -59,7 +58,6 @@ public class GoGoDetachAdapterStable : MonoBehaviour
             case XRHandSubsystem.UpdateType.BeforeRender:
                 break;
         }
-        
     }
     
     private void ScaleUpWristPos()
@@ -84,27 +82,32 @@ public class GoGoDetachAdapterStable : MonoBehaviour
             
                 // Project the directionToWrist onto the headsetForward
                 float forwardDistance = Vector3.Dot(directionToWrist, headsetForward);
+                
+                // Stabilize ray over certain threshold
+                if (forwardDistance > 0.25f)
+                {
+                    rayStabilized = true;
+                }
+                else
+                {
+                    rayStabilized = false;
+                }
+                
                 if (Mathf.Abs(forwardDistance - previousForwardDistance) > distanceChangeThreshold)
                 {
                     previousForwardDistance = forwardDistance;
 
                     // Adjust the sensitivity by changing the power or scaling factor
                     float scaledDistance = (forwardDistance - minDistance) / (maxDistance - minDistance);
-                    float virtualDistance = minVirtDistance +
-                                            Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
-
-                    Vector3 newPosition = worldWristPosition + headsetForward * virtualDistance;
-                    newPosition.y = 0; // Adjust as needed to keep the hand at desired height
-
-                    rightHand.transform.position = newPosition;
-
-                    if (forwardDistance > 0.25f)
+                    if (scaledDistance > 0)
                     {
-                        rayStabilized = true;
-                    }
-                    else
-                    {
-                        rayStabilized = false;
+                        float virtualDistance = minVirtDistance +
+                                                Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
+
+                        Vector3 newPosition = worldWristPosition + headsetForward * virtualDistance;
+                        newPosition.y = 0; // Adjust as needed to keep the hand at desired height
+
+                        rightHand.transform.position = newPosition;
                     }
                 }
             }
