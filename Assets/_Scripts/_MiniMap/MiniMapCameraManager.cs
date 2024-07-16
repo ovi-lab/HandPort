@@ -64,7 +64,6 @@ public class MiniMapCameraManager : MonoBehaviour
                 return raycastHitPoint.point;
             }
         }
-        Debug.Log("This Shouldnt Happen");
         return Vector3.zero;
     }
     private void OnValidate()

@@ -24,7 +24,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     
     private OneEuroFilter positionFilter;
     private OneEuroFilterVector3 headsetFilter;
-    
+
+    public Transform rightHandScale;
     
     void Start()
     {
@@ -109,11 +110,22 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     
                     //Debug.Log("ff2" + filteredForward);
                     Vector3 newPosition = worldWristPosition + filteredForward  * virtualDistance;
-                    newPosition.y = 0; // Adjust as needed to keep the hand at desired height
+                    newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height
                     
                     newPosition = positionFilter.FilterPosition(newPosition);
 
                     rightHand.transform.position = newPosition;
+                    
+                    // Scale hand visualisation
+                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*5;
+                    rightHandScale.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                }
+                else
+                {
+                    Vector3 resetPosition = xrOrigin.position;
+                    resetPosition = positionFilter.FilterPosition(resetPosition);
+
+                    rightHand.transform.position = resetPosition;
                 }
             }
             else
