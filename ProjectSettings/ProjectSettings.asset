@@ -175,7 +175,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.unity.xr.example
-    Standalone: com.unity.xr.interaction.examples
+    Standalone: com.gogoteleportation.firebasedb
   buildNumber:
     Standalone: 0
     VisionOS: 0

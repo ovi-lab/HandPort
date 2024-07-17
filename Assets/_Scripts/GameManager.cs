@@ -6,81 +6,61 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
-    public List<TeleportationAnchor> targets = new List<TeleportationAnchor>();
-    public GameObject CurrentTarget => targets[currentTarget].gameObject;
-
-    private int currentTarget = 0, nextTarget;
     private DatabaseReference studySettings;
     private ObstacleManager obstacleManager;
     private StudyConditions studyConditions;
-    private SpawnIVs spawnIVs;
+    private TargetConditions targetConditions;
 
     protected override void Awake()
     {
         base.Awake();
-        nextTarget = currentTarget + 1;
+        obstacleManager = FindObjectOfType<ObstacleManager>();
     }
-
-    public void ApplyIVs(SpawnIVs _values)
+    public void ApplyTargetValues(TargetConditions _values)
     {
-        spawnIVs = _values;
+        targetConditions = _values;
+        SetupSceneWithTargetConditions();
     }
 
     public void ApplySettings(StudyConditions _settings)
     {
         studyConditions = _settings;
     }
-
-    public void InitialiseTargets()
+    
+    private void SetupSceneWithTargetConditions()
     {
-        Debug.Log("Initialisation time");
-        foreach (TeleportationAnchor target in targets)
+        if (targetConditions == null)
         {
-            target.selectExited.AddListener(EnableNextTarget);
-            target.gameObject.SetActive(false);
+            Debug.LogWarning("TargetConditions not set.");
+            return;
         }
-        targets[currentTarget].gameObject.SetActive(true);
-    }
-
-    private void EnableNextTarget(SelectExitEventArgs arg0)
-    {
-        if (nextTarget >= targets.Count) return;
-        targets[currentTarget].gameObject.SetActive(false);
-        targets[nextTarget].gameObject.SetActive(true);
-        currentTarget++;
-        nextTarget = currentTarget + 1;
-    }
-
-    private void DestroyTargets()
-    {
-        foreach (TeleportationAnchor target in targets)
+        if (obstacleManager == null)
         {
-            target.selectExited.RemoveListener(EnableNextTarget);
+            Debug.LogWarning("ObstacleManager not found in scene.");
+            return;
         }
-    }
+        Debug.Log("Setting up scene with target conditions");
 
-    private void OnDestroy()
-    {
-        DestroyTargets();
+        // Example: Adjusting obstacle properties based on target conditions
+        obstacleManager.SetObstacleParameters(targetConditions.targetDistance, targetConditions.targetSize, targetConditions.targetCount);
     }
 }
 
 [Serializable]
 public class StudyConditions
 {
-    public int AnchorPoint;
-    public int CameraType;
+    public int cameraType;
+    public int handVisualisation;
     public bool restart;
     public bool recordData;
 }
 
 [Serializable]
-public class SpawnIVs
+public class TargetConditions
 {
-    public int extremeTargets;
-    public int diagonalTargets;
-    public int simpleTargets;
-    public int repeatTimes;
+    public int targetDistance;
+    public int targetSize;
+    public int targetCount;
 }
 
 public static class FirebaseDataToPrimitives
@@ -89,23 +69,23 @@ public static class FirebaseDataToPrimitives
     {
         StudyConditions studyConditions = new StudyConditions
         {
-            AnchorPoint = Convert.ToInt32(initialSettings.Child("AnchorPoint").Value.ToString()),
-            CameraType = Convert.ToInt32(initialSettings.Child("CameraType").Value.ToString()),
-            restart = Convert.ToBoolean(initialSettings.Child("Restart").Value.ToString()),
-            recordData = Convert.ToBoolean(initialSettings.Child("RecordData").Value.ToString())
+            cameraType = Convert.ToInt32(initialSettings.Child("cameraType").Value.ToString()),
+            handVisualisation = Convert.ToInt32(initialSettings.Child("handVisualisation").Value.ToString()),
+            restart = Convert.ToBoolean(initialSettings.Child("restart").Value.ToString()),
+            recordData = Convert.ToBoolean(initialSettings.Child("recordData").Value.ToString()),
         };
         return studyConditions;
+
     }
 
-    public static SpawnIVs ToSpawnIVs(DataSnapshot IVs)
+    public static TargetConditions ToTargetConditions(DataSnapshot IVs)
     {
-        SpawnIVs spawnIVs = new SpawnIVs
+        TargetConditions targetConditions = new TargetConditions
         {
-            extremeTargets = Convert.ToInt32(IVs.Child("ExtremeTargets").Value.ToString()),
-            diagonalTargets = Convert.ToInt32(IVs.Child("DiagonalTargets").Value.ToString()),
-            simpleTargets = Convert.ToInt32(IVs.Child("SimpleTargets").Value.ToString()),
-            repeatTimes = Convert.ToInt32(IVs.Child("RepeatTimes").Value.ToString())
+            targetDistance = Convert.ToInt32(IVs.Child("targetDistance").Value.ToString()),
+            targetSize = Convert.ToInt32(IVs.Child("targetSize").Value.ToString()),
+            targetCount = Convert.ToInt32(IVs.Child("targetCount").Value.ToString()),
         };
-        return spawnIVs;
+        return targetConditions;
     }
 }

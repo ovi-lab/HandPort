@@ -16,10 +16,12 @@ public class FirebaseManager : MonoBehaviour
     public static DatabaseReference RealtimeDB => realtimeDB;
     private static DatabaseReference realtimeDB;
     private static int participantID;
-
-    // Start is called before the first frame update
+    
+    [SerializeField] private TextAsset dataStructureJSON;
+    
     void Start()
     {
+        participantID = 1;
         realtimeDB = FirebaseDatabase.DefaultInstance.RootReference;
         StartCoroutine(ApplyInitialSettings());
     }
@@ -28,18 +30,16 @@ public class FirebaseManager : MonoBehaviour
         Task<DataSnapshot> retrieveSettings = realtimeDB.Child("State").Child(participantID.ToString()).GetValueAsync();
         yield return new WaitUntil(predicate: () => retrieveSettings.IsCompleted);
         
-        DataSnapshot handVisualisation = retrieveSettings.Result.Child("HandVisualisation");
         DataSnapshot studySettings = retrieveSettings.Result.Child("studySettings");
         DataSnapshot targetSettings = retrieveSettings.Result.Child("targetSettings");
         
-        
-        if (handVisualisation.Exists && wimMode.Exists)
+        if (studySettings.Exists && targetSettings.Exists)
         {
-            StudyConditions settings = FirebaseDataToPrimitives.ToStudyConditions(initialSettings);
-            SpawnIVs spawnIVs = FirebaseDataToPrimitives.ToSpawnIVs(spawnValues);
+            StudyConditions studyConditions = FirebaseDataToPrimitives.ToStudyConditions(studySettings);
+            TargetConditions targetConditions = FirebaseDataToPrimitives.ToTargetConditions(targetSettings);
             
-            GameManager.Instance.ApplySettings(settings);
-            GameManager.Instance.ApplyIVs(spawnIVs);
+            GameManager.Instance.ApplySettings(studyConditions);
+            GameManager.Instance.ApplyTargetValues(targetConditions);
         }
     }
 

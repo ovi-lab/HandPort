@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/_Scenes/BaselineTeleportation.unity
     guid: 5ad2bf02712c445fd948ada9b356e4a4
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/VelocityBased/GoGoTeleportationHandBasedOnly.unity
     guid: 78d5871ed026544f1993ad8afce0e1ce
   m_configObjects:
