@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using System.Reflection;
 
 public class ObstacleManager : MonoBehaviour
 {   
@@ -13,12 +9,7 @@ public class ObstacleManager : MonoBehaviour
 
     private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
     private List<GameObject> obstacles = new List<GameObject>();
-
-    private void Awake()
-    {
-        // Initial obstacle setup can be done here or dynamically based on target conditions
-    }
-
+    
     public void SetObstacleParameters(float distance, int size, int count)
     {
         // Clear existing obstacles
@@ -27,6 +18,9 @@ public class ObstacleManager : MonoBehaviour
             Destroy(obstacle);
         }
         obstacles.Clear();
+        
+        // Create an empty GameObject to hold colliders
+        GameObject runtimeTeleportationArea = new GameObject("RuntimeTeleportationArea");
 
         // Set up new obstacles based on provided parameters
         spawnPosition = Vector3.zero; // Reset spawn position
@@ -39,31 +33,18 @@ public class ObstacleManager : MonoBehaviour
             float terrainHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
 
             // Adjust spawn position based on terrain height
-            spawnPosition.y = terrainHeight + 0.5f; // Adjust 0.5f to fit your terrain's scale and cube's size
-
+            spawnPosition.y = terrainHeight + 0.5f*size; // Adjust 0.5f to fit your terrain's scale and cube's size
+            
             // Instantiate obstacle
-            GameObject obstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity, transform);
+            GameObject obstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
             obstacle.transform.localScale = new Vector3(size, size, size);
             obstacles.Add(obstacle);
             
-            TeleportationArea teleportArea = FindObjectOfType<TeleportationArea>();
-            if (teleportArea != null)
-            {
-                Collider obstacleCollider = obstacle.GetComponent<Collider>();
-                if (obstacleCollider != null)
-                {
-                    teleportArea.colliders.Add(obstacleCollider);
-                }
-                else
-                {
-                    Debug.LogWarning("Obstacle is missing a Collider component.");
-                }
-                obstacle.transform.SetParent(teleportArea.transform);
-            }
-            else
-            {
-                Debug.LogWarning("TeleportationArea not found in the scene.");
-            }
+            // Make obstacle a child of the colliders parent
+            obstacle.transform.SetParent(runtimeTeleportationArea.transform);
         }
+        TeleportationArea teleportationArea = runtimeTeleportationArea.AddComponent<TeleportationArea>();
+        teleportationArea.interactionLayers = InteractionLayerMask.GetMask("Teleport");
+
     }
 }
