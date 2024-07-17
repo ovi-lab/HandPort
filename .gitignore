@@ -76,3 +76,14 @@ crashlytics-build.properties
 **/.idea/**/*.iml
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
+
+# Exclude Firebase JSON files
+*.json
+
+# Exclude Firebase folder
+/[Aa]ssets/Editor Default Resources/
+/[Aa]ssets/ExternalDependencyManager/
+/[Aa]ssets/Firebase/
+/[Aa]ssets/Parse/
+/[Aa]ssets/Plugins/
+/[Aa]ssets/StreamingAssets/google-services-desktop.json.meta

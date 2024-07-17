@@ -15,17 +15,12 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     public float minDistance = 0.15f;
     public float maxDistance = 0.5f;
     public float p = 2.0f;
-    public XRInteractionGroup rightHand;
-    
-    // private Vector3 storedHeadsetForward;
-    //
-    // private List<Vector3> headsetForwardHistory = new List<Vector3>();
-    // private int maxHistoryCount = 100; // Number of vectors to keep in history
+    public Transform rightHand;
     
     private OneEuroFilter positionFilter;
     private OneEuroFilterVector3 headsetFilter;
 
-    public Transform rightHandScale;
+    public Transform rightHandScaleAnchor;
     
     void Start()
     {
@@ -97,7 +92,6 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             
                 // Project the directionToWrist onto the headsetForward
                 float forwardDistance = Vector3.Dot(directionToWrist, filteredForward);
-                //Debug.Log("ff1" + filteredForward);
 
                 // Adjust the sensitivity by changing the power or scaling factor
                 scaledDistance = (forwardDistance - minDistance) / (maxDistance - minDistance);
@@ -105,10 +99,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 {
                     float virtualDistance = minVirtDistance +
                                             Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
-
-                    //Vector3 weightedHeadsetForward = ((averageHeadsetForward * scaledDistance) + (headsetForward * Mathf.Abs(1 - scaledDistance))) / 2f;
                     
-                    //Debug.Log("ff2" + filteredForward);
                     Vector3 newPosition = worldWristPosition + filteredForward  * virtualDistance;
                     newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height
                     
@@ -118,7 +109,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     
                     // Scale hand visualisation
                     float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*5;
-                    rightHandScale.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                    rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 }
                 else
                 {
@@ -134,28 +125,4 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             }
         }
     }
-    
-    // private void UpdateHeadsetForwardHistory(Vector3 currentHeadsetForward)
-    // {
-    //     headsetForwardHistory.Add(currentHeadsetForward);
-    //     if (headsetForwardHistory.Count > maxHistoryCount)
-    //     {
-    //         headsetForwardHistory.RemoveAt(0); // Remove oldest vector if history exceeds max count
-    //     }
-    // }
-    //
-    // private Vector3 GetAverageHeadsetForward()
-    // {
-    //     if (headsetForwardHistory.Count == 0)
-    //     {
-    //         return Vector3.zero;
-    //     }
-    //
-    //     Vector3 sum = Vector3.zero;
-    //     foreach (Vector3 vector in headsetForwardHistory)
-    //     {
-    //         sum += vector;
-    //     }
-    //     return sum / headsetForwardHistory.Count;
-    // }
 }

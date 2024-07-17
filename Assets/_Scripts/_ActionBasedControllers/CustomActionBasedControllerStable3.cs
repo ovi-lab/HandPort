@@ -18,15 +18,8 @@ namespace UnityEngine.XR.Interaction.Toolkit
     /// <seealso cref="XRBaseController"/>
     [AddComponentMenu("XR/XR Controller (Action-based)", 11)]
     // [HelpURL(XRHelpURLConstants.k_ActionBasedController)]
-    public partial class CustomActionBasedControllerStable3 : CustomActionBasedController
+    public class CustomActionBasedControllerStable3 : CustomActionBasedController
     {
-        private bool previousRayStabilized = false;
-        private float stableEulerX = 0f;
-        private float stableEulerZ = 0f;
-        private float stableEulerY = 0f;
-        
-        // private List<Quaternion> rotationHistory = new List<Quaternion>();
-        // private const int maxHistoryCount = 100;
         
         /// <inheritdoc />
         protected override void OnEnable()
@@ -155,46 +148,10 @@ namespace UnityEngine.XR.Interaction.Toolkit
             // Update rotation when valid
             if (rotAction != null && (controllerState.inputTrackingState & InputTrackingState.Rotation) != 0)
             {
-                GoGoDetachAdapterStable3 adapterStable = GetComponent<GoGoDetachAdapterStable3>();
                 Quaternion rotation = rotAction.ReadValue<Quaternion>();
-                Vector3 euler = rotation.eulerAngles;
-
-                // // Add current rotation to history
-                // if (rotationHistory.Count >= maxHistoryCount)
-                // {
-                //     rotationHistory.RemoveAt(0); // Remove oldest element
-                // }
-                // rotationHistory.Add(rotation);
-                //
-                // // Calculate average of the rotations in the history
-                // Quaternion averageRotation = AverageQuaternions(rotationHistory);
-                //
-                // // Calculate weighted average with current rotation
-                // float weight = adapterStable.scaledDistance;
-                // Quaternion weightedRotation = Quaternion.Slerp(rotation, averageRotation, weight);
-                //
-                // // Apply weighted rotation to controller state
-                // Vector3 avarageEuler = weightedRotation.eulerAngles;
-                // Vector3 adjustedEuler = new Vector3(avarageEuler.x, avarageEuler.y, avarageEuler.z);
-                
-                Quaternion adjustedRotation = Quaternion.Euler(euler);
+                Quaternion adjustedRotation = Quaternion.Euler(rotation.eulerAngles);
                 controllerState.rotation = adjustedRotation;
             }
         }
-        
-        // private Quaternion AverageQuaternions(List<Quaternion> quaternions)
-        // {
-        //     Vector4 cumulative = Vector4.zero;
-        //     foreach (Quaternion quaternion in quaternions)
-        //     {
-        //         cumulative.w += quaternion.w;
-        //         cumulative.x += quaternion.x;
-        //         cumulative.y += quaternion.y;
-        //         cumulative.z += quaternion.z;
-        //     }
-        //
-        //     float count = quaternions.Count;
-        //     return new Quaternion(cumulative.x / count, cumulative.y / count, cumulative.z / count, cumulative.w / count).normalized;
-        // }
     }
 }
