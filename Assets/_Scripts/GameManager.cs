@@ -2,10 +2,28 @@ using System;
 using System.Collections.Generic;
 using Firebase.Database;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
+    public List<TeleportationAnchor> targets;
+    public GameObject CurrentTarget
+    {
+        get
+        {
+            if (targets != null && targets.Count > 0 && currentTarget >= 0 && currentTarget < targets.Count)
+            {
+                return targets[currentTarget].gameObject;
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+
+    private int currentTarget = 0, nextTarget;
     private DatabaseReference studySettings;
     private ObstacleManager obstacleManager;
     private StudyConditions studyConditions;
@@ -14,8 +32,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     protected override void Awake()
     {
         base.Awake();
+        nextTarget = currentTarget + 1;
         obstacleManager = FindObjectOfType<ObstacleManager>();
     }
+
     public void ApplyTargetValues(TargetConditions _values)
     {
         targetConditions = _values;
@@ -42,8 +62,31 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         Debug.Log("Setting up scene with target conditions");
 
         // Example: Adjusting obstacle properties based on target conditions
-        obstacleManager.SetObstacleParameters(targetConditions.targetDistance, targetConditions.targetSize, targetConditions.targetCount);
+        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistance, targetConditions.targetSize, targetConditions.targetCount);
+        InitialiseTargets();
+        
     }
+    public void InitialiseTargets()
+    {
+        Debug.Log("Initialisation time");
+        foreach (TeleportationAnchor target in targets)
+        {
+            target.selectExited.AddListener(EnableNextTarget);
+            target.gameObject.SetActive(false);
+        }
+        targets[currentTarget].gameObject.SetActive(true);
+    }
+
+    private void EnableNextTarget(SelectExitEventArgs arg0)
+    {
+        Debug.Log(nextTarget);
+        if(nextTarget > targets.Count) return;
+        targets[currentTarget].gameObject.SetActive(false);
+        targets[nextTarget].gameObject.SetActive(true);
+        currentTarget++;
+        nextTarget = currentTarget + 1;
+    }
+
 }
 
 [Serializable]

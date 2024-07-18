@@ -7,7 +7,8 @@ public enum CameraType
 {
     TopDown = 0,
     MiniMap = 1,
-    Inclined = 2
+    Inclined = 2,
+    TargetCamera = 3
 }
 public class MiniMapCameraManager : MonoBehaviour
 {
@@ -16,7 +17,8 @@ public class MiniMapCameraManager : MonoBehaviour
     {
         { "TopDown", CameraType.TopDown },
         { "MiniMap", CameraType.MiniMap },
-        { "Inclined", CameraType.Inclined }
+        { "Inclined", CameraType.Inclined },
+        { "TargetCamera", CameraType.TargetCamera }
 
     };
 
