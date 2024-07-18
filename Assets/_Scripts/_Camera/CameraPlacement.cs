@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class MiniMapCameraPlacement : MonoBehaviour
+public class CameraPlacement : MonoBehaviour
 {
     [SerializeField] protected float heightOffset;
     [SerializeField] protected float horizontalOffset;
@@ -20,7 +20,7 @@ public class MiniMapCameraPlacement : MonoBehaviour
 
     private void Update()
     {
-        targetPosition = MiniMapCameraManager.ParabolaPosition;
+        targetPosition = CameraManager.ParabolaPosition;
         PlaceCamera(targetPosition);
     }
 

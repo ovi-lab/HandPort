@@ -80,7 +80,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private void EnableNextTarget(SelectExitEventArgs arg0)
     {
         Debug.Log(nextTarget);
-        if(nextTarget > targets.Count) return;
+        if(nextTarget == targets.Count) return;
         targets[currentTarget].gameObject.SetActive(false);
         targets[nextTarget].gameObject.SetActive(true);
         currentTarget++;

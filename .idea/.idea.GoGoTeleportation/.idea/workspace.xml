@@ -8,8 +8,17 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/ObstacleManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/ObstacleManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapCameraManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapCameraManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapCameraManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapCameraManager.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapCameraPlacement.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapCameraPlacement.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapTargetCamera.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapTargetCamera.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/TraditionalMiniMap.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/TraditionalMiniMap.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/WIMWidget.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_MiniMap/WIMWidget.cs.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +33,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/_Scripts/ObstacleManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Scripts/SingletonMonoBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Scripts/_ActionBasedControllers/CustomActionBasedControllerStable2.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/_Scripts/_MiniMap/MiniMapTargetCamera.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/_Scripts/_Camera/TopDownTargetCamera.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@1.8.1/InputSystem/Actions/InputActionState.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.core-utils@2.3.0/Runtime/XRLoggingUtils.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.hands@1.4.1/Runtime/XRHand.cs" root0="SKIP_HIGHLIGHTING" />
@@ -126,7 +135,7 @@
       <workItem from="1721059239672" duration="16507000" />
       <workItem from="1721162135507" duration="9561000" />
       <workItem from="1721230653679" duration="27330000" />
-      <workItem from="1721318801778" duration="11505000" />
+      <workItem from="1721318801778" duration="14429000" />
     </task>
     <servers />
   </component>

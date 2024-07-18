@@ -5,26 +5,26 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public enum CameraType
 {
-    TopDown = 0,
-    MiniMap = 1,
-    Inclined = 2,
-    TargetCamera = 3
+    TopDownTarget = 0,
+    TopDownRay = 1,
+    RayView = 2,
+    HandView = 3
 }
-public class MiniMapCameraManager : MonoBehaviour
+public class CameraManager : MonoBehaviour
 {
 
     public readonly Dictionary<string, CameraType> stringToEnumConverter = new Dictionary<string, CameraType>()
     {
-        { "TopDown", CameraType.TopDown },
-        { "MiniMap", CameraType.MiniMap },
-        { "Inclined", CameraType.Inclined },
-        { "TargetCamera", CameraType.TargetCamera }
+        { "TopDownTarget", CameraType.TopDownTarget },
+        { "TopDownRay", CameraType.TopDownRay },
+        { "RayView", CameraType.RayView },
+        { "HandView", CameraType.HandView }
 
     };
 
     public static Vector3 ParabolaPosition => parabolaPosition;
     [SerializeField] private CameraType cameraDisplayType;
-    [SerializeField] private List<MiniMapCameraPlacement> cameras;
+    [SerializeField] private List<CameraPlacement> cameras;
     [SerializeField] private XRRayInteractor[] rayInteractors;
     
     private static Vector3 parabolaPosition;
@@ -34,7 +34,7 @@ public class MiniMapCameraManager : MonoBehaviour
 
     private void Start()
     {
-        foreach (MiniMapCameraPlacement cam in cameras)
+        foreach (CameraPlacement cam in cameras)
         { 
             cam.gameObject.SetActive(false);
         }
@@ -50,7 +50,7 @@ public class MiniMapCameraManager : MonoBehaviour
     public void ChangeCamera(string minimapCameraType)
     {
         cameraDisplayType = stringToEnumConverter[minimapCameraType];
-        foreach (MiniMapCameraPlacement cam in cameras)
+        foreach (CameraPlacement cam in cameras)
         { 
             cam.gameObject.SetActive(false);
         }

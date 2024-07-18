@@ -2,21 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MiniMapTargetCamera : MiniMapCameraPlacement
+public class HandViewCamera : CameraPlacement
 {
+    public Transform rightHand;
     void Update()
     {
-        if (GameManager.Instance == null)
+        if (rightHand == null)
         {
             return;
         }
 
         // Check if CurrentTarget is not null
-        if (GameManager.Instance.CurrentTarget == null)
+        if (rightHand.transform == null)
         {
             return;
         }
-        targetPosition = GameManager.Instance.CurrentTarget.transform.position;
+
+        targetPosition = rightHand.transform.position;
         PlaceCamera(targetPosition);
     }
 }

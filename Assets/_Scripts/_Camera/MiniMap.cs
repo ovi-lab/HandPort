@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TraditionalMiniMap : MiniMapCameraPlacement
+public class MiniMap : CameraPlacement
 {
     [SerializeField] private GameObject miniMapIndicator;
 
