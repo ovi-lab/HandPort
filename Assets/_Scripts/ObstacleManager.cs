@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -6,10 +7,16 @@ using System.Reflection;
 public class ObstacleManager : MonoBehaviour
 {   
     [SerializeField] private GameObject obstaclePrefab;
+    public Transform cameraOffset;
 
     private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
     private List<GameObject> obstacles = new List<GameObject>();
-    
+
+    private void Awake()
+    {
+        //offset = GameObject.Find("Camera Offset").transform.position.y;
+    }
+
     public void SetObstacleParameters(float distance, int size, int count)
     {
         // Clear existing obstacles
