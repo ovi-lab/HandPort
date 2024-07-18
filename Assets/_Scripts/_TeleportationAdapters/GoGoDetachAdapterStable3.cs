@@ -18,7 +18,6 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     public Transform rightHand;
     
     private OneEuroFilter positionFilter;
-    private OneEuroFilterVector3 forwardDirectionFilter;
 
     public Transform rightHandScaleAnchor;
     
@@ -47,7 +46,6 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
         positionFilter = new OneEuroFilter(minCutoff: 0.1f, beta: 0.1f, dCutoff: 1.0f, initialDt: Time.deltaTime);
-        forwardDirectionFilter = new OneEuroFilterVector3((Vector3.forward), minCutoff: 0.01f, beta: 0.02f);
     }
     
     void OnUpdatedHands(XRHandSubsystem subsystem,
@@ -75,21 +73,23 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(wristPose.position);
                 Vector3 worldMiddleTipPosition = xrOrigin.transform.TransformPoint(middlePose.position);
                 Vector3 headsetPosition = Camera.main.transform.position;
+                
                 worldWristPosition.y = headsetPosition.y;
                 worldMiddleTipPosition.y = headsetPosition.y;
                 
-                // Calculate the forward direction vector from wrist to middle tip
-                Vector3 forwardDirection = worldMiddleTipPosition - worldWristPosition;
-                forwardDirection = forwardDirectionFilter.Filter(forwardDirection, Time.deltaTime);
+                // Calculate the right direction from the headset's forward direction
+                Vector3 headsetForward = Camera.main.transform.forward;
+                headsetForward.y = 0; // Ensure the forward vector is on the XZ plane
+                Vector3 rightDirection = Vector3.Cross(Vector3.up, headsetForward).normalized;
+                headsetForward.Normalize();
+
+                // Adjust xrOrigin position by 0.1f to the right
+                Vector3 adjustedXROriginPosition = xrOrigin.transform.position + rightDirection * 0.8f;
+                Vector3 forwardDirection = worldWristPosition - adjustedXROriginPosition;
                 
                 // Project the direction onto the XZ plane
                 forwardDirection.y = 0;
                 forwardDirection.Normalize();
-                
-                // Calculate the forward direction of the headset
-                Vector3 headsetForward = Camera.main.transform.forward;
-                headsetForward.y = 0; // Ensure the forward vector is on the XZ plane
-                headsetForward.Normalize();
             
                 // Calculate the direction from the headset to the wrist
                 Vector3 directionToWrist = worldWristPosition - headsetPosition;

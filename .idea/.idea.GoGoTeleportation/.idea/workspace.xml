@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d29fac03-527b-43e6-9ea8-4b56e71489b9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -125,7 +123,7 @@
       <workItem from="1721059239672" duration="16507000" />
       <workItem from="1721162135507" duration="9561000" />
       <workItem from="1721230653679" duration="27330000" />
-      <workItem from="1721318801778" duration="17558000" />
+      <workItem from="1721318801778" duration="18842000" />
     </task>
     <servers />
   </component>
