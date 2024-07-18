@@ -18,7 +18,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     public Transform rightHand;
     
     private OneEuroFilter positionFilter;
-    private OneEuroFilterVector3 headsetFilter;
+    private OneEuroFilterVector3 forwardDirectionFilter;
 
     public Transform rightHandScaleAnchor;
     
@@ -47,10 +47,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
         positionFilter = new OneEuroFilter(minCutoff: 0.1f, beta: 0.1f, dCutoff: 1.0f, initialDt: Time.deltaTime);
-        Vector3 initialHeadsetForward = Camera.main.transform.forward;  // Use current headset forward as initial value
-        initialHeadsetForward.y = 0; // Ensure the forward vector is on the XZ plane
-        initialHeadsetForward.Normalize();
-        headsetFilter = new OneEuroFilterVector3(initialHeadsetForward, minCutoff: 0.01f, beta: 0.02f);
+        forwardDirectionFilter = new OneEuroFilterVector3((Vector3.forward), minCutoff: 0.01f, beta: 0.02f);
     }
     
     void OnUpdatedHands(XRHandSubsystem subsystem,
@@ -71,27 +68,35 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     {
         if (m_HandSubsystem.rightHand.isTracked)
         {
+            var middleTipJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.MiddleTip);
             var wristJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.Wrist);
-            if (wristJoint.TryGetPose(out Pose pose))
+            if (wristJoint.TryGetPose(out Pose wristPose) && (middleTipJoint.TryGetPose(out Pose middlePose)))
             {
-                Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(pose.position);
+                Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(wristPose.position);
+                Vector3 worldMiddleTipPosition = xrOrigin.transform.TransformPoint(middlePose.position);
                 Vector3 headsetPosition = Camera.main.transform.position;
                 worldWristPosition.y = headsetPosition.y;
+                worldMiddleTipPosition.y = headsetPosition.y;
+                
+                // Calculate the forward direction vector from wrist to middle tip
+                Vector3 forwardDirection = worldMiddleTipPosition - worldWristPosition;
+                forwardDirection = forwardDirectionFilter.Filter(forwardDirection, Time.deltaTime);
+                
+                // Project the direction onto the XZ plane
+                forwardDirection.y = 0;
+                forwardDirection.Normalize();
                 
                 // Calculate the forward direction of the headset
                 Vector3 headsetForward = Camera.main.transform.forward;
                 headsetForward.y = 0; // Ensure the forward vector is on the XZ plane
                 headsetForward.Normalize();
-
-                // Filter headset forward direction
-                Vector3 filteredForward = headsetFilter.Filter(headsetForward, Time.deltaTime);
             
                 // Calculate the direction from the headset to the wrist
                 Vector3 directionToWrist = worldWristPosition - headsetPosition;
                 directionToWrist.y = rightHand.transform.position.y; // Ensure the direction vector is on the XZ plane
             
                 // Project the directionToWrist onto the headsetForward
-                float forwardDistance = Vector3.Dot(directionToWrist, filteredForward);
+                float forwardDistance = Vector3.Dot(directionToWrist, headsetForward);
 
                 // Adjust the sensitivity by changing the power or scaling factor
                 scaledDistance = (forwardDistance - minDistance) / (maxDistance - minDistance);
@@ -100,12 +105,10 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     float virtualDistance = minVirtDistance +
                                             Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
                     
-                    Vector3 newPosition = worldWristPosition + filteredForward  * virtualDistance;
+                    Vector3 newPosition = worldWristPosition + forwardDirection  * virtualDistance;
                     newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height
-                    
-                    newPosition = positionFilter.FilterPosition(newPosition);
 
-                    rightHand.transform.position = newPosition;
+                    rightHand.transform.position = positionFilter.FilterPosition(newPosition);
                     
                     // Scale hand visualisation
                     float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*5;
