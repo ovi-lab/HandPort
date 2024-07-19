@@ -25,15 +25,19 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private int currentTarget = 0, nextTarget;
     private DatabaseReference studySettings;
     private ObstacleManager obstacleManager;
+    private GoGoDetachAdapterStable3 teleportAdapter;
+    
     private StudyConditions studyConditions;
     private TargetConditions targetConditions;
     private ParticipantConditions participantConditions;
+    private AdapterConditions adapterConditions;
 
     protected override void Awake()
     {
         base.Awake();
         nextTarget = currentTarget + 1;
         obstacleManager = FindObjectOfType<ObstacleManager>();
+        teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
     }
 
     public void ApplySettings<T>(T _values)
@@ -43,7 +47,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         if (type == typeof(TargetConditions))
         {
             targetConditions = _values as TargetConditions;
-            SetupSceneWithTargetConditions();
+            SetupObstaclesWithTargetConditions();
         }
         else if (type == typeof(StudyConditions))
         {
@@ -53,13 +57,18 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             participantConditions = _values as ParticipantConditions;
         }
+        else if (type == typeof(AdapterConditions))
+        {
+            adapterConditions = _values as AdapterConditions;
+            SetupAdapterWithAdapterConditions();
+        }
         else
         {
             Debug.LogWarning("Unsupported settings type.");
         }
     }
     
-    private void SetupSceneWithTargetConditions()
+    private void SetupObstaclesWithTargetConditions()
     {
         if (targetConditions == null)
         {
@@ -71,11 +80,26 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogWarning("ObstacleManager not found in scene.");
             return;
         }
-        Debug.Log("Setting up scene with target conditions");
-
-        // Example: Adjusting obstacle properties based on target conditions
+        Debug.Log("Setting up obstacles with target conditions");
+        
         targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.targetCount);
         InitialiseTargets();
+    }
+    private void SetupAdapterWithAdapterConditions()
+    {
+        if (adapterConditions == null)
+        {
+            Debug.LogWarning("AdapterConditions not set.");
+            return;
+        }
+        if (teleportAdapter == null)
+        {
+            Debug.LogWarning("TeleportAdapter not found in scene.");
+            return;
+        }
+        Debug.Log("Setting up adapter with adapter conditions");
+        teleportAdapter.SetArmMeasurements(adapterConditions.originShoulderDistance,
+            adapterConditions.shoulderEllbowDistance, adapterConditions.ellbowWristDistance);
     }
     public void InitialiseTargets()
     {
@@ -123,6 +147,14 @@ public class ParticipantConditions
     public bool recordData;
 }
 
+[Serializable]
+public class AdapterConditions
+{
+    public float originShoulderDistance;
+    public float ellbowWristDistance;
+    public float shoulderEllbowDistance;
+}
+
 public static class FirebaseDataToPrimitives
 {
     public static StudyConditions ToStudyConditions(DataSnapshot initialSettings)
@@ -158,6 +190,17 @@ public static class FirebaseDataToPrimitives
         };
         return participantConditions;
     }
+    
+    public static AdapterConditions ToAdapterConditions(DataSnapshot initialSettings)
+    {
+        AdapterConditions adapterConditions = new AdapterConditions
+        {
+            originShoulderDistance = Convert.ToSingle(initialSettings.Child("originShoulderDistance").Value.ToString()),
+            ellbowWristDistance = Convert.ToSingle(initialSettings.Child("ellbowWristDistance").Value.ToString()),
+            shoulderEllbowDistance = Convert.ToSingle(initialSettings.Child("shoulderEllbowDistance").Value.ToString())
+        };
+        return adapterConditions;
+    }
     private static T[] ParseArray<T>(DataSnapshot settingsSnapshot)
     {
         List<T> settingsList = new List<T>();
@@ -169,7 +212,11 @@ public static class FirebaseDataToPrimitives
     }
         
     
+    // before study:
+    
     // tbd: if recordData is true log analytics, else no
-    // tbd: if reset is true, set participantID to 0
+    // tbd: if reset is true, set participantID to 1
+
+    // tbd: if maxParticipant == participantID set reset to true
 
 }

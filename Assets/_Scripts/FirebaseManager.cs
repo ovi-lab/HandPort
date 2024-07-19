@@ -34,17 +34,19 @@ public class FirebaseManager : MonoBehaviour
         DataSnapshot studySettings = retrieveSettings.Result.Child("studySettings");
         DataSnapshot targetSettings = retrieveSettings.Result.Child("targetSettings");
         DataSnapshot participantSettings = retrieveSettings.Result.Child("participantSettings");
-        Debug.Log(studySettings.Exists && targetSettings.Exists);
+        DataSnapshot adapterSettings = retrieveSettings.Result.Child("adapterSettings");
         
-        if (studySettings.Exists && targetSettings.Exists && participantSettings.Exists)
+        if (studySettings.Exists && targetSettings.Exists && participantSettings.Exists && adapterSettings.Exists)
         {
             StudyConditions studyConditions = FirebaseDataToPrimitives.ToStudyConditions(studySettings);
             TargetConditions targetConditions = FirebaseDataToPrimitives.ToTargetConditions(targetSettings);
             ParticipantConditions participantConditions = FirebaseDataToPrimitives.ToParticipantConditions(participantSettings);
+            AdapterConditions adapterConditions = FirebaseDataToPrimitives.ToAdapterConditions(adapterSettings);
             
             GameManager.Instance.ApplySettings(studyConditions);
             GameManager.Instance.ApplySettings(targetConditions);
             GameManager.Instance.ApplySettings(participantConditions);
+            GameManager.Instance.ApplySettings(adapterConditions);
         }
     }
     

@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Hands;
-using UnityEngine.XR.Interaction.Toolkit;
-
 
 public class GoGoDetachAdapterStable3 : MonoBehaviour
 {
@@ -15,16 +13,15 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private float minDistance;
     private float maxDistance;
     
-    private float originShoulderDistance = 0.1f;
-    private float ellbowWristDistance = 0.11f;
-    private float shoulderEllbowDistance = 0.15f;
+    private float originShoulderDistance;
+    private float ellbowWristDistance;
+    private float shoulderEllbowDistance;
     
     public float p = 2.0f;
     public Transform rightHand;
     
     private OneEuroFilter positionFilter;
     public Transform rightHandScaleAnchor;
-    
     void Start()
     {
         var handSubsystems = new List<XRHandSubsystem>();
@@ -53,6 +50,13 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
         positionFilter = new OneEuroFilter(minCutoff: 0.1f, beta: 0.1f, dCutoff: 1.0f, initialDt: Time.deltaTime);
+    }
+    
+    public void SetArmMeasurements(float oSD, float sED, float eWD)
+    {
+        originShoulderDistance = oSD;
+        ellbowWristDistance = sED;
+        shoulderEllbowDistance = eWD;
     }
     
     void OnUpdatedHands(XRHandSubsystem subsystem,

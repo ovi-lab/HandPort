@@ -8,7 +8,6 @@ public class ObstacleManager : MonoBehaviour
 {   
     [SerializeField] private GameObject obstaclePrefab;
     public Transform cameraOffset;
-
     private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
     private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
 
@@ -81,7 +80,6 @@ public class ObstacleManager : MonoBehaviour
         }
         return obstacles;
     }
-
     
     private void Shuffle<T>(IList<T> list)
     {
