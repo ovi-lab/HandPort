@@ -16,7 +16,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private float maxDistance;
     
     private float originShoulderDistance = 0.1f;
-    private float ellbowWristDistance = 0.12f;
+    private float ellbowWristDistance = 0.11f;
     private float shoulderEllbowDistance = 0.15f;
     
     public float p = 2.0f;
@@ -32,7 +32,6 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
 
         minDistance = originShoulderDistance + ellbowWristDistance;
         maxDistance = originShoulderDistance + ellbowWristDistance + shoulderEllbowDistance;
-        Debug.Log(minDistance);
 
         for (int i = 0; i < handSubsystems.Count; ++i)
         {

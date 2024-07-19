@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Firebase.Database;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
@@ -93,8 +92,6 @@ public class StudyConditions
 {
     public int cameraType;
     public int handVisualisation;
-    public bool restart;
-    public bool recordData;
 }
 
 [Serializable]
