@@ -12,13 +12,12 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private float maxVirtDistance = 80f;
 
     public float scaledDistance = 0f;
-    public float minDistance = 0.15f;
-    public float maxDistance = 0.5f;
+    private float minDistance = 0.2f;
+    private float maxDistance = 0.5f;
     public float p = 2.0f;
     public Transform rightHand;
     
     private OneEuroFilter positionFilter;
-
     public Transform rightHandScaleAnchor;
     
     void Start()
@@ -79,24 +78,23 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 
                 // Calculate the right direction from the headset's forward direction
                 Vector3 headsetForward = Camera.main.transform.forward;
-                headsetForward.y = 0; // Ensure the forward vector is on the XZ plane
+                headsetForward.y = 0;
                 Vector3 rightDirection = Vector3.Cross(Vector3.up, headsetForward).normalized;
-                headsetForward.Normalize();
 
                 // Adjust xrOrigin position by 0.1f to the right
-                Vector3 adjustedXROriginPosition = xrOrigin.transform.position + rightDirection * 0.8f;
+                Vector3 adjustedXROriginPosition = xrOrigin.transform.position + rightDirection * 0.1f;
                 Vector3 forwardDirection = worldWristPosition - adjustedXROriginPosition;
                 
                 // Project the direction onto the XZ plane
                 forwardDirection.y = 0;
                 forwardDirection.Normalize();
             
-                // Calculate the direction from the headset to the wrist
-                Vector3 directionToWrist = worldWristPosition - headsetPosition;
-                directionToWrist.y = rightHand.transform.position.y; // Ensure the direction vector is on the XZ plane
-            
-                // Project the directionToWrist onto the headsetForward
-                float forwardDistance = Vector3.Dot(directionToWrist, headsetForward);
+                // Calculate the direction from the adjusted xrOrigin to the wrist
+                Vector3 directionToWrist = worldWristPosition - adjustedXROriginPosition;
+                directionToWrist.y = 0; // Ensure direction vector is on the XZ plane
+
+                // Project the directionToWrist onto the forwardDirection
+                float forwardDistance = Vector3.Dot(directionToWrist, forwardDirection);
 
                 // Adjust the sensitivity by changing the power or scaling factor
                 scaledDistance = (forwardDistance - minDistance) / (maxDistance - minDistance);
@@ -111,7 +109,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     rightHand.transform.position = positionFilter.FilterPosition(newPosition);
                     
                     // Scale hand visualisation
-                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*5;
+                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 4)*10;
                     rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 }
                 else
