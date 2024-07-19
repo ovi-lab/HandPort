@@ -27,6 +27,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private ObstacleManager obstacleManager;
     private StudyConditions studyConditions;
     private TargetConditions targetConditions;
+    private ParticipantConditions participantConditions;
 
     protected override void Awake()
     {
@@ -35,15 +36,27 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         obstacleManager = FindObjectOfType<ObstacleManager>();
     }
 
-    public void ApplyTargetValues(TargetConditions _values)
+    public void ApplySettings<T>(T _values)
     {
-        targetConditions = _values;
-        SetupSceneWithTargetConditions();
-    }
+        Type type = typeof(T);
 
-    public void ApplySettings(StudyConditions _settings)
-    {
-        studyConditions = _settings;
+        if (type == typeof(TargetConditions))
+        {
+            targetConditions = _values as TargetConditions;
+            SetupSceneWithTargetConditions();
+        }
+        else if (type == typeof(StudyConditions))
+        {
+            studyConditions = _values as StudyConditions;
+        }
+        else if (type == typeof(ParticipantConditions))
+        {
+            participantConditions = _values as ParticipantConditions;
+        }
+        else
+        {
+            Debug.LogWarning("Unsupported settings type.");
+        }
     }
     
     private void SetupSceneWithTargetConditions()
@@ -61,9 +74,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         Debug.Log("Setting up scene with target conditions");
 
         // Example: Adjusting obstacle properties based on target conditions
-        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistance, targetConditions.targetSize, targetConditions.targetCount);
+        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.targetCount);
         InitialiseTargets();
-        
     }
     public void InitialiseTargets()
     {
@@ -84,22 +96,31 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         currentTarget++;
         nextTarget = currentTarget + 1;
     }
-
 }
 
 [Serializable]
 public class StudyConditions
 {
-    public int cameraType;
-    public int handVisualisation;
+    public string[] cameraTypes;
+    public string[] panelAnchors;
+    public string[] handVisualisations;
 }
 
 [Serializable]
 public class TargetConditions
 {
-    public int targetDistance;
-    public int targetSize;
+    public int[] targetDistances;
+    public float[] targetSizes;
     public int targetCount;
+}
+
+[Serializable]
+public class ParticipantConditions
+{
+    public int participantID;
+    public int maxParticipant;
+    public bool reset;
+    public bool recordData;
 }
 
 public static class FirebaseDataToPrimitives
@@ -108,23 +129,47 @@ public static class FirebaseDataToPrimitives
     {
         StudyConditions studyConditions = new StudyConditions
         {
-            cameraType = Convert.ToInt32(initialSettings.Child("cameraType").Value.ToString()),
-            handVisualisation = Convert.ToInt32(initialSettings.Child("handVisualisation").Value.ToString()),
-            restart = Convert.ToBoolean(initialSettings.Child("restart").Value.ToString()),
-            recordData = Convert.ToBoolean(initialSettings.Child("recordData").Value.ToString()),
+            cameraTypes = ParseArray<string>(initialSettings.Child("cameraType")),
+            panelAnchors = ParseArray<string>(initialSettings.Child("panelAnchor")),
+            handVisualisations = ParseArray<string>(initialSettings.Child("handVisualisation"))
         };
         return studyConditions;
-
     }
-
-    public static TargetConditions ToTargetConditions(DataSnapshot IVs)
+    
+    public static TargetConditions ToTargetConditions(DataSnapshot initialSettings)
     {
         TargetConditions targetConditions = new TargetConditions
         {
-            targetDistance = Convert.ToInt32(IVs.Child("targetDistance").Value.ToString()),
-            targetSize = Convert.ToInt32(IVs.Child("targetSize").Value.ToString()),
-            targetCount = Convert.ToInt32(IVs.Child("targetCount").Value.ToString()),
+            targetDistances = ParseArray<int>(initialSettings.Child("targetDistance")),
+            targetSizes = ParseArray<float>(initialSettings.Child("targetSize")),
+            targetCount = Convert.ToInt32(initialSettings.Child("targetCount").Value.ToString())
         };
         return targetConditions;
     }
+    
+    public static ParticipantConditions ToParticipantConditions(DataSnapshot initialSettings)
+    {
+        ParticipantConditions participantConditions = new ParticipantConditions
+        {
+            participantID = Convert.ToInt32(initialSettings.Child("participantID").Value.ToString()),
+            maxParticipant = Convert.ToInt32(initialSettings.Child("maxParticipant").Value.ToString()),
+            reset = Convert.ToBoolean(initialSettings.Child("reset").Value.ToString()),
+            recordData = Convert.ToBoolean(initialSettings.Child("recordData").Value.ToString())
+        };
+        return participantConditions;
+    }
+    private static T[] ParseArray<T>(DataSnapshot settingsSnapshot)
+    {
+        List<T> settingsList = new List<T>();
+        foreach (DataSnapshot childSnapshot in settingsSnapshot.Children)
+        {
+            settingsList.Add((T)Convert.ChangeType(childSnapshot.Value.ToString(), typeof(T)));
+        }
+        return settingsList.ToArray();
+    }
+        
+    
+    // tbd: if recordData is true log analytics, else no
+    // tbd: if reset is true, set participantID to 0
+
 }
