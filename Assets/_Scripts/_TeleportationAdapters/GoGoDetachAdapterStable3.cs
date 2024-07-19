@@ -8,12 +8,17 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
 {
     private XRHandSubsystem m_HandSubsystem;
     public Transform xrOrigin;
-    private  float minVirtDistance = 0.1f; 
-    private float maxVirtDistance = 80f;
+    private  float minVirtDistance = 0f; 
+    private float maxVirtDistance = 60f;
 
     public float scaledDistance = 0f;
-    private float minDistance = 0.2f;
-    private float maxDistance = 0.5f;
+    private float minDistance;
+    private float maxDistance;
+    
+    private float originShoulderDistance = 0.1f;
+    private float ellbowWristDistance = 0.12f;
+    private float shoulderEllbowDistance = 0.15f;
+    
     public float p = 2.0f;
     public Transform rightHand;
     
@@ -24,6 +29,10 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     {
         var handSubsystems = new List<XRHandSubsystem>();
         SubsystemManager.GetSubsystems(handSubsystems);
+
+        minDistance = originShoulderDistance + ellbowWristDistance;
+        maxDistance = originShoulderDistance + ellbowWristDistance + shoulderEllbowDistance;
+        Debug.Log(minDistance);
 
         for (int i = 0; i < handSubsystems.Count; ++i)
         {
@@ -70,20 +79,17 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             if (wristJoint.TryGetPose(out Pose wristPose) && (middleTipJoint.TryGetPose(out Pose middlePose)))
             {
                 Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(wristPose.position);
-                Vector3 worldMiddleTipPosition = xrOrigin.transform.TransformPoint(middlePose.position);
-                Vector3 headsetPosition = Camera.main.transform.position;
-                
-                worldWristPosition.y = headsetPosition.y;
-                worldMiddleTipPosition.y = headsetPosition.y;
+                worldWristPosition.y = 0;
                 
                 // Calculate the right direction from the headset's forward direction
                 Vector3 headsetForward = Camera.main.transform.forward;
                 headsetForward.y = 0;
                 Vector3 rightDirection = Vector3.Cross(Vector3.up, headsetForward).normalized;
 
-                // Adjust xrOrigin position by 0.1f to the right
-                Vector3 adjustedXROriginPosition = xrOrigin.transform.position + rightDirection * 0.1f;
-                Vector3 forwardDirection = worldWristPosition - adjustedXROriginPosition;
+                // Adjust xrOrigin position to the right
+                Vector3 adjustedXROriginPosition = xrOrigin.transform.position;
+                adjustedXROriginPosition.y = 0;
+                Vector3 forwardDirection = worldWristPosition - (adjustedXROriginPosition + rightDirection * originShoulderDistance);
                 
                 // Project the direction onto the XZ plane
                 forwardDirection.y = 0;
@@ -91,7 +97,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             
                 // Calculate the direction from the adjusted xrOrigin to the wrist
                 Vector3 directionToWrist = worldWristPosition - adjustedXROriginPosition;
-                directionToWrist.y = 0; // Ensure direction vector is on the XZ plane
+                directionToWrist.y = 0;
 
                 // Project the directionToWrist onto the forwardDirection
                 float forwardDistance = Vector3.Dot(directionToWrist, forwardDirection);
@@ -109,7 +115,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     rightHand.transform.position = positionFilter.FilterPosition(newPosition);
                     
                     // Scale hand visualisation
-                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 4)*10;
+                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*10;
                     rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 }
                 else
