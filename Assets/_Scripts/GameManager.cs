@@ -98,8 +98,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             return;
         }
         Debug.Log("Setting up adapter with adapter conditions");
-        teleportAdapter.SetArmMeasurements(adapterConditions.originShoulderDistance,
-            adapterConditions.shoulderEllbowDistance, adapterConditions.ellbowWristDistance);
+        teleportAdapter.SetInitialAdapterValues(adapterConditions.originShoulderDistance,
+            adapterConditions.shoulderEllbowDistance, adapterConditions.ellbowWristDistance, adapterConditions.maxVirtDistance);
     }
     public void InitialiseTargets()
     {
@@ -153,6 +153,7 @@ public class AdapterConditions
     public float originShoulderDistance;
     public float ellbowWristDistance;
     public float shoulderEllbowDistance;
+    public float maxVirtDistance;
 }
 
 public static class FirebaseDataToPrimitives
@@ -197,7 +198,8 @@ public static class FirebaseDataToPrimitives
         {
             originShoulderDistance = Convert.ToSingle(initialSettings.Child("originShoulderDistance").Value.ToString()),
             ellbowWristDistance = Convert.ToSingle(initialSettings.Child("ellbowWristDistance").Value.ToString()),
-            shoulderEllbowDistance = Convert.ToSingle(initialSettings.Child("shoulderEllbowDistance").Value.ToString())
+            shoulderEllbowDistance = Convert.ToSingle(initialSettings.Child("shoulderEllbowDistance").Value.ToString()),
+            maxVirtDistance = Convert.ToSingle(initialSettings.Child("maxVirtDistance").Value.ToString())
         };
         return adapterConditions;
     }

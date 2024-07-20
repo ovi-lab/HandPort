@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class OneEuroFilter
 {
-    private float minCutoff;
-    private float beta;
-    private float dCutoff;
+    public float minCutoff;
+    public float beta;
+    public float dCutoff;
 
     private Vector3 prevPosition;
     private Vector3 prevFilteredPosition;

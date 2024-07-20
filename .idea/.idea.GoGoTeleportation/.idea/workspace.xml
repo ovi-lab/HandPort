@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d29fac03-527b-43e6-9ea8-4b56e71489b9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/FirebaseManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/FirebaseManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scripts/ObstacleManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/ObstacleManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/OneEuroFilter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/OneEuroFilter.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -135,7 +135,7 @@
       <workItem from="1721318801778" duration="19746000" />
       <workItem from="1721344413260" duration="7664000" />
       <workItem from="1721405597760" duration="9737000" />
-      <workItem from="1721422796096" duration="1104000" />
+      <workItem from="1721422796096" duration="11451000" />
     </task>
     <servers />
   </component>

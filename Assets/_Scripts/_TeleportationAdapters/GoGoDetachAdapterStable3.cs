@@ -7,7 +7,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private XRHandSubsystem m_HandSubsystem;
     public Transform xrOrigin;
     private  float minVirtDistance = 0f; 
-    private float maxVirtDistance = 60f;
+    private float maxVirtDistance;
 
     public float scaledDistance = 0f;
     private float minDistance;
@@ -22,6 +22,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     
     private OneEuroFilter positionFilter;
     public Transform rightHandScaleAnchor;
+    
     void Start()
     {
         var handSubsystems = new List<XRHandSubsystem>();
@@ -49,14 +50,15 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         {
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
-        positionFilter = new OneEuroFilter(minCutoff: 0.1f, beta: 0.1f, dCutoff: 1.0f, initialDt: Time.deltaTime);
+        positionFilter = new OneEuroFilter(minCutoff: 0.5f, beta: 0.02f, dCutoff: 1.0f, initialDt: Time.deltaTime);
     }
     
-    public void SetArmMeasurements(float oSD, float sED, float eWD)
+    public void SetInitialAdapterValues(float oSD, float sED, float eWD, float mVD)
     {
         originShoulderDistance = oSD;
         ellbowWristDistance = sED;
         shoulderEllbowDistance = eWD;
+        maxVirtDistance = mVD;
     }
     
     void OnUpdatedHands(XRHandSubsystem subsystem,
@@ -77,9 +79,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     {
         if (m_HandSubsystem.rightHand.isTracked)
         {
-            var middleTipJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.MiddleTip);
             var wristJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.Wrist);
-            if (wristJoint.TryGetPose(out Pose wristPose) && (middleTipJoint.TryGetPose(out Pose middlePose)))
+            if (wristJoint.TryGetPose(out Pose wristPose))
             {
                 Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(wristPose.position);
                 worldWristPosition.y = 0;
@@ -105,8 +106,13 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 // Project the directionToWrist onto the forwardDirection
                 float forwardDistance = Vector3.Dot(directionToWrist, forwardDirection);
 
-                // Adjust the sensitivity by changing the power or scaling factor
-                scaledDistance = (forwardDistance - minDistance) / (maxDistance - minDistance);
+                // Clamp the forwardDistance to avoid extreme values
+                float clampedForwardDistance = Mathf.Clamp(forwardDistance, minDistance, maxDistance);
+
+                // Scale distance calculation
+                scaledDistance = (clampedForwardDistance - minDistance) / (maxDistance - minDistance);
+                scaledDistance = Mathf.Clamp(scaledDistance, 0f, 1f); // Ensure scaledDistance is between 0 and 1
+
                 if (scaledDistance > 0)
                 {
                     float virtualDistance = minVirtDistance +
@@ -115,10 +121,21 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     Vector3 newPosition = worldWristPosition + forwardDirection  * virtualDistance;
                     newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height
 
+                    // // Adjust filter parameters based on virtual distance
+                    // float sD = Mathf.Round(scaledDistance * 100f) / 100f;
+                    // Debug.Log(sD);
+                    // float minCutoff = Mathf.Lerp(0.5f, 0.1f, sD); // More stable further away
+                    // float beta = Mathf.Lerp(0.1f, 0.01f, sD); // Less reactive further away
+                    // float dCutoff = Mathf.Lerp(1.0f, 0.1f, sD);
+                    //
+                    // positionFilter.minCutoff = minCutoff;
+                    // positionFilter.beta = beta;
+                    // positionFilter.dCutoff = dCutoff;
+                    
                     rightHand.transform.position = positionFilter.FilterPosition(newPosition);
                     
                     // Scale hand visualisation
-                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*10;
+                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*8;
                     rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 }
                 else
