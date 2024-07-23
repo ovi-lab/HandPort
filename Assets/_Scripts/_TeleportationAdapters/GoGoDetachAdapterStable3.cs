@@ -9,7 +9,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private  float minVirtDistance = 0f; 
     private float maxVirtDistance;
 
-    public float scaledDistance = 0f;
+    private float scaledDistance = 0f;
     private float minDistance;
     private float maxDistance;
     

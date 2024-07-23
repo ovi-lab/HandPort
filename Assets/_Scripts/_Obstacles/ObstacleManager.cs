@@ -11,10 +11,8 @@ public class ObstacleManager : MonoBehaviour
     private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
     private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
 
-    private void Awake()
-    {
-        //offset = GameObject.Find("Camera Offset").transform.position.y;
-    }
+    private float intermedidateObstacleSize = 1;
+    private float intermedidateObstacleDistance = 5;
 
     public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int count)
     {
@@ -62,10 +60,24 @@ public class ObstacleManager : MonoBehaviour
 
             for (int k = 0; k < currentObstacleCount; k++)
             {
-                
                 float terrainHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
                 float heightDifference = terrainHeight - previousHeight;
-
+                
+                // Place reset obstacle
+                float adjustedZReset = Mathf.Sqrt(Mathf.Pow(intermedidateObstacleDistance, 2) - Mathf.Pow(heightDifference, 2));
+                spawnPosition.z += adjustedZReset;
+                spawnPosition.y = Terrain.activeTerrain.SampleHeight(spawnPosition) + 0.5f * intermedidateObstacleSize;
+                
+                GameObject intermediateObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
+                intermediateObstacle.transform.localScale = new Vector3(intermedidateObstacleSize, intermedidateObstacleSize, intermedidateObstacleSize);
+                TeleportationAnchor intermediateAnchor = intermediateObstacle.GetComponent<TeleportationAnchor>();
+                obstacles.Add(intermediateAnchor);
+                intermediateObstacle.transform.SetParent(teleportationAnchors.transform);
+                previousHeight = terrainHeight;
+                
+                // Place random distance obstacle
+                terrainHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
+                heightDifference = terrainHeight - previousHeight;
                 // Adjust z value to maintain the distance as hypotenuse
                 float adjustedZ = Mathf.Sqrt(Mathf.Pow(pair.distance, 2) - Mathf.Pow(heightDifference, 2));
                 spawnPosition.z += adjustedZ;
@@ -83,11 +95,19 @@ public class ObstacleManager : MonoBehaviour
                 obstacle.transform.SetParent(teleportationAnchors.transform);
                 
                 previousHeight = terrainHeight;
+                
+                
+                
             }
         }
         return obstacles;
     }
+
+    private void PlaceIntermediateObstacles()
+    {
+    }
     
+
     private void Shuffle<T>(IList<T> list)
     {
         System.Random rng = new System.Random();
