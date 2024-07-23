@@ -47,6 +47,8 @@ public class ObstacleManager : MonoBehaviour
         int totalPairs = pairs.Count;
         int obstaclesPerPair = count / totalPairs;
         int remainingObstacles = count % totalPairs;
+        
+        float previousHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
 
         foreach (var pair in pairs)
         {
@@ -60,13 +62,16 @@ public class ObstacleManager : MonoBehaviour
 
             for (int k = 0; k < currentObstacleCount; k++)
             {
-                spawnPosition.z += pair.distance;
-
-                // Calculate terrain height at spawn position
+                
                 float terrainHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
+                float heightDifference = terrainHeight - previousHeight;
 
+                // Adjust z value to maintain the distance as hypotenuse
+                float adjustedZ = Mathf.Sqrt(Mathf.Pow(pair.distance, 2) - Mathf.Pow(heightDifference, 2));
+                spawnPosition.z += adjustedZ;
+                
                 // Adjust spawn position based on terrain height
-                spawnPosition.y = terrainHeight + 0.5f * pair.size; // Adjust 0.5f to fit your terrain's scale and cube's size
+                spawnPosition.y = Terrain.activeTerrain.SampleHeight(spawnPosition) + 0.5f * pair.size; // Adjust 0.5f to fit your terrain's scale and cube's size
 
                 // Instantiate obstacle
                 GameObject obstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
@@ -76,6 +81,8 @@ public class ObstacleManager : MonoBehaviour
 
                 // Make obstacle a child of the colliders parent
                 obstacle.transform.SetParent(teleportationAnchors.transform);
+                
+                previousHeight = terrainHeight;
             }
         }
         return obstacles;

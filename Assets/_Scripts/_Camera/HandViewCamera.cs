@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,13 @@ using UnityEngine;
 public class HandViewCamera : CameraPlacement
 {
     public Transform rightHand;
+    public GoGoDetachAdapterStable3 teleportAdapter;
+
+    private void Start()
+    {
+        teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
+    }
+
     void Update()
     {
         if (rightHand == null)
@@ -12,13 +20,22 @@ public class HandViewCamera : CameraPlacement
             return;
         }
 
-        // Check if CurrentTarget is not null
-        if (rightHand.transform == null)
+        
+        if (teleportAdapter == null)
         {
+            Debug.LogError("GoGoDetachAdapterStable3 component is missing. Please attach it to the GameObject.");
             return;
         }
 
-        targetPosition = rightHand.transform.position;
-        PlaceCamera(targetPosition);
+        // Ensure forwardDirection is set
+        Vector3 forwardDirection = teleportAdapter.forwardDirection;
+        if (forwardDirection == Vector3.zero)
+        {
+            forwardDirection = rightHand.forward;
+        }
+
+        // Set target position and place the camera
+        Vector3 targetPosition = rightHand.position;
+        PlaceCamera(targetPosition, forwardDirection);
     }
 }

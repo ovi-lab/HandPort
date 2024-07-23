@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class CameraPlacement : MonoBehaviour
 {
@@ -10,9 +7,7 @@ public class CameraPlacement : MonoBehaviour
     [SerializeField] protected float cameraLookAngle;
     protected Vector3 targetPosition;
     protected Camera mainCamera;
-
     
-
     protected void OnEnable()
     {
         mainCamera = Camera.main;
@@ -24,15 +19,27 @@ public class CameraPlacement : MonoBehaviour
         PlaceCamera(targetPosition);
     }
 
-    
-
     protected void PlaceCamera(Vector3 target)
     {
         target.y += heightOffset;
         target.z -= horizontalOffset;
         Vector3 cameraLook = target - mainCamera.transform.position;
         transform.forward = cameraLook;
-        transform.rotation = Quaternion.Euler(cameraLookAngle,0,0);
+        //transform.rotation = Quaternion.Euler(cameraLookAngle,0,0);
         transform.position = target;
+    }
+    // for handviewcamera -> direction of hand, heightoffset = height of hand
+    // for rayviewcamera -> direction of ray, heightoffset 
+    protected void PlaceCamera(Vector3 target, Vector3 forwardDirection)
+    {
+        forwardDirection = forwardDirection.normalized;
+        target.y += heightOffset; // Apply heightOffset
+        target.z -= horizontalOffset; // Apply horizontalOffset
+
+        transform.position = target;
+
+        // Ensure the camera looks directly at the forwardDirection
+        Quaternion targetRotation = Quaternion.LookRotation(forwardDirection);
+        transform.rotation = targetRotation;
     }
 }

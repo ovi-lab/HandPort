@@ -22,6 +22,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     
     private OneEuroFilter positionFilter;
     public Transform rightHandScaleAnchor;
+    public Vector3 forwardDirection;
     
     void Start()
     {
@@ -93,7 +94,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 // Adjust xrOrigin position to the right
                 Vector3 adjustedXROriginPosition = xrOrigin.transform.position;
                 adjustedXROriginPosition.y = 0;
-                Vector3 forwardDirection = worldWristPosition - (adjustedXROriginPosition + rightDirection * originShoulderDistance);
+                forwardDirection = worldWristPosition - (adjustedXROriginPosition + rightDirection * originShoulderDistance);
                 
                 // Project the direction onto the XZ plane
                 forwardDirection.y = 0;

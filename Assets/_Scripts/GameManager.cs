@@ -216,7 +216,7 @@ public static class FirebaseDataToPrimitives
     
     // before study:
     
-    // tbd: if recordData is true log analytics, else no
+    // tbd: if recordData is true log, else no
     // tbd: if reset is true, set participantID to 1
 
     // tbd: if maxParticipant == participantID set reset to true
