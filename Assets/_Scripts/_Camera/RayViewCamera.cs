@@ -49,8 +49,8 @@ public class RayViewCamera : CameraPlacement
 
             if (points.Length > 0)
             {
-                pointAt80Percent = GetPointAtPercent(points, 0.8f);
-                pointAt80Percent.y += 2;
+                pointAt80Percent = GetPointAtPercent(points, 0.7f);
+                pointAt80Percent.y += 4;
                 PlaceCamera(pointAt80Percent, hitPoint - pointAt80Percent);
             }
         }

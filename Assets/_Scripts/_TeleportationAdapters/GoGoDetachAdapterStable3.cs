@@ -117,7 +117,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 if (scaledDistance > 0)
                 {
                     float virtualDistance = minVirtDistance +
-                                            Mathf.Pow(scaledDistance, 2) * (maxVirtDistance - minVirtDistance);
+                                            Mathf.Pow(scaledDistance, 1.5f) * (maxVirtDistance - minVirtDistance);
                     
                     Vector3 newPosition = worldWristPosition + forwardDirection  * virtualDistance;
                     newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height
