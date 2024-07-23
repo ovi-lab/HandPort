@@ -51,7 +51,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         {
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
-        positionFilter = new OneEuroFilter(minCutoff: 0.5f, beta: 0.02f, dCutoff: 1.0f, initialDt: Time.deltaTime);
+        positionFilter = new OneEuroFilter(minCutoff: 0.2f, beta: 0.02f, dCutoff: 1.0f, initialDt: Time.deltaTime);
     }
     
     public void SetInitialAdapterValues(float oSD, float sED, float eWD, float mVD)
@@ -145,6 +145,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     resetPosition = positionFilter.FilterPosition(resetPosition);
 
                     rightHand.transform.position = resetPosition;
+                    float scaleFactor = 1f;
+                    rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 }
             }
             else
