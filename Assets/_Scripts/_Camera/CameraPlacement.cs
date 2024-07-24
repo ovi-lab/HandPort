@@ -25,7 +25,7 @@ public class CameraPlacement : MonoBehaviour
         target.z -= horizontalOffset;
         Vector3 cameraLook = target - mainCamera.transform.position;
         transform.forward = cameraLook;
-        //transform.rotation = Quaternion.Euler(cameraLookAngle,0,0);
+        transform.rotation = Quaternion.Euler(cameraLookAngle,0,0);
         transform.position = target;
     }
     // for handviewcamera -> direction of hand, heightoffset = height of hand

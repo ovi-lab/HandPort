@@ -67,7 +67,6 @@ public class CameraManager : MonoBehaviour
             cam.gameObject.SetActive(false);
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
-        rayInteractors = FindObjectsOfType<XRRayInteractor>();
 
         if ((int)resolution == 0)
         {
@@ -102,7 +101,6 @@ public class CameraManager : MonoBehaviour
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
     }
-    
     private Vector3 GetCurrentPoint()
     {
         foreach (var ray in rayInteractors)
