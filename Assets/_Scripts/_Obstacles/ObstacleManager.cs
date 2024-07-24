@@ -24,7 +24,6 @@ public class ObstacleManager : MonoBehaviour
 
         // Create an empty GameObject to hold colliders
         GameObject teleportationAnchors = new GameObject("TeleportationAnchors");
-        Debug.Log(count);
         
          // Create a new list of all possible size-distance pairs, each repeated 'count' times
         List<(int distance, float size)> pairs = new List<(int, float)>();

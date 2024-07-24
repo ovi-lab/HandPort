@@ -17,7 +17,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private float ellbowWristDistance;
     private float shoulderEllbowDistance;
     
-    public float p = 2.0f;
+    private float p = 2.0f;
     public Transform rightHand;
     
     private OneEuroFilter positionFilter;
@@ -117,7 +117,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 if (scaledDistance > 0)
                 {
                     float virtualDistance = minVirtDistance +
-                                            Mathf.Pow(scaledDistance, 1.5f) * (maxVirtDistance - minVirtDistance);
+                                            Mathf.Pow(scaledDistance, p) * (maxVirtDistance - minVirtDistance);
                     
                     Vector3 newPosition = worldWristPosition + forwardDirection  * virtualDistance;
                     newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height

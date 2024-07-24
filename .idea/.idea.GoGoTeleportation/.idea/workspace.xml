@@ -6,8 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="d29fac03-527b-43e6-9ea8-4b56e71489b9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Prefabs/Obstale.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Prefabs/Obstale.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/CustomTeleportationArea.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/CustomTeleportationArea.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/FirebaseManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/FirebaseManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_Obstacles/HighlightOnHover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_Obstacles/HighlightOnHover.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_Obstacles/ObstacleManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_Obstacles/ObstacleManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,7 +25,6 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/ILViewer/6a7d45a705b341808094bc936c61f0a4d4e00/43/7182284b/02000056pdb42.il" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/_Scripts/CustomTeleportationArea.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Scripts/FirebaseManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Scripts/SingletonMonoBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
@@ -40,9 +45,11 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Interaction/Interactables/XRBaseInteractable.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Interaction/Interactors/IXRInteractor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Interaction/Interactors/Visual/XRInteractorLineVisual.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Interaction/Interactors/XRBaseControllerInteractor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Interaction/Interactors/XRPokeInteractor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Interaction/Interactors/XRRayInteractor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Interaction/XRInteractionManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Locomotion/LocomotionSystem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Locomotion/Teleportation/BaseTeleportationInteractable.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Locomotion/Teleportation/TeleportationArea.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.4/Runtime/Locomotion/Teleportation/TeleportationProvider.cs" root0="SKIP_HIGHLIGHTING" />
@@ -140,7 +147,7 @@
       <workItem from="1721663527284" duration="15233000" />
       <workItem from="1721684563769" duration="8208000" />
       <workItem from="1721746185262" duration="19345000" />
-      <workItem from="1721838515794" duration="3972000" />
+      <workItem from="1721838515794" duration="10673000" />
     </task>
     <servers />
   </component>

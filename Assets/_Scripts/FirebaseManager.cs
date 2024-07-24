@@ -24,7 +24,12 @@ public class FirebaseManager : MonoBehaviour
         participantID = 1;
         realtimeDB = FirebaseDatabase.DefaultInstance.RootReference;
         StartCoroutine(ApplyInitialSettings());
-        
+        realtimeDB.ValueChanged += OnValueChanged;
+    }
+
+    private void OnValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        StartCoroutine(ApplyInitialSettings());
     }
     private IEnumerator ApplyInitialSettings()
     {

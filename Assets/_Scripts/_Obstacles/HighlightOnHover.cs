@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class HighlightOnHover : MonoBehaviour
@@ -9,7 +10,7 @@ public class HighlightOnHover : MonoBehaviour
     private Color originalColor;
     public Color highlightColor = Color.yellow;
     private bool isHighlighted = false;
-
+    private TeleportationAnchor teleAnchor;
     void Start()
     {
         objectRenderer = GetComponent<Renderer>();
@@ -18,7 +19,7 @@ public class HighlightOnHover : MonoBehaviour
             originalColor = objectRenderer.material.color;
         }
     }
-
+    
     public void Highlight()
     {
         if (objectRenderer != null && !isHighlighted)
@@ -36,4 +37,5 @@ public class HighlightOnHover : MonoBehaviour
             isHighlighted = false;
         }
     }
+    
 }
