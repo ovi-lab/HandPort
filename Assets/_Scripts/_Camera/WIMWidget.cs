@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class WIMWidget : MonoBehaviour
 {
-    [SerializeField] private int anchorType;
+    [SerializeField] public int anchorType = 0;
     [SerializeField] private Transform[] anchorPoint;
 
     private Transform display;
@@ -17,7 +17,7 @@ public class WIMWidget : MonoBehaviour
         InitializeDisplay();
         if (anchorPoint.Length > 0)
         {
-            SetDisplayParent(anchorPoint[0]);
+            SetDisplayParent(anchorPoint[anchorType]);
         }
         isInitialized = true;
     }

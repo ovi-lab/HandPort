@@ -51,7 +51,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         {
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
-        positionFilter = new OneEuroFilter(minCutoff: 0.2f, beta: 0.02f, dCutoff: 1.0f, initialDt: Time.deltaTime);
+        positionFilter = new OneEuroFilter(minCutoff: 0.2f, beta: 0.02f, dCutoff: 0.7f, initialDt: Time.deltaTime);
     }
     
     public void SetInitialAdapterValues(float oSD, float sED, float eWD, float mVD)
@@ -123,11 +123,10 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height
 
                     // // Adjust filter parameters based on virtual distance
-                    // float sD = Mathf.Round(scaledDistance * 100f) / 100f;
-                    // Debug.Log(sD);
-                    // float minCutoff = Mathf.Lerp(0.5f, 0.1f, sD); // More stable further away
-                    // float beta = Mathf.Lerp(0.1f, 0.01f, sD); // Less reactive further away
-                    // float dCutoff = Mathf.Lerp(1.0f, 0.1f, sD);
+                    // float sD = Mathf.Round(scaledDistance * 10f) / 10f;
+                    // float minCutoff = Mathf.Lerp(0.2f, 0.05f, sD); // More stable further away
+                    // float beta = Mathf.Lerp(0.05f, 0.01f, sD); // Less reactive further away
+                    // float dCutoff = Mathf.Lerp(1.0f, 0.7f, sD);
                     //
                     // positionFilter.minCutoff = minCutoff;
                     // positionFilter.beta = beta;

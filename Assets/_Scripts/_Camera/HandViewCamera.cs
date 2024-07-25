@@ -6,7 +6,7 @@ using UnityEngine;
 public class HandViewCamera : CameraPlacement
 {
     public Transform rightHand;
-    public GoGoDetachAdapterStable3 teleportAdapter;
+    private GoGoDetachAdapterStable3 teleportAdapter;
 
     private void Start()
     {

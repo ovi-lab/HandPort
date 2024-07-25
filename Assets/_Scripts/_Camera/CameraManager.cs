@@ -62,12 +62,14 @@ public class CameraManager : MonoBehaviour
     
     private void Start()
     {
+        // choose camera
         foreach (CameraPlacement cam in cameras)
         { 
             cam.gameObject.SetActive(false);
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
-
+        
+        // choose resolution
         if ((int)resolution == 0)
         {
             foreach (CameraPlacement cam in cameras)
@@ -85,6 +87,9 @@ public class CameraManager : MonoBehaviour
             }
         }
         
+        // choose anchor
+        WIMWidget wimWidget = FindObjectOfType<WIMWidget>();
+        wimWidget.anchorType = ((int)anchor);
     }
 
     private void Update()

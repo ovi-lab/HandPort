@@ -28,8 +28,6 @@ public class CameraPlacement : MonoBehaviour
         transform.rotation = Quaternion.Euler(cameraLookAngle,0,0);
         transform.position = target;
     }
-    // for handviewcamera -> direction of hand, heightoffset = height of hand
-    // for rayviewcamera -> direction of ray, heightoffset 
     protected void PlaceCamera(Vector3 target, Vector3 forwardDirection)
     {
         forwardDirection = forwardDirection.normalized;
