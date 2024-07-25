@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d29fac03-527b-43e6-9ea8-4b56e71489b9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GoGoTeleportation/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_Camera/CameraManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_Camera/CameraManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_Camera/CameraPlacement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_Camera/CameraPlacement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_Camera/HandViewCamera.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_Camera/HandViewCamera.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_Camera/WIMWidget.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_Camera/WIMWidget.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/_TeleportationAdapters/GoGoDetachAdapterStable3.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ControlDirection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ControlDirection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/StudyDesignScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +144,8 @@
       <workItem from="1721838515794" duration="10673000" />
       <workItem from="1721849528611" duration="630000" />
       <workItem from="1721852222328" duration="6000" />
-      <workItem from="1721852234948" duration="11253000" />
+      <workItem from="1721852234948" duration="11898000" />
+      <workItem from="1721927230814" duration="2513000" />
     </task>
     <servers />
   </component>
