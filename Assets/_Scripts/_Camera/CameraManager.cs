@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -35,7 +36,6 @@ public class CameraManager : MonoBehaviour
     {
         { "4:3", Resolution.Res43 },
         { "16:9", Resolution.Res169 }
-
     };
     public readonly Dictionary<string, CameraAnchor> stringToEnumConverter2 = new Dictionary<string, CameraAnchor>()
     {
@@ -54,11 +54,11 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private RenderTexture renderTexture43;
     [SerializeField] private RenderTexture renderTexture169;
-
     
     private static Vector3 parabolaPosition;
     private Camera mainCamera;
     private static GameObject currentCameraGameObject;
+    private WIMWidget wimWidget; 
     
     private void Start()
     {
@@ -88,7 +88,7 @@ public class CameraManager : MonoBehaviour
         }
         
         // choose anchor
-        WIMWidget wimWidget = FindObjectOfType<WIMWidget>();
+        wimWidget = FindObjectOfType<WIMWidget>();
         wimWidget.anchorType = ((int)anchor);
     }
 
@@ -119,21 +119,24 @@ public class CameraManager : MonoBehaviour
     }
     private void OnValidate()
     {
+        // change camera
         foreach (var cam in cameras)
         { 
             cam.gameObject.SetActive(false);
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
         
-        if ((int)resolution == 0)
+        // change resolution
+        if (resolution == Resolution.Res43)
         {
             foreach (CameraPlacement cam in cameras)
             {
                 Camera cameraComponent = cam.GetComponent<Camera>();
                 cameraComponent.targetTexture = renderTexture43;
             }
-        }
-        else
+            
+            
+        } else if (resolution == Resolution.Res169) 
         {
             foreach (CameraPlacement cam in cameras)
             {

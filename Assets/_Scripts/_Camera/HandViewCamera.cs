@@ -28,7 +28,7 @@ public class HandViewCamera : CameraPlacement
         }
 
         // Ensure forwardDirection is set
-        Vector3 forwardDirection = teleportAdapter.forwardDirection;
+        Vector3 forwardDirection = teleportAdapter.shoulderToWristDirection;
         if (forwardDirection == Vector3.zero)
         {
             forwardDirection = rightHand.forward;

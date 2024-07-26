@@ -9,7 +9,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private  float minVirtDistance = 0f; 
     private float maxVirtDistance;
 
-    private float scaledDistance = 0f;
+    private float normalizedDeltaForward = 0f;
     private float minDistance;
     private float maxDistance;
     
@@ -22,7 +22,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     
     private OneEuroFilter positionFilter;
     public Transform rightHandScaleAnchor;
-    public Vector3 forwardDirection;
+    public Vector3 shoulderToWristDirection;
     
     void Start()
     {
@@ -38,7 +38,6 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             if (handSubsystem.running)
             {
                 m_HandSubsystem = handSubsystem;
-                Debug.Log("Found and using XRHandSubsystem.");
                 break;
             }
         }
@@ -86,41 +85,33 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(wristPose.position);
                 worldWristPosition.y = 0;
                 
-                // Calculate the right direction from the headset's forward direction
-                Vector3 headsetForward = Camera.main.transform.forward;
-                headsetForward.y = 0;
-                Vector3 rightDirection = Vector3.Cross(Vector3.up, headsetForward).normalized;
-
-                // Adjust xrOrigin position to the right
-                Vector3 adjustedXROriginPosition = xrOrigin.transform.position;
-                adjustedXROriginPosition.y = 0;
-                forwardDirection = worldWristPosition - (adjustedXROriginPosition + rightDirection * originShoulderDistance);
-                
-                // Project the direction onto the XZ plane
-                forwardDirection.y = 0;
-                forwardDirection.Normalize();
+                // Calculate shoulderToWristDirection
+                Vector3 XZOriginPos = new Vector3(xrOrigin.position.x, 0f, xrOrigin.position.z);
+                shoulderToWristDirection = worldWristPosition - (XZOriginPos + Camera.main.transform.right * originShoulderDistance);
+                shoulderToWristDirection.y = 0;
+                shoulderToWristDirection.Normalize();
             
                 // Calculate the direction from the adjusted xrOrigin to the wrist
-                Vector3 directionToWrist = worldWristPosition - adjustedXROriginPosition;
-                directionToWrist.y = 0;
+                Vector3 xrToWristDirection = worldWristPosition - XZOriginPos;
+                xrToWristDirection.y = 0;
 
-                // Project the directionToWrist onto the forwardDirection
-                float forwardDistance = Vector3.Dot(directionToWrist, forwardDirection);
+                // Project xrToWristDirection onto shoulderToWristDirection
+                float deltaForward = Vector3.Dot(xrToWristDirection, shoulderToWristDirection);
+                float clampedDeltaForward = Mathf.Clamp(deltaForward, minDistance, maxDistance);
 
-                // Clamp the forwardDistance to avoid extreme values
-                float clampedForwardDistance = Mathf.Clamp(forwardDistance, minDistance, maxDistance);
+                // Normalize DeltaForward
+                normalizedDeltaForward = Mathf.InverseLerp(minDistance, maxDistance, clampedDeltaForward);
+                normalizedDeltaForward = Mathf.Clamp(normalizedDeltaForward, 0f, 1f);
 
-                // Scale distance calculation
-                scaledDistance = (clampedForwardDistance - minDistance) / (maxDistance - minDistance);
-                scaledDistance = Mathf.Clamp(scaledDistance, 0f, 1f); // Ensure scaledDistance is between 0 and 1
-
-                if (scaledDistance > 0)
+                if (normalizedDeltaForward > 0)
                 {
-                    float virtualDistance = minVirtDistance +
-                                            Mathf.Pow(scaledDistance, p) * (maxVirtDistance - minVirtDistance);
+                    // Project NormalizedDeltaForward onto virtualDistance 
+                    float virtualDistance = minVirtDistance + Mathf.Pow(normalizedDeltaForward, p) * (maxVirtDistance - minVirtDistance);
                     
-                    Vector3 newPosition = worldWristPosition + forwardDirection  * virtualDistance;
-                    newPosition.y = xrOrigin.transform.position.y; // Adjust as needed to keep the hand at desired height
+                    // Calculate & apply new position to hand
+                    Vector3 newPosition = worldWristPosition + shoulderToWristDirection  * virtualDistance;
+                    newPosition.y = xrOrigin.transform.position.y; 
+                    rightHand.transform.position = positionFilter.FilterPosition(newPosition);
 
                     // // Adjust filter parameters based on virtual distance
                     // float sD = Mathf.Round(scaledDistance * 10f) / 10f;
@@ -132,20 +123,20 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     // positionFilter.beta = beta;
                     // positionFilter.dCutoff = dCutoff;
                     
-                    rightHand.transform.position = positionFilter.FilterPosition(newPosition);
                     
                     // Scale hand visualisation
-                    float scaleFactor = 1f + Mathf.Pow(scaledDistance, 2)*8;
+                    float scaleFactor = 1f + Mathf.Pow(normalizedDeltaForward, 2)*8;
                     rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 }
                 else
                 {
+                    // Reset position of hand to original position
                     Vector3 resetPosition = xrOrigin.position;
                     resetPosition = positionFilter.FilterPosition(resetPosition);
-
                     rightHand.transform.position = resetPosition;
-                    float scaleFactor = 1f;
-                    rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                    
+                    // Reset scale of hand
+                    rightHandScaleAnchor.transform.localScale = Vector3.one;
                 }
             }
             else
