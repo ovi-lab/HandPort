@@ -1,9 +1,18 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Hands;
 
+public enum GoGoAlgorithm
+{
+    FastForLowDistance = 0,
+    FastForMedDistance = 1,
+    FastForHighDistance = 2,
+}
 public class GoGoDetachAdapterStable3 : MonoBehaviour
 {
+    public GoGoAlgorithm goGoAlgorithm;
+    
     private XRHandSubsystem m_HandSubsystem;
     public Transform xrOrigin;
     private  float minVirtDistance = 0f; 
@@ -18,6 +27,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private float shoulderEllbowDistance;
     
     private float p = 2.0f;
+    public float sigmoidGradient = 8f;
     public Transform rightHand;
     
     private OneEuroFilter positionFilter;
@@ -60,7 +70,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         shoulderEllbowDistance = eWD;
         maxVirtDistance = mVD;
     }
-    
+
     void OnUpdatedHands(XRHandSubsystem subsystem,
         XRHandSubsystem.UpdateSuccessFlags updateSuccessFlags,
         XRHandSubsystem.UpdateType updateType)
@@ -102,11 +112,11 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 // Normalize DeltaForward
                 normalizedDeltaForward = Mathf.InverseLerp(minDistance, maxDistance, clampedDeltaForward);
                 normalizedDeltaForward = Mathf.Clamp(normalizedDeltaForward, 0f, 1f);
-
+                
                 if (normalizedDeltaForward > 0)
                 {
                     // Project NormalizedDeltaForward onto virtualDistance 
-                    float virtualDistance = minVirtDistance + Mathf.Pow(normalizedDeltaForward, p) * (maxVirtDistance - minVirtDistance);
+                    float virtualDistance = CalculateVirtDistance();
                     
                     // Calculate & apply new position to hand
                     Vector3 newPosition = worldWristPosition + shoulderToWristDirection  * virtualDistance;
@@ -144,5 +154,22 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 Debug.LogWarning($"{m_HandSubsystem.rightHand.handedness} wrist joint pose data is not available.");
             }
         }
+    }
+
+    private float CalculateVirtDistance()
+    {
+        switch (goGoAlgorithm)
+        {
+            case GoGoAlgorithm.FastForLowDistance:
+                return minVirtDistance + Mathf.Pow(normalizedDeltaForward, p) * (maxVirtDistance - minVirtDistance);
+            case GoGoAlgorithm.FastForMedDistance:
+                return minVirtDistance + 1.0f / 1f / (1f + Mathf.Exp(-sigmoidGradient * (normalizedDeltaForward - 0.5f))) * (maxVirtDistance - minVirtDistance); 
+            case GoGoAlgorithm.FastForHighDistance:
+                return minVirtDistance + Mathf.Pow(normalizedDeltaForward, p) * (maxVirtDistance - minVirtDistance);
+            default:
+                Debug.LogWarning("Unknown GoGoAlgorithm value");
+                break;
+        }
+        return 0;
     }
 }
