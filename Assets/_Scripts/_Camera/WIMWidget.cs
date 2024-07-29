@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 
 public class WIMWidget : MonoBehaviour
@@ -8,50 +9,51 @@ public class WIMWidget : MonoBehaviour
     [SerializeField] public int anchorType = 0;
     [SerializeField] public Transform[] anchorPoint;
 
-    private Transform display;
+    public Transform display;
+    [SerializeField] public Transform[] planes;
     private bool isInitialized = false;
     private CameraManager camManager;
 
     private void Start()
     {
         InitializeDisplay();
-        if (anchorPoint.Length > 0)
-        {
-            SetDisplayParent(anchorPoint[anchorType]);
-        }
         isInitialized = true;
     }
 
     private void OnValidate()
     {
         if (!isInitialized) return;
-
         InitializeDisplay();
-        if (anchorPoint.Length > anchorType && anchorPoint[anchorType] != null)
-        {
-            SetDisplayParent(anchorPoint[anchorType]);
-        }
-        else
-        {
-            Debug.LogWarning("Invalid anchorType or anchorPoint.");
-        }
     }
 
-    private void InitializeDisplay()
+    public void InitializeDisplay()
     {
         foreach (Transform child  in transform)
         { 
             child.gameObject.SetActive(false);
         }
-        if (display == null)
+        camManager = transform.parent.GetComponent<CameraManager>();
+        if ((int)camManager.resolution < planes.Length)
         {
-            camManager = transform.parent.GetComponent<CameraManager>();
-            display = transform.GetChild((int)camManager.resolution);
-            display.gameObject.SetActive(true);
+            display = planes[(int)camManager.resolution];
+            display.gameObject.SetActive(true);   
+            display.transform.rotation = Quaternion.Euler(90, -90, 90);
+            if (anchorType == (int)CameraAnchor.HMDAnchor)
+            {
+                display.transform.localPosition = new Vector3(0f,0.2f,0.5f);
+            }
+            else if(anchorType == (int)CameraAnchor.HandAnchor)
+            {
+                display.transform.localPosition = new Vector3(0, -0.08f, 0.25f);
+            }
+        }
+        if (anchorPoint.Length > 0)
+        {
+            SetDisplayParent(anchorPoint[anchorType]);
         }
     }
 
-    private void SetDisplayParent(Transform newParent)
+    public void SetDisplayParent(Transform newParent)
     {
         if (display != null)
         {

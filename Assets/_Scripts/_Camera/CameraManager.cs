@@ -59,6 +59,7 @@ public class CameraManager : MonoBehaviour
     private Camera mainCamera;
     private static GameObject currentCameraGameObject;
     private WIMWidget wimWidget; 
+    private bool wimInitialized = false;
     
     private void Start()
     {
@@ -69,7 +70,7 @@ public class CameraManager : MonoBehaviour
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
         
-        // choose resolution
+        // choose resolution texture
         if ((int)resolution == 0)
         {
             foreach (CameraPlacement cam in cameras)
@@ -88,7 +89,7 @@ public class CameraManager : MonoBehaviour
         }
         
         // choose anchor
-        wimWidget = FindObjectOfType<WIMWidget>();
+        InitializeWIMWidget();
         wimWidget.anchorType = ((int)anchor);
     }
 
@@ -126,7 +127,7 @@ public class CameraManager : MonoBehaviour
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
         
-        // change resolution
+        // change resolution texture
         if (resolution == Resolution.Res43)
         {
             foreach (CameraPlacement cam in cameras)
@@ -134,8 +135,6 @@ public class CameraManager : MonoBehaviour
                 Camera cameraComponent = cam.GetComponent<Camera>();
                 cameraComponent.targetTexture = renderTexture43;
             }
-            
-            
         } else if (resolution == Resolution.Res169) 
         {
             foreach (CameraPlacement cam in cameras)
@@ -144,5 +143,17 @@ public class CameraManager : MonoBehaviour
                 cameraComponent.targetTexture = renderTexture169;
             }
         }
+        
+        // change resolution plane & anchor
+        if (!wimInitialized) return;
+        wimWidget.display.SetParent(wimWidget.transform);
+        wimWidget.anchorType = ((int)anchor);
+        wimWidget.InitializeDisplay();
+    }
+
+    private void InitializeWIMWidget()
+    {
+        wimWidget = FindObjectOfType<WIMWidget>();
+        wimInitialized = true;
     }
 }
