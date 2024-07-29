@@ -517,9 +517,7 @@ GameObject:
   m_Component:
   - component: {fileID: 253365721}
   - component: {fileID: 253365725}
-  - component: {fileID: 253365724}
   - component: {fileID: 253365723}
-  - component: {fileID: 253365722}
   m_Layer: 0
   m_Name: Left Hand
   m_TagString: Untagged
@@ -543,102 +541,6 @@ Transform:
   - {fileID: 1595251473636421599}
   m_Father: {fileID: 354698113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &253365722
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 253365720}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 16fba6d30ed741d4a9fdd6e79ee2f3ac, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &253365723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -744,7 +646,7 @@ MonoBehaviour:
   m_MenuPressed:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 253365722}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
         m_Mode: 1
@@ -755,49 +657,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &253365724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 253365720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbac611a2982409ab5f5e604f53bcad0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Handedness: 1
-  m_PokeGestureStarted:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_PokeGestureEnded:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &253365725
 MonoBehaviour:
@@ -813,14 +672,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: 
   m_InteractionManager: {fileID: 0}
-  m_StartingGroupMembers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_StartingInteractionOverridesMap:
-  - groupMember: {fileID: 0}
-    overrideGroupMembers:
-    - {fileID: 0}
+  m_StartingGroupMembers: []
+  m_StartingInteractionOverridesMap: []
 --- !u!1 &270537530
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,7 +1619,6 @@ GameObject:
   - component: {fileID: 669130126}
   - component: {fileID: 669130129}
   - component: {fileID: 669130128}
-  - component: {fileID: 669130127}
   m_Layer: 0
   m_Name: Right Hand Interaction Visual
   m_TagString: Untagged
@@ -1820,22 +1672,6 @@ MonoBehaviour:
   m_TrackingChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &669130127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669130124}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e1f6ec8e1334364b4bbcae77749ff85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeInteractorObject: {fileID: 0}
-  m_PokeStrengthSnapThreshold: 0.01
-  m_SmoothingAmount: 24
-  m_FixedOffset: 0.005
 --- !u!114 &669130128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2260,7 +2096,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c793bfc503171ab4cbc105970707efca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataStructureJSON: {fileID: 0}
 --- !u!4 &859719725
 Transform:
   m_ObjectHideFlags: 0
@@ -2270,7 +2105,7 @@ Transform:
   m_GameObject: {fileID: 859719723}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.009734732, y: 0.26215962, z: 17.690565}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2673,7 +2508,7 @@ Transform:
   m_GameObject: {fileID: 938803018}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 45.1, y: 116.0993, z: 66.73031}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2873,22 +2708,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1734873451}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1091631323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2746493917372212360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e1f6ec8e1334364b4bbcae77749ff85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeInteractorObject: {fileID: 0}
-  m_PokeStrengthSnapThreshold: 0.01
-  m_SmoothingAmount: 24
-  m_FixedOffset: 0.005
 --- !u!1 &1112698598
 GameObject:
   m_ObjectHideFlags: 0
@@ -3068,7 +2887,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b575ca1df3723d4da6043bccb589976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goGoAlgorithm: 0
   xrOrigin: {fileID: 654248850}
+  sigmoidGradient: 8
   rightHand: {fileID: 937927183}
   rightHandScaleAnchor: {fileID: 2129469304}
   shoulderToWristDirection: {x: 0, y: 0, z: 0}
@@ -5184,15 +5005,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: 
   m_InteractionManager: {fileID: 0}
-  m_StartingGroupMembers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  m_StartingInteractionOverridesMap:
-  - groupMember: {fileID: 0}
-    overrideGroupMembers:
-    - {fileID: 0}
+  m_StartingGroupMembers: []
+  m_StartingInteractionOverridesMap: []
 --- !u!1 &1734873450
 GameObject:
   m_ObjectHideFlags: 0
@@ -5627,7 +5441,7 @@ Transform:
   m_GameObject: {fileID: 2067615955}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.009734732, y: 0.26215962, z: 17.690565}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7133,7 +6947,6 @@ GameObject:
   - component: {fileID: 2605394267925000288}
   - component: {fileID: 196909958609746769}
   - component: {fileID: 2812080162794182157}
-  - component: {fileID: 1091631323}
   m_Layer: 0
   m_Name: Right Hand Interaction Visual
   m_TagString: Untagged

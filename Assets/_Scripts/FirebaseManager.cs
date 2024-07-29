@@ -12,12 +12,9 @@ using UnityEngine;
 public class FirebaseManager : MonoBehaviour
 {
     public int ParticipantID => participantID;
-
     public static DatabaseReference RealtimeDB => realtimeDB;
     private static DatabaseReference realtimeDB;
     private static int participantID;
-    
-    [SerializeField] private TextAsset dataStructureJSON;
     
     void Start()
     {
