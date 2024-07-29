@@ -135,8 +135,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     
                     
                     // Scale hand visualisation
-                    float scaleFactor = 1f + Mathf.Pow(normalizedDeltaForward, 2)*8;
-                    rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                    float scaleFactor = 1+ virtualDistance / 10;
+                    rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
                 }
                 else
                 {
@@ -156,16 +156,34 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         }
     }
 
+
     private float CalculateVirtDistance()
     {
         switch (goGoAlgorithm)
         {
             case GoGoAlgorithm.FastForLowDistance:
-                return minVirtDistance + Mathf.Pow(normalizedDeltaForward, p) * (maxVirtDistance - minVirtDistance);
+                // SIGMOID - GRADIENT 2 SUITABLE
+                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, (1-1/(1+sigmoidGradient*normalizedDeltaForward))); 
+                
+                // EXPONENTIAL FUNCTION
+                //return Mathf.Lerp(minVirtDistance, maxVirtDistance, 1 - Mathf.Exp(-sigmoidGradient * normalizedDeltaForward));
+            
             case GoGoAlgorithm.FastForMedDistance:
-                return minVirtDistance + 1.0f / 1f / (1f + Mathf.Exp(-sigmoidGradient * (normalizedDeltaForward - 0.5f))) * (maxVirtDistance - minVirtDistance); 
+                // SIGMOID - GRADIENT 8 SUITABLE
+                float sigmoidInput = (normalizedDeltaForward - 0.5f) * sigmoidGradient;
+                float sigmoidValue = 1f / (1f + Mathf.Exp(-sigmoidInput));
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, sigmoidValue);
+                
+                // TANH
+                // float tanhInput = (normalizedDeltaForward - 0.5f) * sigmoidGradient;
+                // float normalizedValue = ((float)Math.Tanh(tanhInput) + 1f) / 2f;
+                // return Mathf.Lerp(minVirtDistance, maxVirtDistance, normalizedValue);
+            
             case GoGoAlgorithm.FastForHighDistance:
-                return minVirtDistance + Mathf.Pow(normalizedDeltaForward, p) * (maxVirtDistance - minVirtDistance);
+                // QUADRATIC
+                float quadraticValue = Mathf.Pow(normalizedDeltaForward, p);
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, quadraticValue);
+            
             default:
                 Debug.LogWarning("Unknown GoGoAlgorithm value");
                 break;
