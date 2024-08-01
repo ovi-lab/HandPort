@@ -4387,10 +4387,10 @@ MonoBehaviour:
   m_MaxRaycastDistance: 30
   m_RayOriginTransform: {fileID: 2090706362}
   m_ReferenceFrame: {fileID: 0}
-  m_Velocity: 50
+  m_Velocity: 40
   m_Acceleration: 9.8
   m_AdditionalGroundHeight: 0.1
-  m_AdditionalFlightTime: 2
+  m_AdditionalFlightTime: 1
   m_EndPointDistance: 30
   m_EndPointHeight: -10
   m_ControlPointDistance: 10
@@ -4869,10 +4869,10 @@ MonoBehaviour:
   m_MaxRaycastDistance: 30
   m_RayOriginTransform: {fileID: 2090706362}
   m_ReferenceFrame: {fileID: 0}
-  m_Velocity: 50
+  m_Velocity: 40
   m_Acceleration: 9.8
   m_AdditionalGroundHeight: 0.1
-  m_AdditionalFlightTime: 2
+  m_AdditionalFlightTime: 1
   m_EndPointDistance: 30
   m_EndPointHeight: -10
   m_ControlPointDistance: 10

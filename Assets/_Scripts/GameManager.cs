@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Firebase.Database;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using System.Linq;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -23,14 +24,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 
     private int currentTarget = 0, nextTarget;
-    private DatabaseReference studySettings;
+    // private DatabaseReference studySettings;
     private ObstacleManager obstacleManager;
     private GoGoDetachAdapterStable3 teleportAdapter;
     
-    private StudyConditions studyConditions;
+    // private StudyConditions studyConditions;
     private TargetConditions targetConditions;
     private ParticipantConditions participantConditions;
     private AdapterConditions adapterConditions;
+    private CameraManager cameraManager;
+    private int handVis; 
 
     protected override void Awake()
     {
@@ -38,6 +41,71 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         nextTarget = currentTarget + 1;
         obstacleManager = FindObjectOfType<ObstacleManager>();
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
+        cameraManager =FindObjectOfType<CameraManager>();
+
+        //ApplyRandomizedConditions();
+    }
+    
+    
+    private void ApplyRandomizedConditions()
+    {
+        var cameraTypes = Enum.GetNames(typeof(CameraType));
+        var panelAnchors = Enum.GetNames(typeof(CameraAnchor));
+        int[] handVisualisations = { 0, 1 };
+
+        var combinations = GenerateAllCombinations(cameraTypes, panelAnchors, handVisualisations);
+
+        // Generate Latin square
+        var latinSquare = GenerateLatinSquare(combinations.Count);
+
+        // Apply Latin square to shuffle combinations
+        var shuffledCombinations = ApplyLatinSquare(combinations, latinSquare);
+
+        // Apply the shuffled settings (replace with actual application logic)
+        foreach (var combination in shuffledCombinations)
+        {
+            
+        }
+
+        Debug.Log(shuffledCombinations.Count);
+    }
+
+    private List<(string, string, int)> GenerateAllCombinations(string[] cameraTypes, string[] panelAnchors, int[] handVisualisations)
+    {
+        var combinations = from cameraType in cameraTypes
+                           from panelAnchor in panelAnchors
+                           from handVis in handVisualisations
+                           select (cameraType, panelAnchor, handVis);
+
+        return combinations.ToList();
+    }
+
+    private int[][] GenerateLatinSquare(int n)
+    {
+        int[][] latinSquare = new int[n][];
+        for (int i = 0; i < n; i++)
+        {
+            latinSquare[i] = new int[n];
+            for (int j = 0; j < n; j++)
+            {
+                latinSquare[i][j] = (i + j) % n;
+            }
+        }
+        return latinSquare;
+    }
+
+    private List<(T1, T2, T3)> ApplyLatinSquare<T1, T2, T3>(List<(T1, T2, T3)> list, int[][] latinSquare)
+    {
+        List<(T1, T2, T3)> result = new List<(T1, T2, T3)>();
+        for (int i = 0; i < latinSquare.Length; i++)
+        {
+            for (int j = 0; j < latinSquare[i].Length; j++)
+            {
+                int position = latinSquare[i][j];
+                result.Add(list[position]);
+            }
+        }
+        return result;
     }
 
     public void ApplySettings<T>(T _values)
@@ -49,10 +117,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             targetConditions = _values as TargetConditions;
             SetupObstaclesWithTargetConditions();
         }
-        else if (type == typeof(StudyConditions))
-        {
-            studyConditions = _values as StudyConditions;
-        }
+        // else if (type == typeof(StudyConditions))
+        // {
+        //     studyConditions = _values as StudyConditions;
+        // }
         else if (type == typeof(ParticipantConditions))
         {
             participantConditions = _values as ParticipantConditions;
@@ -122,13 +190,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 }
 
-[Serializable]
-public class StudyConditions
-{
-    public string[] cameraTypes;
-    public string[] panelAnchors;
-    public string[] handVisualisations;
-}
+// [Serializable]
+// public class StudyConditions
+// {
+//     public string[] cameraTypes;
+//     public string[] panelAnchors;
+//     public string[] handVisualisations;
+// }
 
 [Serializable]
 public class TargetConditions
@@ -158,16 +226,16 @@ public class AdapterConditions
 
 public static class FirebaseDataToPrimitives
 {
-    public static StudyConditions ToStudyConditions(DataSnapshot initialSettings)
-    {
-        StudyConditions studyConditions = new StudyConditions
-        {
-            cameraTypes = ParseArray<string>(initialSettings.Child("cameraType")),
-            panelAnchors = ParseArray<string>(initialSettings.Child("panelAnchor")),
-            handVisualisations = ParseArray<string>(initialSettings.Child("handVisualisation"))
-        };
-        return studyConditions;
-    }
+    // public static StudyConditions ToStudyConditions(DataSnapshot initialSettings)
+    // {
+    //     StudyConditions studyConditions = new StudyConditions
+    //     {
+    //         cameraTypes = ParseArray<string>(initialSettings.Child("cameraType")),
+    //         panelAnchors = ParseArray<string>(initialSettings.Child("panelAnchor")),
+    //         handVisualisations = ParseArray<string>(initialSettings.Child("handVisualisation"))
+    //     };
+    //     return studyConditions;
+    // }
     
     public static TargetConditions ToTargetConditions(DataSnapshot initialSettings)
     {
