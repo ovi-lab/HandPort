@@ -18,7 +18,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private  float minVirtDistance = 0f; 
     private float maxVirtDistance;
 
-    private float normalizedDeltaForward = 0f;
+    public float normalizedDeltaForward = 0f;
     private float minDistance;
     private float maxDistance;
     

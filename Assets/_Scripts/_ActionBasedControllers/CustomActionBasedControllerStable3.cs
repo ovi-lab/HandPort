@@ -26,6 +26,13 @@ namespace UnityEngine.XR.Interaction.Toolkit
         {
             base.OnEnable();
             EnableAllDirectActions();
+
+            // Find and reference GoGoDetachAdapterStable3
+            adapterStable = GetComponent<GoGoDetachAdapterStable3>();
+            if (adapterStable == null)
+            {
+                Debug.LogError("GoGoDetachAdapterStable3 component not found.");
+            }
         }
 
         /// <inheritdoc />
@@ -148,9 +155,21 @@ namespace UnityEngine.XR.Interaction.Toolkit
             // Update rotation when valid
             if (rotAction != null && (controllerState.inputTrackingState & InputTrackingState.Rotation) != 0)
             {
+                GoGoDetachAdapterStable3 adapterStable = GetComponent<GoGoDetachAdapterStable3>();
                 Quaternion rotation = rotAction.ReadValue<Quaternion>();
-                Quaternion adjustedRotation = Quaternion.Euler(rotation.eulerAngles);
-                controllerState.rotation = adjustedRotation;
+                Vector3 euler = rotation.eulerAngles;
+
+
+                // Store the current value when rayStabilized becomes true
+                stableEulerX = euler.x;
+                stableEulerZ = euler.z;
+                // stableEulerY = euler.y;
+                    
+                euler.x = stableEulerX;
+                euler.z = stableEulerZ;
+                // euler.y = stableEulerY;
+                Quaternion yawOnlyRotation = Quaternion.Euler(euler);
+                controllerState.rotation = yawOnlyRotation;
             }
         }
     }
