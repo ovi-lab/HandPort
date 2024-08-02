@@ -20,7 +20,10 @@ namespace UnityEngine.XR.Interaction.Toolkit
     // [HelpURL(XRHelpURLConstants.k_ActionBasedController)]
     public class CustomActionBasedControllerStable3 : CustomActionBasedController
     {
-        
+        private GoGoDetachAdapterStable3 adaper;
+        private float stableEulerX = 0;
+        private float stableEulerY = 0;
+        private float stableEulerZ = 0;
         /// <inheritdoc />
         protected override void OnEnable()
         {
@@ -28,8 +31,8 @@ namespace UnityEngine.XR.Interaction.Toolkit
             EnableAllDirectActions();
 
             // Find and reference GoGoDetachAdapterStable3
-            adapterStable = GetComponent<GoGoDetachAdapterStable3>();
-            if (adapterStable == null)
+            adaper = GetComponent<GoGoDetachAdapterStable3>();
+            if (adaper == null)
             {
                 Debug.LogError("GoGoDetachAdapterStable3 component not found.");
             }
@@ -155,21 +158,28 @@ namespace UnityEngine.XR.Interaction.Toolkit
             // Update rotation when valid
             if (rotAction != null && (controllerState.inputTrackingState & InputTrackingState.Rotation) != 0)
             {
-                GoGoDetachAdapterStable3 adapterStable = GetComponent<GoGoDetachAdapterStable3>();
                 Quaternion rotation = rotAction.ReadValue<Quaternion>();
                 Vector3 euler = rotation.eulerAngles;
 
-
-                // Store the current value when rayStabilized becomes true
-                stableEulerX = euler.x;
-                stableEulerZ = euler.z;
-                // stableEulerY = euler.y;
+                if (adaper != null)
+                {
+                    float stabilityFactor = 1.0f - adaper.normalizedDeltaForward;
+                    //adaper.shoulderToWristDirection;
                     
-                euler.x = stableEulerX;
-                euler.z = stableEulerZ;
-                // euler.y = stableEulerY;
-                Quaternion yawOnlyRotation = Quaternion.Euler(euler);
-                controllerState.rotation = yawOnlyRotation;
+                    Debug.Log(adaper.normalizedDeltaForward);
+
+                    stableEulerX = Mathf.Lerp(stableEulerX, euler.x, stabilityFactor);
+                    stableEulerY = Mathf.Lerp(stableEulerY, euler.y, stabilityFactor);
+                    stableEulerZ = Mathf.Lerp(stableEulerZ, euler.z, stabilityFactor);
+                    
+                    euler.x = stableEulerX;
+                    euler.y = stableEulerY;
+                    euler.z = stableEulerZ;
+                    
+                    Debug.Log(euler);
+                }
+
+                controllerState.rotation = Quaternion.Euler(euler);
             }
         }
     }
