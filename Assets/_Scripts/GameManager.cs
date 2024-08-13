@@ -45,6 +45,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private float startTime;
     private List<int> numberOfAttempts = new List<int>();
 
+    public int GetCurrentTarget => currentTarget;
+    public int GetTargetCount => targets.Count;
+
     protected override void Awake()
     {
         base.Awake();
@@ -159,27 +162,23 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         targets[currentTarget].gameObject.SetActive(true);
     }
 
-    private void EnableNextTarget(SelectExitEventArgs arg0)
+    public void EnableNextTarget(SelectExitEventArgs arg0)
     {
-        if (currentTarget == targets.Count-1)
+        if (currentTarget == targets.Count - 1)
         {
-            if (currentTarget == targets.Count - 1)
+            if (currentTarget % 2 == 1) 
             {
-                if (currentTarget % 2 == 1) 
-                {
-                    float endTime = Time.time;
-                    float completionTime = endTime - startTime; // Calculate the time taken between targets
-                    taskCompletionTimes.Add(completionTime); // Store the final completion time
-                    int attempt = selectActionCounter.GetSelectActionCount()-1;
-                    numberOfAttempts.Add(attempt);
-                    Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
-                }
-
-                Debug.Log("Last target reached, resetting scene.");
-                LogData();
-                ResetTargetsAndXROrigin();
-                return;
+                float endTime = Time.time;
+                float completionTime = endTime - startTime; // Calculate the time taken between targets
+                taskCompletionTimes.Add(completionTime); // Store the final completion time
+                int attempt = selectActionCounter.GetSelectActionCount()-1;
+                numberOfAttempts.Add(attempt);
+                Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
             }
+            
+            LogData();
+            ResetTargetsAndXROrigin();
+            return;
         }
         if(nextTarget < targets.Count)
         {
@@ -206,7 +205,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             nextTarget = currentTarget + 1;
         }
     }
-    private void ResetTargetsAndXROrigin()
+    public void ResetTargetsAndXROrigin()
     {
         ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
         currentLineIndex++;

@@ -2722,6 +2722,7 @@ GameObject:
   - component: {fileID: 1112698603}
   - component: {fileID: 1112698601}
   - component: {fileID: 1112698606}
+  - component: {fileID: 1112698607}
   m_Layer: 0
   m_Name: Teleport Interactor
   m_TagString: Untagged
@@ -3389,6 +3390,23 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 0}
+--- !u!114 &1112698607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112698598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5804f476047b3449655c807715fdfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destinationPosition: {x: 0, y: 0, z: 0}
+  destinationRotation: {x: 0, y: 0, z: 0, w: 0}
+  teleportationProvider: {fileID: 2092479419}
+  rayInteractor: {fileID: 1112698599}
+  frames: 50
 --- !u!1 &1127530181
 GameObject:
   m_ObjectHideFlags: 0
@@ -5460,6 +5478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f4d41b1feb4a43c08c2f3f58cf3f732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cooldownTime: 0.2
 --- !u!1 &2085758906
 GameObject:
   m_ObjectHideFlags: 0

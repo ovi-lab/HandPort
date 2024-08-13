@@ -42,7 +42,7 @@ public class LatinSquareManager
         string combinationsLog = "All Combinations:\n";
         combinationsLog = combinations.Aggregate(combinationsLog, (current, combination) =>
             current + $"{combination.Item1}, {combination.Item2}, {combination.Item3}\n");
-        Debug.Log(combinationsLog);
+        //Debug.Log(combinationsLog);
 
         // Generate a balanced permutation of the combinations
         var balancedCombinations = GenerateBalancedCombinations(combinations);
@@ -51,7 +51,7 @@ public class LatinSquareManager
         string balancedCombinationsLog = "Balanced Combinations:\n";
         balancedCombinationsLog = balancedCombinations.Aggregate(balancedCombinationsLog, (current, combination) =>
             current + $"{combination.Item1}, {combination.Item2}, {combination.Item3}\n");
-        Debug.Log(balancedCombinationsLog);
+        //Debug.Log(balancedCombinationsLog);
 
         return balancedCombinations;
     }
