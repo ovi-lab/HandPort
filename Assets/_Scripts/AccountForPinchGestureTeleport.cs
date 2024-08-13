@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -15,7 +16,9 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
     private bool requestQueued = false;
     private bool rayCastHit = false;
     
-    public int frames = 50;
+    public int frames = 200;
+    private Queue<(bool hit, RaycastHit hitInfo)> raycastHitQueue = new Queue<(bool, RaycastHit)>();
+
     void Awake()
     {
         teleportationProvider = FindObjectOfType<TeleportationProvider>();
@@ -35,13 +38,20 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
         if (rayInteractor != null)
         {
             bool rayCastHit = rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hitInfo);
-            if (rayCastHit && !hitInfo.collider.CompareTag("TeleportationAnchor"))
+
+            // Add the current raycast hit status and information to the queue
+            raycastHitQueue.Enqueue((rayCastHit, hitInfo));
+
+            // Keep the queue size within the frame buffer size
+            if (raycastHitQueue.Count > frames)
             {
-                selectAction = rightHandController.selectAction.action;
-                if (selectAction.triggered && !requestQueued )
-                {
-                    StartCoroutine(CheckTeleportRequest());
-                } 
+                raycastHitQueue.Dequeue();
+            }
+            
+            // Check if we need to initiate teleportation
+            if (!requestQueued && selectAction.triggered)
+            {
+                StartCoroutine(CheckTeleportRequest());
             }
         }
     }
@@ -53,18 +63,17 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
         bool raycastHitValid = false;
         Vector3 finalDestination = Vector3.zero;
         
-        for (int i = 0; i < frames; i++)
+        // Iterate through the stored raycast hits in the queue using a traditional for loop
+        foreach (var item in raycastHitQueue)
         {
-            yield return null;
-            if (rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hitInfo))
+            bool hit = item.hit;
+            RaycastHit hitInfo = item.hitInfo;
+
+            if (hit && hitInfo.collider.CompareTag("TeleportationAnchor"))
             {
-                // Check if the hit object is a teleportation anchor
-                if (hitInfo.collider.CompareTag("TeleportationAnchor"))
-                {
-                    raycastHitValid = true;
-                    finalDestination = hitInfo.point;
-                    break; 
-                }
+                raycastHitValid = true;
+                finalDestination = hitInfo.point;
+                break; 
             }
         }
 
