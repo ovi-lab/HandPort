@@ -11,7 +11,10 @@ public class ObstacleManager : MonoBehaviour
     private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
 
     private float intermedidateObstacleSize = 0.2f;
-    private float intermedidateObstacleDistance = 1;
+    private float intermedidateObstacleDistance = 2;
+    
+    private int[] largeDistanceOffsets = new int[] { -10, -5, -2, 0, 2, 5, 10 };
+    private int[] smallDistanceOffsets = new int[] { -1, 0, 1 };
 
     public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int count)
     {
@@ -50,12 +53,13 @@ public class ObstacleManager : MonoBehaviour
         for (int i = 0; i < pairs.Count; i++)
         {
             var (currentDistance, currentSize) = pairs[i];
-
-            // Place intermediate obstacle
+            
+            // INTERMEDIATE OBSTACLE
             float terrainHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
             float heightDifference = terrainHeight - previousHeight;
             float adjustedZIntermediate = Mathf.Sqrt(Mathf.Pow(intermedidateObstacleDistance, 2) - Mathf.Pow(heightDifference, 2));
             spawnPosition.z += adjustedZIntermediate;
+            spawnPosition.x += smallDistanceOffsets[Random.Range(0, smallDistanceOffsets.Length)];
             spawnPosition.y = Terrain.activeTerrain.SampleHeight(spawnPosition) + 0.5f * intermedidateObstacleSize;
 
             GameObject intermediateObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
@@ -64,12 +68,18 @@ public class ObstacleManager : MonoBehaviour
             obstacles.Add(intermediateAnchor);
             intermediateObstacle.transform.SetParent(teleportationAnchors.transform);
             previousHeight = terrainHeight;
-
+            
+            
+            // RANDOM OBSTACLE
+            int[] offsets = (currentDistance < 5) ? smallDistanceOffsets : largeDistanceOffsets;
+            int horizontalOffset = offsets[Random.Range(0, offsets.Length)];
+            
             // Place random distance obstacle
             terrainHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
             heightDifference = terrainHeight - previousHeight;
             float adjustedZ = Mathf.Sqrt(Mathf.Pow(currentDistance, 2) - Mathf.Pow(heightDifference, 2));
             spawnPosition.z += adjustedZ;
+            spawnPosition.x += horizontalOffset;
             spawnPosition.y = Terrain.activeTerrain.SampleHeight(spawnPosition) + 0.5f * currentSize;
 
             GameObject obstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
@@ -82,4 +92,5 @@ public class ObstacleManager : MonoBehaviour
 
         return obstacles;
     }
+    
 }
