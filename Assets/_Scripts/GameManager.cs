@@ -4,6 +4,8 @@ using Firebase.Database;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using System.Linq;
+using Unity.XR.CoreUtils;
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -33,7 +35,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private ParticipantConditions participantConditions;
     private AdapterConditions adapterConditions;
     private CameraManager cameraManager;
-    private int handVis; 
+    
+    private LatinSquareManager latinSquareManager = new LatinSquareManager();
+    private List<(int, int)> shuffledCombinations;
+    private int currentLineIndex = 0;
+    public XROrigin xrOrigin;
+
 
     protected override void Awake()
     {
@@ -43,71 +50,35 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
         cameraManager =FindObjectOfType<CameraManager>();
 
-        //ApplyRandomizedConditions();
+        ApplyRandomizedConditions();
     }
     
     
     private void ApplyRandomizedConditions()
     {
-        var cameraTypes = Enum.GetNames(typeof(CameraType));
-        var panelAnchors = Enum.GetNames(typeof(CameraAnchor));
-        int[] handVisualisations = { 0, 1 };
-
-        var combinations = GenerateAllCombinations(cameraTypes, panelAnchors, handVisualisations);
-
-        // Generate Latin square
-        var latinSquare = GenerateLatinSquare(combinations.Count);
-
-        // Apply Latin square to shuffle combinations
-        var shuffledCombinations = ApplyLatinSquare(combinations, latinSquare);
-
-        // Apply the shuffled settings (replace with actual application logic)
-        foreach (var combination in shuffledCombinations)
-        {
-            
-        }
-
-        Debug.Log(shuffledCombinations.Count);
+        int[] cameraTypes = Enum.GetValues(typeof(CameraType)).Cast<int>().ToArray();
+        int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
+        shuffledCombinations = latinSquareManager.GenerateAndApplyLatinSquare(cameraTypes, panelAnchors);
+        
+        ApplySettingsFromLine(shuffledCombinations[0]);
+        currentLineIndex = 1; // Move to the next line for future calls
     }
-
-    private List<(string, string, int)> GenerateAllCombinations(string[] cameraTypes, string[] panelAnchors, int[] handVisualisations)
+    
+    private void ApplySettingsFromLine((int, int) combination)
     {
-        var combinations = from cameraType in cameraTypes
-                           from panelAnchor in panelAnchors
-                           from handVis in handVisualisations
-                           select (cameraType, panelAnchor, handVis);
-
-        return combinations.ToList();
-    }
-
-    private int[][] GenerateLatinSquare(int n)
-    {
-        int[][] latinSquare = new int[n][];
-        for (int i = 0; i < n; i++)
+        if (cameraManager != null)
         {
-            latinSquare[i] = new int[n];
-            for (int j = 0; j < n; j++)
-            {
-                latinSquare[i][j] = (i + j) % n;
-            }
-        }
-        return latinSquare;
-    }
+            cameraManager.cameraDisplayType = (CameraType)combination.Item1;
+            cameraManager.anchor = (CameraAnchor)combination.Item2;
 
-    private List<(T1, T2, T3)> ApplyLatinSquare<T1, T2, T3>(List<(T1, T2, T3)> list, int[][] latinSquare)
-    {
-        List<(T1, T2, T3)> result = new List<(T1, T2, T3)>();
-        for (int i = 0; i < latinSquare.Length; i++)
+            Debug.Log($"Applying Combination: CameraType={combination.Item1}, PanelAnchor={combination.Item2}");
+        }
+        else
         {
-            for (int j = 0; j < latinSquare[i].Length; j++)
-            {
-                int position = latinSquare[i][j];
-                result.Add(list[position]);
-            }
+            Debug.LogError("CameraManager not found in the scene.");
         }
-        return result;
     }
-
+    
     public void ApplySettings<T>(T _values)
     {
         Type type = typeof(T);
@@ -151,6 +122,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         Debug.Log("Setting up obstacles with target conditions");
         
         targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.targetCount);
+        
         InitialiseTargets();
     }
     private void SetupAdapterWithAdapterConditions()
@@ -182,11 +154,36 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void EnableNextTarget(SelectExitEventArgs arg0)
     {
-        if(nextTarget == targets.Count) return;
-        targets[currentTarget].gameObject.SetActive(false);
-        targets[nextTarget].gameObject.SetActive(true);
-        currentTarget++;
-        nextTarget = currentTarget + 1;
+        if (currentTarget == targets.Count-1)
+        {
+            // If it's the last target, reset the scene and regenerate obstacles with the next conditions
+            Debug.Log("Last target reached, resetting scene.");
+            ResetTargetsAndXROrigin();
+            return;
+        }
+        if(nextTarget < targets.Count)
+        {
+            Debug.Log(nextTarget);
+            Debug.Log(currentTarget);
+            targets[currentTarget].gameObject.SetActive(false);
+            targets[nextTarget].gameObject.SetActive(true);
+            currentTarget++;
+            nextTarget = currentTarget + 1;
+        }
+    }
+    private void ResetTargetsAndXROrigin()
+    {
+        ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
+        currentLineIndex++;
+        
+        float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
+        Vector3 newPosition = new Vector3(0, terrainHeight+1.5F, -0.01f);
+        xrOrigin.MoveCameraToWorldLocation(newPosition);
+        xrOrigin.MatchOriginUpCameraForward(Vector3.up, Vector3.forward);
+        
+        currentTarget = 0;
+        nextTarget = 1;
+        SetupObstaclesWithTargetConditions();
     }
 }
 

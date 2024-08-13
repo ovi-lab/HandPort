@@ -10,8 +10,8 @@ public class ObstacleManager : MonoBehaviour
     private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
     private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
 
-    private float intermedidateObstacleSize = 1;
-    private float intermedidateObstacleDistance = 5;
+    private float intermedidateObstacleSize = 0.2f;
+    private float intermedidateObstacleDistance = 1;
 
     public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int count)
     {

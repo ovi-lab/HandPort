@@ -6,10 +6,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public enum CameraType
 {
-    TopDownTarget = 0,
-    TopDownRay = 1,
-    RayView = 2,
-    HandView = 3
+    TopDownRay = 0,
+    RayView = 1,
+    HandView = 2
 }
 
 public enum Resolution
@@ -27,7 +26,6 @@ public class CameraManager : MonoBehaviour
 {
     public readonly Dictionary<string, CameraType> stringToEnumConverter = new Dictionary<string, CameraType>()
     {
-        { "TopDownTarget", CameraType.TopDownTarget },
         { "TopDownRay", CameraType.TopDownRay },
         { "RayView", CameraType.RayView },
         { "HandView", CameraType.HandView }
@@ -43,12 +41,10 @@ public class CameraManager : MonoBehaviour
         { "HandAnchor", CameraAnchor.HandAnchor },
 
     };
-    
-
     public static Vector3 ParabolaPosition => parabolaPosition;
-    [SerializeField] private CameraType cameraDisplayType;
+    [SerializeField] public CameraType cameraDisplayType;
     [SerializeField] public Resolution resolution;
-    [SerializeField] private CameraAnchor anchor;
+    [SerializeField] public CameraAnchor anchor;
     [SerializeField] private List<CameraPlacement> cameras;
     [SerializeField] private XRRayInteractor[] rayInteractors;
 

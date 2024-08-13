@@ -162,27 +162,17 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         switch (goGoAlgorithm)
         {
             case GoGoAlgorithm.FastForLowDistance:
-                // SIGMOID - GRADIENT 2 SUITABLE
-                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, (1-1/(1+sigmoidGradient*normalizedDeltaForward))); 
-                
-                // EXPONENTIAL FUNCTION
-                //return Mathf.Lerp(minVirtDistance, maxVirtDistance, 1 - Mathf.Exp(-sigmoidGradient * normalizedDeltaForward));
+                // ROOT
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 2f/3f));
             
             case GoGoAlgorithm.FastForMedDistance:
-                // SIGMOID - GRADIENT 8 SUITABLE
-                float sigmoidInput = (normalizedDeltaForward - 0.5f) * sigmoidGradient;
-                float sigmoidValue = 1f / (1f + Mathf.Exp(-sigmoidInput));
+                // SIGMOID
+                float sigmoidValue = 2f / (1f + Mathf.Exp(4-8*normalizedDeltaForward));
                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, sigmoidValue);
-                
-                // TANH
-                // float tanhInput = (normalizedDeltaForward - 0.5f) * sigmoidGradient;
-                // float normalizedValue = ((float)Math.Tanh(tanhInput) + 1f) / 2f;
-                // return Mathf.Lerp(minVirtDistance, maxVirtDistance, normalizedValue);
             
             case GoGoAlgorithm.FastForHighDistance:
                 // QUADRATIC
-                float quadraticValue = Mathf.Pow(normalizedDeltaForward, p);
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, quadraticValue);
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, p));
             
             default:
                 Debug.LogWarning("Unknown GoGoAlgorithm value");
