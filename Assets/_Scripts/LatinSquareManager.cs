@@ -5,18 +5,19 @@ using UnityEngine;
 
 public class LatinSquareManager
 {
-    public List<(int, int)> GenerateAndApplyLatinSquare(int[] set1, int[] set2)
+    public List<(int, int, int)> GenerateAndApplyLatinSquare(int[] set1, int[] set2, int[] set3)
     {
-        var combinations = GenerateAllCombinations(set1, set2);
+        var combinations = GenerateAllCombinations(set1, set2, set3);
         var latinSquare = GenerateBalancedLatinSquare(combinations.Count);
         return ApplyLatinSquare(combinations, latinSquare);
     }
 
-    private List<(int, int)> GenerateAllCombinations(int[] set1, int[] set2)
+    private List<(int, int, int)> GenerateAllCombinations(int[] set1, int[] set2, int[] set3)
     {
         var combinations = from value1 in set1
                            from value2 in set2
-                           select (value1, value2);
+                           from value3 in set3
+                           select (value1, value2, value3);
 
         return combinations.ToList();
     }
@@ -82,9 +83,9 @@ public class LatinSquareManager
         return true;
     }
 
-    private List<(int, int)> ApplyLatinSquare(List<(int, int)> combinations, List<int[]> latinSquare)
+    private List<(int, int, int)> ApplyLatinSquare(List<(int, int, int)> combinations, List<int[]> latinSquare)
     {
-        var shuffledCombinations = new List<(int, int)>();
+        var shuffledCombinations = new List<(int, int, int)>();
 
         foreach (var row in latinSquare)
         {

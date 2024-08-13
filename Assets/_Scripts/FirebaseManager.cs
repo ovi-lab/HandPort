@@ -48,9 +48,29 @@ public class FirebaseManager : MonoBehaviour
         }
     }
     
-    // Update is called once per frame
-    void Update()
+    public static void LogData(string logData)
     {
+        // Create a unique key for each log entry
+        string key = realtimeDB.Child("log").Push().Key;
         
+        // Prepare the data to push
+        var data = new
+        {
+            participantID = FirebaseManager.participantID,
+            logData = logData
+        };
+        
+        // Push data to Firebase
+        realtimeDB.Child("log").Child(key).SetValueAsync(data).ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Error writing to Firebase: " + task.Exception);
+            }
+            else
+            {
+                Debug.Log("Data logged successfully.");
+            }
+        });
     }
 }

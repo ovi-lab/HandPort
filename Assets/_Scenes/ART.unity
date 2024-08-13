@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571337, b: 0.3069219, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1600,7 +1600,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.14
+  m_Height: 1.36144
   m_Radius: 0.1
   m_SlopeLimit: 45
   m_StepOffset: 0.5
@@ -1922,6 +1922,7 @@ MonoBehaviour:
   resolution: 0
   anchor: 1
   cameras:
+  - {fileID: 754401495}
   - {fileID: 1552960947}
   - {fileID: 965129581}
   - {fileID: 1275939421}
@@ -1943,10 +1944,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1398318759}
+  - {fileID: 754401494}
   - {fileID: 1552960949}
   - {fileID: 965129579}
   - {fileID: 1275939423}
-  - {fileID: 754401494}
   - {fileID: 446560228}
   - {fileID: 450795427}
   m_Father: {fileID: 0}
@@ -2530,7 +2531,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &965129579
 Transform:
   m_ObjectHideFlags: 0
@@ -2781,7 +2782,7 @@ MonoBehaviour:
   m_SelectActionTrigger: 0
   m_HideControllerOnSelect: 0
   m_AllowHoveredActivate: 0
-  m_TargetPriorityMode: 1
+  m_TargetPriorityMode: 0
   m_PlayAudioClipOnSelectEntered: 0
   m_AudioClipForOnSelectEntered: {fileID: 0}
   m_PlayAudioClipOnSelectExited: 0
@@ -2836,7 +2837,7 @@ MonoBehaviour:
     m_Bits: 2147483681
   m_RaycastTriggerInteraction: 1
   m_RaycastSnapVolumeInteraction: 1
-  m_HitClosestOnly: 1
+  m_HitClosestOnly: 0
   m_HoverToSelect: 0
   m_HoverTimeToSelect: 0.5
   m_AutoDeselect: 0
@@ -3684,7 +3685,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1275939421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4770,7 +4771,7 @@ MonoBehaviour:
     m_Bits: 2147483681
   m_RaycastTriggerInteraction: 1
   m_RaycastSnapVolumeInteraction: 1
-  m_HitClosestOnly: 1
+  m_HitClosestOnly: 0
   m_HoverToSelect: 0
   m_HoverTimeToSelect: 0.5
   m_AutoDeselect: 0
@@ -5411,6 +5412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2067615957}
   - component: {fileID: 2067615956}
+  - component: {fileID: 2067615958}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5431,7 +5433,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targets: []
-  xrOrigin: {fileID: 654248851}
 --- !u!4 &2067615957
 Transform:
   m_ObjectHideFlags: 0
@@ -5447,6 +5448,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2067615958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067615955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f4d41b1feb4a43c08c2f3f58cf3f732, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2085758906
 GameObject:
   m_ObjectHideFlags: 0

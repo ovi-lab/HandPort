@@ -37,10 +37,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private CameraManager cameraManager;
     
     private LatinSquareManager latinSquareManager = new LatinSquareManager();
-    private List<(int, int)> shuffledCombinations;
+    private List<(int, int, int)> shuffledCombinations;
     private int currentLineIndex = 0;
     public XROrigin xrOrigin;
 
+    private List<float> taskCompletionTimes = new List<float>();
+    private float startTime;
+    private List<int> numberOfAttempts;
 
     protected override void Awake()
     {
@@ -52,26 +55,29 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
         ApplyRandomizedConditions();
     }
+
     
     
     private void ApplyRandomizedConditions()
     {
         int[] cameraTypes = Enum.GetValues(typeof(CameraType)).Cast<int>().ToArray();
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
-        shuffledCombinations = latinSquareManager.GenerateAndApplyLatinSquare(cameraTypes, panelAnchors);
+        int[] mappingFunction = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
+        shuffledCombinations = latinSquareManager.GenerateAndApplyLatinSquare(cameraTypes, panelAnchors, mappingFunction);
         
         ApplySettingsFromLine(shuffledCombinations[0]);
         currentLineIndex = 1; // Move to the next line for future calls
     }
     
-    private void ApplySettingsFromLine((int, int) combination)
+    private void ApplySettingsFromLine((int, int, int) combination)
     {
         if (cameraManager != null)
         {
             cameraManager.cameraDisplayType = (CameraType)combination.Item1;
             cameraManager.anchor = (CameraAnchor)combination.Item2;
+            teleportAdapter.goGoAlgorithm = (GoGoAlgorithm)combination.Item3;
 
-            Debug.Log($"Applying Combination: CameraType={combination.Item1}, PanelAnchor={combination.Item2}");
+            Debug.Log($"Applying Combination: CameraType={combination.Item1}, PanelAnchor={combination.Item2}, MappingFunction={combination.Item3}");
         }
         else
         {
@@ -156,15 +162,28 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         if (currentTarget == targets.Count-1)
         {
-            // If it's the last target, reset the scene and regenerate obstacles with the next conditions
             Debug.Log("Last target reached, resetting scene.");
+            LogData();
             ResetTargetsAndXROrigin();
             return;
         }
         if(nextTarget < targets.Count)
         {
-            Debug.Log(nextTarget);
-            Debug.Log(currentTarget);
+            // STORE TASK COMPLETION TIME
+            if (currentTarget % 2 == 1) 
+            {
+                startTime = Time.time;
+            }
+            else if (currentTarget % 2 == 0 && currentTarget != 0) 
+            {
+                float endTime = Time.time;
+                float completionTime = endTime - startTime; // Calculate the time taken between targets
+                taskCompletionTimes.Add(completionTime); // Store the completion time
+                Debug.Log($"Time to complete task {currentTarget} to {currentTarget + 1}: {completionTime} seconds");
+                startTime = 0;
+            }
+
+            // ENABLE NEXT TARGET
             targets[currentTarget].gameObject.SetActive(false);
             targets[nextTarget].gameObject.SetActive(true);
             currentTarget++;
@@ -184,6 +203,24 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         currentTarget = 0;
         nextTarget = 1;
         SetupObstaclesWithTargetConditions();
+    }
+
+    private void LogData()
+    {
+        if (!participantConditions.recordData) return;
+
+        // Create a log entry with the required data
+        string logEntry = $"Participant ID: {participantConditions.participantID}, " +
+                          $"Latin Square Combination: {shuffledCombinations[currentLineIndex]}, " +
+                          $"Distance Size Combination: {obstacleManager.GetDistanceSizeCombinations()}, " +
+                          $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
+                          $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; // -> tbd
+
+        FirebaseManager.LogData(logEntry);
+
+        // Clear the list for the next block
+        taskCompletionTimes.Clear();
+        numberOfAttempts.Clear();
     }
 }
 
@@ -277,13 +314,5 @@ public static class FirebaseDataToPrimitives
         }
         return settingsList.ToArray();
     }
-        
-    
-    // before study:
-    
-    // tbd: if recordData is true log, else no
-    // tbd: if reset is true, set participantID to 1
-
-    // tbd: if maxParticipant == participantID set reset to true
 
 }
