@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Firebase.Database;
 using UnityEngine;
@@ -53,15 +54,14 @@ public class FirebaseManager : MonoBehaviour
         // Create a unique key for each log entry
         string key = realtimeDB.Child("log").Push().Key;
         
-        // Prepare the data to push
-        var data = new
+        // Prepare the data to push as a dictionary
+        var logEntryDict = new Dictionary<string, object>
         {
-            participantID = FirebaseManager.participantID,
-            logData = logData
+            { "logData", logData }
         };
         
         // Push data to Firebase
-        realtimeDB.Child("log").Child(key).SetValueAsync(data).ContinueWith(task =>
+        RealtimeDB.Child("log").Child(key).SetValueAsync(logEntryDict).ContinueWith(task =>
         {
             if (task.IsFaulted)
             {
@@ -73,4 +73,9 @@ public class FirebaseManager : MonoBehaviour
             }
         });
     }
+}
+[System.Serializable]
+public class LogEntry
+{
+    public string logData;
 }

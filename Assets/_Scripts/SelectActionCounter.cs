@@ -37,7 +37,7 @@ public class SelectActionCounter : MonoBehaviour
     
     public int GetSelectActionCount()
     {
-        int count = selectActionCount-1;
+        int count = selectActionCount;
         selectActionCount = 0; 
         return count;
     }

@@ -116,13 +116,8 @@ public class CameraManager : MonoBehaviour
     }
     private void OnValidate()
     {
-        // change camera
-        foreach (var cam in cameras)
-        { 
-            cam.gameObject.SetActive(false);
-        }
-        cameras[(int)cameraDisplayType].gameObject.SetActive(true);
-        
+        UpdateCameraTypeAndAnchor();
+            
         // change resolution texture
         if (resolution == Resolution.Res43)
         {
@@ -139,17 +134,27 @@ public class CameraManager : MonoBehaviour
                 cameraComponent.targetTexture = renderTexture169;
             }
         }
-        
-        // change resolution plane & anchor
-        if (!wimInitialized) return;
-        wimWidget.display.SetParent(wimWidget.transform);
-        wimWidget.anchorType = ((int)anchor);
-        wimWidget.InitializeDisplay();
     }
 
     private void InitializeWIMWidget()
     {
         wimWidget = FindObjectOfType<WIMWidget>();
         wimInitialized = true;
+    }
+
+    public void UpdateCameraTypeAndAnchor()
+    {
+        // change camera
+        foreach (var cam in cameras)
+        { 
+            cam.gameObject.SetActive(false);
+        }
+        cameras[(int)cameraDisplayType].gameObject.SetActive(true);
+        
+        // change resolution plane & anchor
+        if (!wimInitialized) return;
+        wimWidget.display.SetParent(wimWidget.transform);
+        wimWidget.anchorType = ((int)anchor);
+        wimWidget.InitializeDisplay();
     }
 }

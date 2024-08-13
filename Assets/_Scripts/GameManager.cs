@@ -77,6 +77,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             cameraManager.anchor = (CameraAnchor)combination.Item2;
             teleportAdapter.goGoAlgorithm = (GoGoAlgorithm)combination.Item3;
 
+            cameraManager.UpdateCameraTypeAndAnchor();
+            
             Debug.Log($"Applying Combination: CameraType={combination.Item1}, PanelAnchor={combination.Item2}, MappingFunction={combination.Item3}");
         }
         else
@@ -168,7 +170,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                     float endTime = Time.time;
                     float completionTime = endTime - startTime; // Calculate the time taken between targets
                     taskCompletionTimes.Add(completionTime); // Store the final completion time
-                    int attempt = selectActionCounter.GetSelectActionCount();
+                    int attempt = selectActionCounter.GetSelectActionCount()-1;
                     numberOfAttempts.Add(attempt);
                     Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
                 }
@@ -191,7 +193,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 float endTime = Time.time;
                 float completionTime = endTime - startTime; // Calculate the time taken between targets
                 taskCompletionTimes.Add(completionTime); // Store the completion time
-                int attempt = selectActionCounter.GetSelectActionCount();
+                int attempt = selectActionCounter.GetSelectActionCount()-1;
                 numberOfAttempts.Add(attempt);
                 Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
                 startTime = 0;
@@ -222,13 +224,21 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private void LogData()
     {
         if (!participantConditions.recordData) return;
+        
+        // Convert DistanceSizeCombinations to a string format
+        string distanceSizeCombinationString = string.Join(", ", 
+            obstacleManager.GetDistanceSizeCombinations()
+                .Select(pair => $"{pair.distance}:{pair.size}")
+        );
 
         // Create a log entry with the required data
         string logEntry = $"Participant ID: {participantConditions.participantID}, " +
-                          $"Latin Square Combination: {shuffledCombinations[currentLineIndex]}, " +
-                          $"Distance Size Combination: {obstacleManager.GetDistanceSizeCombinations()}, " +
+                          $"Latin Square Combination: {shuffledCombinations[currentLineIndex].ToString()}, " +
+                          $"Distance Size Combination: {distanceSizeCombinationString}, " +
                           $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
-                          $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; // -> tbd
+                          $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+        
+        Debug.Log(logEntry);
 
         FirebaseManager.LogData(logEntry);
 
@@ -237,6 +247,18 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         numberOfAttempts.Clear();
     }
 }
+
+[System.Serializable]
+public class LogData
+{
+    public int ParticipantID { get; set; }
+    public string LatinSquareCombination { get; set; }
+    public string DistanceSizeCombination { get; set; }
+    public List<float> TaskCompletionTimes { get; set; }
+    public List<int> NumberOfAttempts { get; set; }
+}
+
+
 
 // [Serializable]
 // public class StudyConditions
