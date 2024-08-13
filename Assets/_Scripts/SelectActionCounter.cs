@@ -1,33 +1,44 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class SelectActionCounter : MonoBehaviour
 {
-    [SerializeField] private XRController xrController;
-    private int selectActionCount = 0;  // Counter for select action
+    private CustomActionBasedControllerStable3 rightHandController;
+    private InputAction selectAction; 
+    private int selectActionCount = 0;
 
-    private void Update()
+    void Awake()
     {
-        // Check if the select action was triggered this frame
-        if (xrController.selectInteractionState.activatedThisFrame)
+        CustomActionBasedControllerStable3[] controllerArray = CustomActionBasedControllerStable3.FindObjectsOfType<CustomActionBasedControllerStable3>(true);
+        foreach (var controller in controllerArray)
         {
-            // Increment the counter
-            selectActionCount++;
+            if (controller.name.Equals("Teleport Interactor"))
+            {
+                rightHandController = controller;
+            }
+        }
+        
+    }
 
-            // Output the current count to the console (optional)
-            Debug.Log("Select action triggered. Count: " + selectActionCount);
+    void Update()
+    {
+        if (rightHandController != null)
+        {
+            selectAction = rightHandController.selectAction.action;
+            if (selectAction.triggered)
+            {
+                selectActionCount++;
+                Debug.Log("Select action triggered on the right controller.");
+            }
         }
     }
-
-    // Optional: Method to reset the counter if needed
-    public void ResetCounter()
-    {
-        selectActionCount = 0;
-    }
-
-    // Optional: Method to get the current count
+    
     public int GetSelectActionCount()
     {
-        return selectActionCount;
+        int count = selectActionCount-1;
+        selectActionCount = 0; 
+        return count;
     }
 }

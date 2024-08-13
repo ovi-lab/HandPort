@@ -25,13 +25,12 @@ public class LatinSquareManager
     private List<int[]> GenerateBalancedLatinSquare(int n)
     {
         var latinSquare = new List<int[]>();
-        var permutations = new List<int[]>();
 
-        // Generate all permutations of numbers 0 to n-1
-        GeneratePermutations(Enumerable.Range(0, n).ToArray(), 0, permutations);
+        // Generate permutations lazily
+        var lazyPermutations = GeneratePermutationsLazy(Enumerable.Range(0, n).ToArray()).Take(n).ToList();
 
-        // Ensure a balanced Latin square by selecting valid permutations
-        foreach (var perm in permutations)
+        // Ensure the square is balanced
+        foreach (var perm in lazyPermutations)
         {
             if (IsValidLatinSquare(latinSquare, perm, n))
             {
@@ -46,18 +45,24 @@ public class LatinSquareManager
         return latinSquare;
     }
 
-    private void GeneratePermutations(int[] arr, int index, List<int[]> result)
+    // Lazy permutation generator
+    private IEnumerable<int[]> GeneratePermutationsLazy(int[] arr, int index = 0)
     {
-        if (index == arr.Length)
+        if (index == arr.Length - 1)
         {
-            result.Add((int[])arr.Clone());
-            return;
+            yield return arr.Clone() as int[];
         }
-        for (int i = index; i < arr.Length; i++)
+        else
         {
-            Swap(ref arr[index], ref arr[i]);
-            GeneratePermutations(arr, index + 1, result);
-            Swap(ref arr[index], ref arr[i]);
+            for (int i = index; i < arr.Length; i++)
+            {
+                Swap(ref arr[index], ref arr[i]);
+                foreach (var perm in GeneratePermutationsLazy(arr, index + 1))
+                {
+                    yield return perm;
+                }
+                Swap(ref arr[index], ref arr[i]);
+            }
         }
     }
 
@@ -89,7 +94,13 @@ public class LatinSquareManager
 
         foreach (var row in latinSquare)
         {
-            shuffledCombinations.AddRange(row.Select(index => combinations[index]));
+            foreach (var index in row)
+            {
+                if (index < combinations.Count)
+                {
+                    shuffledCombinations.Add(combinations[index]);
+                }
+            }
         }
 
         return shuffledCombinations;

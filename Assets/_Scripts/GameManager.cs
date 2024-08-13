@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using System.Linq;
 using Unity.XR.CoreUtils;
-using UnityEngine.Rendering.Universal;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -37,13 +36,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private CameraManager cameraManager;
     
     private LatinSquareManager latinSquareManager = new LatinSquareManager();
+    private SelectActionCounter selectActionCounter;
     private List<(int, int, int)> shuffledCombinations;
     private int currentLineIndex = 0;
     public XROrigin xrOrigin;
 
     private List<float> taskCompletionTimes = new List<float>();
     private float startTime;
-    private List<int> numberOfAttempts;
+    private List<int> numberOfAttempts = new List<int>();
 
     protected override void Awake()
     {
@@ -52,17 +52,17 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         obstacleManager = FindObjectOfType<ObstacleManager>();
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
         cameraManager =FindObjectOfType<CameraManager>();
+        selectActionCounter =FindObjectOfType<SelectActionCounter>();
 
         ApplyRandomizedConditions();
     }
-
-    
     
     private void ApplyRandomizedConditions()
     {
         int[] cameraTypes = Enum.GetValues(typeof(CameraType)).Cast<int>().ToArray();
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
         int[] mappingFunction = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
+        
         shuffledCombinations = latinSquareManager.GenerateAndApplyLatinSquare(cameraTypes, panelAnchors, mappingFunction);
         
         ApplySettingsFromLine(shuffledCombinations[0]);
@@ -125,7 +125,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogWarning("ObstacleManager not found in scene.");
             return;
         }
-        Debug.Log("Setting up obstacles with target conditions");
+       //Debug.Log("Setting up obstacles with target conditions");
         
         targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.targetCount);
         
@@ -143,13 +143,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogWarning("TeleportAdapter not found in scene.");
             return;
         }
-        Debug.Log("Setting up adapter with adapter conditions");
+        //Debug.Log("Setting up adapter with adapter conditions");
         teleportAdapter.SetInitialAdapterValues(adapterConditions.originShoulderDistance,
             adapterConditions.shoulderEllbowDistance, adapterConditions.ellbowWristDistance, adapterConditions.maxVirtDistance);
     }
     public void InitialiseTargets()
     {
-        Debug.Log("Initialisation time");
         foreach (TeleportationAnchor target in targets)
         {
             target.selectExited.AddListener(EnableNextTarget);
@@ -162,24 +161,39 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         if (currentTarget == targets.Count-1)
         {
-            Debug.Log("Last target reached, resetting scene.");
-            LogData();
-            ResetTargetsAndXROrigin();
-            return;
+            if (currentTarget == targets.Count - 1)
+            {
+                if (currentTarget % 2 == 1) 
+                {
+                    float endTime = Time.time;
+                    float completionTime = endTime - startTime; // Calculate the time taken between targets
+                    taskCompletionTimes.Add(completionTime); // Store the final completion time
+                    int attempt = selectActionCounter.GetSelectActionCount();
+                    numberOfAttempts.Add(attempt);
+                    Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
+                }
+
+                Debug.Log("Last target reached, resetting scene.");
+                LogData();
+                ResetTargetsAndXROrigin();
+                return;
+            }
         }
         if(nextTarget < targets.Count)
         {
             // STORE TASK COMPLETION TIME
-            if (currentTarget % 2 == 1) 
+            if (currentTarget % 2 == 0) 
             {
                 startTime = Time.time;
             }
-            else if (currentTarget % 2 == 0 && currentTarget != 0) 
+            else if (currentTarget % 2 == 1) 
             {
                 float endTime = Time.time;
                 float completionTime = endTime - startTime; // Calculate the time taken between targets
                 taskCompletionTimes.Add(completionTime); // Store the completion time
-                Debug.Log($"Time to complete task {currentTarget} to {currentTarget + 1}: {completionTime} seconds");
+                int attempt = selectActionCounter.GetSelectActionCount();
+                numberOfAttempts.Add(attempt);
+                Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
                 startTime = 0;
             }
 
