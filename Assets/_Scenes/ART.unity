@@ -1922,9 +1922,9 @@ MonoBehaviour:
   resolution: 0
   anchor: 1
   cameras:
-  - {fileID: 754401495}
   - {fileID: 1552960947}
   - {fileID: 965129581}
+  - {fileID: 1275939421}
   rayInteractors:
   - {fileID: 1112698599}
   renderTexture43: {fileID: 8400000, guid: dddd286cf7288b64e99388926ad926b1, type: 2}
@@ -1943,10 +1943,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1398318759}
-  - {fileID: 754401494}
   - {fileID: 1552960949}
   - {fileID: 965129579}
   - {fileID: 1275939423}
+  - {fileID: 754401494}
   - {fileID: 446560228}
   - {fileID: 450795427}
   m_Father: {fileID: 0}
@@ -2530,7 +2530,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &965129579
 Transform:
   m_ObjectHideFlags: 0
@@ -2917,7 +2917,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e988983f96fe1dd48800bcdfc82f23e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LineWidth: 0.02
+  m_LineWidth: 0.03
   m_OverrideInteractorLineLength: 0
   m_LineLength: 10
   m_AutoAdjustLineLength: 0
@@ -3684,7 +3684,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1275939421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3697,7 +3697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fad7a0b64d156d342b6693bc01b7aea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 2
+  heightOffset: 1.5
   horizontalOffset: 1
   cameraLookAngle: 0
   rightHand: {fileID: 937927183}
@@ -4133,7 +4133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26127351b3c5d1f4c98f349a0c0912e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 10
+  heightOffset: 5
   horizontalOffset: 1
   cameraLookAngle: 90
 --- !u!20 &1552960948
@@ -4171,7 +4171,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -4416,7 +4416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e988983f96fe1dd48800bcdfc82f23e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LineWidth: 0.02
+  m_LineWidth: 0.03
   m_OverrideInteractorLineLength: 0
   m_LineLength: 10
   m_AutoAdjustLineLength: 0
@@ -5455,12 +5455,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2067615955}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f4d41b1feb4a43c08c2f3f58cf3f732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xrController: {fileID: 0}
 --- !u!1 &2085758906
 GameObject:
   m_ObjectHideFlags: 0
