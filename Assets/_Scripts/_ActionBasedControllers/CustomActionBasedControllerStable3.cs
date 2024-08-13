@@ -21,9 +21,6 @@ namespace UnityEngine.XR.Interaction.Toolkit
     public class CustomActionBasedControllerStable3 : CustomActionBasedController
     {
         private GoGoDetachAdapterStable3 adapter;
-        private float stableEulerX = 0;
-        private float stableEulerY = 0;
-        private float stableEulerZ = 0;
         private Vector3 euler;
         /// <inheritdoc />
         protected override void OnEnable()

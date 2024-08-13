@@ -10,7 +10,7 @@ public class GoGoDetachAdapterStable : MonoBehaviour
     public Transform xrOrigin;
     private  float minVirtDistance = 0.1f; 
     private float maxVirtDistance = 70f;
-    private float thresholdDistance = 0.1f;
+    // private float thresholdDistance = 0.1f;
 
     public bool rayStabilized = false;
     public float minDistance = 0.1f;

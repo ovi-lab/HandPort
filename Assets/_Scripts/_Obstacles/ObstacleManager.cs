@@ -18,8 +18,10 @@ public class ObstacleManager : MonoBehaviour
 
     private List<(int distance, float size)> distanceSizePairs = new List<(int, float)>();
 
-    public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int count)
+    public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int count, int intermedidateDistance, float intermedidateSize)
     {
+        intermedidateObstacleSize = intermedidateSize;
+        intermedidateObstacleDistance = intermedidateDistance;
         // Clear existing obstacles
         foreach (var obstacle in obstacles)
         {

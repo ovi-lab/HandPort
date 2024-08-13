@@ -63,7 +63,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
         int[] mappingFunction = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
         
-        shuffledCombinations = latinSquareManager.GenerateAndApplyLatinSquare(cameraTypes, panelAnchors, mappingFunction);
+        shuffledCombinations = latinSquareManager.GenerateAndShuffleCombinations(cameraTypes, panelAnchors, mappingFunction);
         
         ApplySettingsFromLine(shuffledCombinations[0]);
         currentLineIndex = 1; // Move to the next line for future calls
@@ -129,7 +129,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
        //Debug.Log("Setting up obstacles with target conditions");
         
-        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.targetCount);
+        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.targetCount, targetConditions.intermedidateObstacleDistance, targetConditions.intermedidateObstacleSize);
         
         InitialiseTargets();
     }
@@ -248,17 +248,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 }
 
-[System.Serializable]
-public class LogData
-{
-    public int ParticipantID { get; set; }
-    public string LatinSquareCombination { get; set; }
-    public string DistanceSizeCombination { get; set; }
-    public List<float> TaskCompletionTimes { get; set; }
-    public List<int> NumberOfAttempts { get; set; }
-}
-
-
 
 // [Serializable]
 // public class StudyConditions
@@ -274,6 +263,9 @@ public class TargetConditions
     public int[] targetDistances;
     public float[] targetSizes;
     public int targetCount;
+
+    public float intermedidateObstacleSize;
+    public int intermedidateObstacleDistance;
 }
 
 [Serializable]
@@ -313,7 +305,9 @@ public static class FirebaseDataToPrimitives
         {
             targetDistances = ParseArray<int>(initialSettings.Child("targetDistance")),
             targetSizes = ParseArray<float>(initialSettings.Child("targetSize")),
-            targetCount = Convert.ToInt32(initialSettings.Child("targetCount").Value.ToString())
+            targetCount = Convert.ToInt32(initialSettings.Child("targetCount").Value.ToString()),
+            intermedidateObstacleSize = Convert.ToSingle(initialSettings.Child("intermedidateObstacleSize").Value.ToString()),
+            intermedidateObstacleDistance = Convert.ToInt32(initialSettings.Child("intermedidateObstacleDistance").Value.ToString())
         };
         return targetConditions;
     }

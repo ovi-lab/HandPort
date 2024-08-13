@@ -8,6 +8,9 @@ public class SelectActionCounter : MonoBehaviour
     private CustomActionBasedControllerStable3 rightHandController;
     private InputAction selectAction; 
     private int selectActionCount = 0;
+    
+    [SerializeField] private float cooldownTime = 0.2f;
+    private float lastSelectTime = -Mathf.Infinity;
 
     void Awake()
     {
@@ -29,8 +32,15 @@ public class SelectActionCounter : MonoBehaviour
             selectAction = rightHandController.selectAction.action;
             if (selectAction.triggered)
             {
-                selectActionCount++;
-                Debug.Log("Select action triggered on the right controller.");
+                float currentTime = Time.time;
+                
+                // Check if enough time has passed since the last action
+                if (currentTime - lastSelectTime >= cooldownTime)
+                {
+                    // Debug.Log("trigger");
+                    selectActionCount++;
+                    lastSelectTime = currentTime;
+                }
             }
         }
     }

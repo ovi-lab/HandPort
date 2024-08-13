@@ -5,104 +5,54 @@ using UnityEngine;
 
 public class LatinSquareManager
 {
-    public List<(int, int, int)> GenerateAndApplyLatinSquare(int[] set1, int[] set2, int[] set3)
-    {
-        var combinations = GenerateAllCombinations(set1, set2, set3);
-        var latinSquare = GenerateBalancedLatinSquare(combinations.Count);
-        return ApplyLatinSquare(combinations, latinSquare);
-    }
-
+    // Generates all possible combinations of the provided sets
     private List<(int, int, int)> GenerateAllCombinations(int[] set1, int[] set2, int[] set3)
     {
-        var combinations = from value1 in set1
-                           from value2 in set2
-                           from value3 in set3
-                           select (value1, value2, value3);
+        var combinations = new List<(int, int, int)>();
 
-        return combinations.ToList();
-    }
-
-    private List<int[]> GenerateBalancedLatinSquare(int n)
-    {
-        var latinSquare = new List<int[]>();
-
-        // Generate permutations lazily
-        var lazyPermutations = GeneratePermutationsLazy(Enumerable.Range(0, n).ToArray()).Take(n).ToList();
-
-        // Ensure the square is balanced
-        foreach (var perm in lazyPermutations)
+        foreach (var item1 in set1)
         {
-            if (IsValidLatinSquare(latinSquare, perm, n))
+            foreach (var item2 in set2)
             {
-                latinSquare.Add(perm);
-            }
-            if (latinSquare.Count == n)
-            {
-                break;
-            }
-        }
-
-        return latinSquare;
-    }
-
-    // Lazy permutation generator
-    private IEnumerable<int[]> GeneratePermutationsLazy(int[] arr, int index = 0)
-    {
-        if (index == arr.Length - 1)
-        {
-            yield return arr.Clone() as int[];
-        }
-        else
-        {
-            for (int i = index; i < arr.Length; i++)
-            {
-                Swap(ref arr[index], ref arr[i]);
-                foreach (var perm in GeneratePermutationsLazy(arr, index + 1))
+                foreach (var item3 in set3)
                 {
-                    yield return perm;
-                }
-                Swap(ref arr[index], ref arr[i]);
-            }
-        }
-    }
-
-    private void Swap(ref int a, ref int b)
-    {
-        int temp = a;
-        a = b;
-        b = temp;
-    }
-
-    private bool IsValidLatinSquare(List<int[]> latinSquare, int[] candidate, int n)
-    {
-        for (int i = 0; i < latinSquare.Count; i++)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                if (latinSquare[i][j] == candidate[j])
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private List<(int, int, int)> ApplyLatinSquare(List<(int, int, int)> combinations, List<int[]> latinSquare)
-    {
-        var shuffledCombinations = new List<(int, int, int)>();
-
-        foreach (var row in latinSquare)
-        {
-            foreach (var index in row)
-            {
-                if (index < combinations.Count)
-                {
-                    shuffledCombinations.Add(combinations[index]);
+                    combinations.Add((item1, item2, item3));
                 }
             }
         }
 
-        return shuffledCombinations;
+        return combinations;
+    }
+
+    // Generates a balanced permutation of the combinations
+    private List<(int, int, int)> GenerateBalancedCombinations(List<(int, int, int)> combinations)
+    {
+        // Ensure the list is shuffled in a way to cover all possible combinations
+        var rand = new System.Random();
+        return combinations.OrderBy(x => rand.Next()).ToList();
+    }
+
+    // Generates and shuffles the combinations
+    public List<(int, int, int)> GenerateAndShuffleCombinations(int[] set1, int[] set2, int[] set3)
+    {
+        // Generate all combinations
+        var combinations = GenerateAllCombinations(set1, set2, set3);
+
+        // Log all combinations
+        string combinationsLog = "All Combinations:\n";
+        combinationsLog = combinations.Aggregate(combinationsLog, (current, combination) =>
+            current + $"{combination.Item1}, {combination.Item2}, {combination.Item3}\n");
+        Debug.Log(combinationsLog);
+
+        // Generate a balanced permutation of the combinations
+        var balancedCombinations = GenerateBalancedCombinations(combinations);
+
+        // Log the balanced combinations
+        string balancedCombinationsLog = "Balanced Combinations:\n";
+        balancedCombinationsLog = balancedCombinations.Aggregate(balancedCombinationsLog, (current, combination) =>
+            current + $"{combination.Item1}, {combination.Item2}, {combination.Item3}\n");
+        Debug.Log(balancedCombinationsLog);
+
+        return balancedCombinations;
     }
 }
