@@ -13,8 +13,8 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
     
     private CustomActionBasedControllerStable3 rightHandController;
     private InputAction selectAction; 
-    private bool requestQueued = false;
     private bool rayCastHit = false;
+    private Vector3 targetDestination;
     
     public int frames = 200;
     private Queue<(bool hit, RaycastHit hitInfo)> raycastHitQueue = new Queue<(bool, RaycastHit)>();
@@ -32,6 +32,7 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
                 rightHandController = controller;
             }
         }
+        selectAction = rightHandController.selectAction.action;
     }
     void Update()
     {
@@ -48,17 +49,24 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
                 raycastHitQueue.Dequeue();
             }
             
-            // Check if we need to initiate teleportation
-            if (!requestQueued && selectAction.triggered)
+            bool hitTeleportationAnchor = rayCastHit && hitInfo.collider.CompareTag("TeleportationAnchor");
+            if (hitTeleportationAnchor)
             {
-                StartCoroutine(CheckTeleportRequest());
+                
+                GameObject hitObject = hitInfo.collider.gameObject;
+                targetDestination = hitObject.transform.position;
+                targetDestination.y += hitObject.transform.localScale.y/2;
+            }
+
+            if (!hitTeleportationAnchor && selectAction.triggered)
+            {
+                CheckTeleportRequest();
             }
         }
     }
 
-    private IEnumerator CheckTeleportRequest()
+    private void CheckTeleportRequest()
     {
-        requestQueued = true; 
         // Variables to track the result of the raycast hits
         bool raycastHitValid = false;
         Vector3 finalDestination = Vector3.zero;
@@ -66,13 +74,9 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
         // Iterate through the stored raycast hits in the queue using a traditional for loop
         foreach (var item in raycastHitQueue)
         {
-            bool hit = item.hit;
-            RaycastHit hitInfo = item.hitInfo;
-
-            if (hit && hitInfo.collider.CompareTag("TeleportationAnchor"))
+            if (item.hit)
             {
                 raycastHitValid = true;
-                finalDestination = hitInfo.point;
                 break; 
             }
         }
@@ -82,14 +86,15 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
             // Create the teleport request
             var teleportRequest = new TeleportRequest
             {
-                destinationPosition = finalDestination,
+                destinationPosition = targetDestination,
                 matchOrientation = MatchOrientation.WorldSpaceUp
             };
-            
+            Debug.Log(targetDestination);
             teleportationProvider.QueueTeleportRequest(teleportRequest);
-            requestQueued = false; 
-            
-            gameManager.EnableNextTarget(new SelectExitEventArgs());
+            if (gameManager.GetCurrentTarget < gameManager.GetTargetCount)
+            {
+                gameManager.EnableNextTarget(new SelectExitEventArgs());   
+            }
             if (gameManager.GetCurrentTarget == 0)
             {
                 var teleportReset = new TeleportRequest
@@ -99,12 +104,7 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
                 };
             
                 teleportationProvider.QueueTeleportRequest(teleportReset);
-                requestQueued = false; 
             }
-        }
-        else
-        {
-            requestQueued = false;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 public class ObstacleManager : MonoBehaviour
 {   
     [SerializeField] private GameObject obstaclePrefab;
+    [SerializeField] private GameObject intermediateObstaclePrefab;
     public Transform cameraOffset;
     private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
     private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
@@ -13,8 +14,8 @@ public class ObstacleManager : MonoBehaviour
     private float intermedidateObstacleSize = 0.2f;
     private float intermedidateObstacleDistance = 2;
     
-    private int[] largeDistanceOffsets = new int[] { -10, -5, -2, 0, 2, 5, 10 };
-    private int[] smallDistanceOffsets = new int[] { -1, 0, 1 };
+    private int[] largeDistanceOffsets = new int[] { -10, -5, -2, 2, 5, 10 };
+    private int[] smallDistanceOffsets = new int[] { -1, 1 };
 
     private List<(int distance, float size)> distanceSizePairs = new List<(int, float)>();
 
@@ -76,7 +77,7 @@ public class ObstacleManager : MonoBehaviour
             spawnPosition.y = terrainHeightAtTempPositionIntermediate + 0.5f * intermedidateObstacleSize;
 
             // Instantiate intermediate obstacle
-            GameObject intermediateObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
+            GameObject intermediateObstacle = Instantiate(intermediateObstaclePrefab, spawnPosition, Quaternion.identity);
             intermediateObstacle.transform.localScale = new Vector3(intermedidateObstacleSize, intermedidateObstacleSize, intermedidateObstacleSize);
             TeleportationAnchor intermediateAnchor = intermediateObstacle.GetComponent<TeleportationAnchor>();
             obstacles.Add(intermediateAnchor);
@@ -112,7 +113,7 @@ public class ObstacleManager : MonoBehaviour
             TeleportationAnchor randomAnchor = randomObstacle.GetComponent<TeleportationAnchor>();
             obstacles.Add(randomAnchor);
             randomObstacle.transform.SetParent(teleportationAnchors.transform);
-
+            
             // Update previousHeight for future calculations
             previousHeight = terrainHeightAtTempPositionRandom;
             

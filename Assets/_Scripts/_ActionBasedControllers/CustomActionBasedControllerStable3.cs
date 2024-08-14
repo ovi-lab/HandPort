@@ -168,7 +168,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
                         // Ensure direction is not zero
                         Quaternion targetRotation = Quaternion.LookRotation(direction);
                         Vector3 targetEulerAngles = targetRotation.eulerAngles;
-
+                
                         euler.x = Mathf.LerpAngle(euler.x, 330f, stabilityFactor);
                         euler.y = Mathf.LerpAngle(euler.y, targetEulerAngles.y, stabilityFactor);
                         euler.z = Mathf.LerpAngle(euler.z, targetEulerAngles.z, stabilityFactor);

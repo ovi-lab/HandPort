@@ -8,7 +8,7 @@ public class HighlightOnHover : MonoBehaviour
 {
     private Renderer objectRenderer;
     private Color originalColor;
-    public Color highlightColor = Color.yellow;
+    public Color highlightColor;
     private bool isHighlighted = false;
     private TeleportationAnchor teleAnchor;
     void Start()

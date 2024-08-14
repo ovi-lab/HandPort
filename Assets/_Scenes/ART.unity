@@ -2496,7 +2496,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 663582c396113a948b69af969e1fdd50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstaclePrefab: {fileID: 6997833716616865178, guid: 5d9572cf72219ce4096d043157a43225, type: 3}
+  obstaclePrefab: {fileID: 6997833716616865178, guid: 8c3cd5531613b924a924432ad5f5cfc5, type: 3}
+  intermediateObstaclePrefab: {fileID: 6997833716616865178, guid: 5d9572cf72219ce4096d043157a43225, type: 3}
   cameraOffset: {fileID: 354698113}
 --- !u!4 &938803020
 Transform:
@@ -2820,7 +2821,7 @@ MonoBehaviour:
   m_MaxRaycastDistance: 30
   m_RayOriginTransform: {fileID: 1789512133}
   m_ReferenceFrame: {fileID: 0}
-  m_Velocity: 40
+  m_Velocity: 15
   m_Acceleration: 9.8
   m_AdditionalGroundHeight: 0.1
   m_AdditionalFlightTime: 1
@@ -3397,15 +3398,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1112698598}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc5804f476047b3449655c807715fdfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destinationPosition: {x: 0, y: 0, z: 0}
-  destinationRotation: {x: 0, y: 0, z: 0, w: 0}
   teleportationProvider: {fileID: 2092479419}
   rayInteractor: {fileID: 1112698599}
+  gameManager: {fileID: 0}
   frames: 50
 --- !u!1 &1127530181
 GameObject:
@@ -4771,7 +4771,7 @@ MonoBehaviour:
   m_MaxRaycastDistance: 30
   m_RayOriginTransform: {fileID: 1789512133}
   m_ReferenceFrame: {fileID: 0}
-  m_Velocity: 40
+  m_Velocity: 15
   m_Acceleration: 9.8
   m_AdditionalGroundHeight: 0.1
   m_AdditionalFlightTime: 1
@@ -5430,6 +5430,7 @@ GameObject:
   - component: {fileID: 2067615957}
   - component: {fileID: 2067615956}
   - component: {fileID: 2067615958}
+  - component: {fileID: 2067615959}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5478,7 +5479,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f4d41b1feb4a43c08c2f3f58cf3f732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldownTime: 0.2
+  cooldownTime: 0
+--- !u!114 &2067615959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067615955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5804f476047b3449655c807715fdfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teleportationProvider: {fileID: 2092479419}
+  rayInteractor: {fileID: 1112698599}
+  gameManager: {fileID: 2067615956}
+  frames: 200
 --- !u!1 &2085758906
 GameObject:
   m_ObjectHideFlags: 0

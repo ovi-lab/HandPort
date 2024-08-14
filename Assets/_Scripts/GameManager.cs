@@ -207,6 +207,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
+        if (currentLineIndex >= shuffledCombinations.Count)
+        {
+            Debug.Log("end");
+            return;
+        }
+        
         ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
         currentLineIndex++;
         
