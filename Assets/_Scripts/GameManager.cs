@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using System.Linq;
 using Unity.XR.CoreUtils;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     public List<TeleportationAnchor> targets;
+    
     public GameObject CurrentTarget
     {
         get
@@ -56,8 +58,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
         cameraManager =FindObjectOfType<CameraManager>();
         selectActionCounter =FindObjectOfType<SelectActionCounter>();
-
-        ApplyRandomizedConditions();
+        if (SceneManager.GetActiveScene().name != "Baseline")
+        {
+            ApplyRandomizedConditions();   
+        }
     }
     
     private void ApplyRandomizedConditions()
@@ -69,7 +73,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         shuffledCombinations = latinSquareManager.GenerateAndShuffleCombinations(cameraTypes, panelAnchors, mappingFunction);
         
         ApplySettingsFromLine(shuffledCombinations[0]);
-        currentLineIndex = 1; // Move to the next line for future calls
+        currentLineIndex++; // Move to the next line for future calls
     }
     
     private void ApplySettingsFromLine((int, int, int) combination)
@@ -132,8 +136,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
        //Debug.Log("Setting up obstacles with target conditions");
         
-        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.targetCount, targetConditions.intermedidateObstacleDistance, targetConditions.intermedidateObstacleSize);
-        
+        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.repetition, targetConditions.intermedidateObstacleDistance, targetConditions.intermedidateObstacleSize);
         InitialiseTargets();
     }
     private void SetupAdapterWithAdapterConditions()
@@ -171,9 +174,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 float endTime = Time.time;
                 float completionTime = endTime - startTime; // Calculate the time taken between targets
                 taskCompletionTimes.Add(completionTime); // Store the final completion time
-                int attempt = selectActionCounter.GetSelectActionCount()-1;
+                int attempt = selectActionCounter.GetSelectActionCount();
                 numberOfAttempts.Add(attempt);
-                Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
+                Debug.Log($"Time to complete task {currentTarget-1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
             }
             
             LogData();
@@ -192,7 +195,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 float endTime = Time.time;
                 float completionTime = endTime - startTime; // Calculate the time taken between targets
                 taskCompletionTimes.Add(completionTime); // Store the completion time
-                int attempt = selectActionCounter.GetSelectActionCount()-1;
+                int attempt = selectActionCounter.GetSelectActionCount();
                 numberOfAttempts.Add(attempt);
                 Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
                 startTime = 0;
@@ -207,15 +210,17 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
-        if (currentLineIndex >= shuffledCombinations.Count)
+
+        if (SceneManager.GetActiveScene().name == "Baseline" || currentLineIndex >= shuffledCombinations.Count)
         {
             Debug.Log("end");
             return;
         }
-        
+
         ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
         currentLineIndex++;
-        
+
+
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
         Vector3 newPosition = new Vector3(0, terrainHeight+1.5F, -0.01f);
         xrOrigin.MoveCameraToWorldLocation(newPosition);
@@ -235,16 +240,24 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             obstacleManager.GetDistanceSizeCombinations()
                 .Select(pair => $"{pair.distance}:{pair.size}")
         );
-
-        // Create a log entry with the required data
-        string logEntry = $"Participant ID: {participantConditions.participantID}, " +
-                          $"Latin Square Combination: {shuffledCombinations[currentLineIndex].ToString()}, " +
-                          $"Distance Size Combination: {distanceSizeCombinationString}, " +
-                          $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
-                          $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+        string logEntry = "";
+        if (SceneManager.GetActiveScene().name != "Baseline")
+        {
+            logEntry = $"Participant ID: {participantConditions.participantID}, " +
+                       $"Latin Square Combination: {shuffledCombinations[currentLineIndex].ToString()}, " +
+                       $"Distance Size Combination: {distanceSizeCombinationString}, " +
+                       $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
+                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+        }
+        else
+        {
+            logEntry = $"Participant ID: {participantConditions.participantID}, " +
+                       $"Distance Size Combination: {distanceSizeCombinationString}, " +
+                       $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
+                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+        }
         
         Debug.Log(logEntry);
-
         FirebaseManager.LogData(logEntry);
 
         // Clear the list for the next block
@@ -267,7 +280,7 @@ public class TargetConditions
 {
     public int[] targetDistances;
     public float[] targetSizes;
-    public int targetCount;
+    public int repetition;
 
     public float intermedidateObstacleSize;
     public int intermedidateObstacleDistance;
@@ -310,7 +323,7 @@ public static class FirebaseDataToPrimitives
         {
             targetDistances = ParseArray<int>(initialSettings.Child("targetDistance")),
             targetSizes = ParseArray<float>(initialSettings.Child("targetSize")),
-            targetCount = Convert.ToInt32(initialSettings.Child("targetCount").Value.ToString()),
+            repetition = Convert.ToInt32(initialSettings.Child("repetition").Value.ToString()),
             intermedidateObstacleSize = Convert.ToSingle(initialSettings.Child("intermedidateObstacleSize").Value.ToString()),
             intermedidateObstacleDistance = Convert.ToInt32(initialSettings.Child("intermedidateObstacleDistance").Value.ToString())
         };

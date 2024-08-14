@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class SelectActionCounter : MonoBehaviour
@@ -48,7 +49,11 @@ public class SelectActionCounter : MonoBehaviour
     public int GetSelectActionCount()
     {
         int count = selectActionCount;
-        selectActionCount = 0; 
+        selectActionCount = 0;
+        if (SceneManager.GetActiveScene().name != "Baseline")
+        {
+            return count-1;
+        }
         return count;
     }
 }

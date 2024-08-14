@@ -4,125 +4,112 @@ using UnityEngine.XR.Interaction.Toolkit;
 using System.Linq;
 
 public class ObstacleManager : MonoBehaviour
-{   
+{
     [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private GameObject intermediateObstaclePrefab;
     public Transform cameraOffset;
+
     private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
     private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
 
-    private float intermedidateObstacleSize = 0.2f;
-    private float intermedidateObstacleDistance = 2;
-    
+    private float intermediateObstacleSize = 0.2f;
+    private float intermediateObstacleDistance = 2;
+
     private int[] largeDistanceOffsets = new int[] { -10, -5, -2, 2, 5, 10 };
     private int[] smallDistanceOffsets = new int[] { -1, 1 };
 
     private List<(int distance, float size)> distanceSizePairs = new List<(int, float)>();
 
-    public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int count, int intermedidateDistance, float intermedidateSize)
+    private LatinSquareManager latinSquareManager = new LatinSquareManager();
+
+    public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int repetition, int intermediateDistance, float intermediateSize)
     {
-        intermedidateObstacleSize = intermedidateSize;
-        intermedidateObstacleDistance = intermedidateDistance;
+        intermediateObstacleSize = intermediateSize;
+        intermediateObstacleDistance = intermediateDistance;
+
         // Clear existing obstacles
-        foreach (var obstacle in obstacles)
-        {
-            Destroy(obstacle.gameObject);
-        }
-        obstacles.Clear();
+        ClearObstacles();
 
         // Create an empty GameObject to hold colliders
         GameObject teleportationAnchors = new GameObject("TeleportationAnchors");
-        
-         // Create a new list of all possible size-distance pairs, each repeated 'count' times
-        List<(int distance, float size)> pairs = new List<(int, float)>();
-        foreach (int distance in distances)
-        {
-            foreach (float size in sizes)
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    pairs.Add((distance, size));
-                }
-            }
-        }
-
-        // Shuffle the pairs list
-        System.Random rand = new System.Random();
-        pairs = pairs.OrderBy(x => rand.Next()).ToList();
-        distanceSizePairs = pairs;
+        distanceSizePairs = latinSquareManager.GenerateAndShuffleCombinations(distances, sizes, repetition);
 
         // Set up new obstacles based on the shuffled pairs
         spawnPosition = Vector3.zero; // Reset spawn position
-        
+
         float previousHeight = Terrain.activeTerrain.SampleHeight(spawnPosition);
-        
-        for (int i = 0; i < pairs.Count; i++)
+
+        foreach (var (currentDistance, currentSize) in distanceSizePairs)
         {
-            var (currentDistance, currentSize) = pairs[i];
-            
-            // INTERMEDIATE OBSTACLE
-            int horizontalOffset = 0;
-
-            // Create temporary spawn position with horizontal offset and preliminary Z value
-            Vector3 tempSpawnPositionIntermediate = new Vector3(spawnPosition.x + horizontalOffset, spawnPosition.y, spawnPosition.z + intermedidateObstacleDistance);
-            float terrainHeightAtTempPositionIntermediate = Terrain.activeTerrain.SampleHeight(tempSpawnPositionIntermediate);
-            float heightDifferenceIntermediate = terrainHeightAtTempPositionIntermediate - previousHeight;
-
-            // Adjust Z value based on height difference
-            float heightDifferenceSquaredIntermediate = Mathf.Pow(heightDifferenceIntermediate, 2);
-            float adjustedZIntermediate = Mathf.Sqrt(Mathf.Pow(intermedidateObstacleDistance, 2) - heightDifferenceSquaredIntermediate);
-
-            // Update spawn position with the final Z value
-            spawnPosition.z += adjustedZIntermediate;
-            spawnPosition.y = terrainHeightAtTempPositionIntermediate + 0.5f * intermedidateObstacleSize;
-
-            // Instantiate intermediate obstacle
-            GameObject intermediateObstacle = Instantiate(intermediateObstaclePrefab, spawnPosition, Quaternion.identity);
-            intermediateObstacle.transform.localScale = new Vector3(intermedidateObstacleSize, intermedidateObstacleSize, intermedidateObstacleSize);
-            TeleportationAnchor intermediateAnchor = intermediateObstacle.GetComponent<TeleportationAnchor>();
-            obstacles.Add(intermediateAnchor);
-            intermediateObstacle.transform.SetParent(teleportationAnchors.transform);
-
-            // Update previousHeight for future calculations
-            previousHeight = terrainHeightAtTempPositionIntermediate;
-            
-            
-            // RANDOM OBSTACLE
-            // Determine horizontal offset based on distance category
-            int[] offsets = (currentDistance < 5) ? smallDistanceOffsets : largeDistanceOffsets;
-            horizontalOffset = offsets[Random.Range(0, offsets.Length)];
-
-            // Create temporary spawn position with horizontal offset and preliminary Z value
-            Vector3 tempSpawnPositionRandom = new Vector3(spawnPosition.x + horizontalOffset, spawnPosition.y, spawnPosition.z + currentDistance);
-            float terrainHeightAtTempPositionRandom = Terrain.activeTerrain.SampleHeight(tempSpawnPositionRandom);
-            float heightDifferenceRandom = terrainHeightAtTempPositionRandom - previousHeight;
-
-            // Adjust Z value based on height difference
-            float horizontalOffsetSquared = Mathf.Pow(horizontalOffset, 2);
-            float heightDifferenceSquaredRandom = Mathf.Pow(heightDifferenceRandom, 2);
-            float adjustedZRandom = Mathf.Sqrt(Mathf.Pow(currentDistance, 2) - horizontalOffsetSquared - heightDifferenceSquaredRandom);
-
-            // Update spawn position with the final Z value
-            spawnPosition.x += horizontalOffset;
-            spawnPosition.z += adjustedZRandom;
-            spawnPosition.y = terrainHeightAtTempPositionRandom + 0.5f * currentSize;
-
-            // Instantiate random obstacle
-            GameObject randomObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
-            randomObstacle.transform.localScale = new Vector3(currentSize, currentSize, currentSize);
-            TeleportationAnchor randomAnchor = randomObstacle.GetComponent<TeleportationAnchor>();
-            obstacles.Add(randomAnchor);
-            randomObstacle.transform.SetParent(teleportationAnchors.transform);
-            
-            // Update previousHeight for future calculations
-            previousHeight = terrainHeightAtTempPositionRandom;
-            
+            SpawnIntermediateObstacle(ref previousHeight, teleportationAnchors);
+            SpawnRandomObstacle(currentDistance, currentSize, ref previousHeight, teleportationAnchors);
         }
 
         return obstacles;
     }
 
-    public List<(int distance, float size)> GetDistanceSizeCombinations(){
+    private void ClearObstacles()
+    {
+        foreach (var obstacle in obstacles)
+        {
+            Destroy(obstacle.gameObject);
+        }
+        obstacles.Clear();
+    }
+    
+    private void SpawnIntermediateObstacle(ref float previousHeight, GameObject parent)
+    {
+        Vector3 tempSpawnPosition = spawnPosition + new Vector3(0, 0, intermediateObstacleDistance);
+        float terrainHeight = Terrain.activeTerrain.SampleHeight(tempSpawnPosition);
+        float heightDifference = terrainHeight - previousHeight;
+
+        float adjustedZ = Mathf.Sqrt(Mathf.Pow(intermediateObstacleDistance, 2) - Mathf.Pow(heightDifference, 2));
+        spawnPosition.z += adjustedZ;
+        spawnPosition.y = terrainHeight + 0.5f * intermediateObstacleSize;
+
+        var intermediateObstacle = Instantiate(intermediateObstaclePrefab, spawnPosition, Quaternion.identity);
+        intermediateObstacle.transform.localScale = Vector3.one * intermediateObstacleSize;
+        var intermediateAnchor = intermediateObstacle.GetComponent<TeleportationAnchor>();
+        obstacles.Add(intermediateAnchor);
+        intermediateObstacle.transform.SetParent(parent.transform);
+
+        previousHeight = terrainHeight;
+    }
+
+    private void SpawnRandomObstacle(int currentDistance, float currentSize, ref float previousHeight, GameObject parent)
+    {
+        int[] offsets = (currentDistance < 5) ? smallDistanceOffsets : largeDistanceOffsets;
+        int horizontalOffset = offsets[Random.Range(0, offsets.Length)];
+
+        Vector3 tempSpawnPosition = spawnPosition + new Vector3(horizontalOffset, 0, currentDistance);
+        float terrainHeight = Terrain.activeTerrain.SampleHeight(tempSpawnPosition);
+        float heightDifference = terrainHeight - previousHeight;
+
+        float adjustedZ = Mathf.Sqrt(Mathf.Pow(currentDistance, 2) - Mathf.Pow(horizontalOffset, 2) - Mathf.Pow(heightDifference, 2));
+        spawnPosition += new Vector3(horizontalOffset, 0, adjustedZ);
+        spawnPosition.y = terrainHeight + 0.5f * currentSize;
+
+        var randomObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
+        randomObstacle.transform.localScale = Vector3.one * currentSize;
+        var randomAnchor = randomObstacle.GetComponent<TeleportationAnchor>();
+        obstacles.Add(randomAnchor);
+        randomObstacle.transform.SetParent(parent.transform);
+
+        previousHeight = terrainHeight;
+    }
+    
+    private void LogLatinSquare(List<(int distance, float size)> pairs)
+    {
+        var logString = "Latin Square:\n";
+        foreach (var (distance, size) in pairs)
+        {
+            logString += $"Distance: {distance}, Size: {size}\n";
+        }
+        Debug.Log(logString);
+    }
+
+    public List<(int distance, float size)> GetDistanceSizeCombinations()
+    {
         return distanceSizePairs;
     }
 }

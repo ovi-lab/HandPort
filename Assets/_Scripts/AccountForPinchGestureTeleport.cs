@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.SceneManagement;
 
 public class AccountForPinchGestureTeleport : MonoBehaviour
 {
@@ -11,7 +12,8 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
     public XRRayInteractor rayInteractor;
     public GameManager gameManager;
     
-    private CustomActionBasedControllerStable3 rightHandController;
+    private CustomActionBasedControllerStable3 rightHandStableController;
+    private ActionBasedController rightHandController;
     private InputAction selectAction; 
     private bool rayCastHit = false;
     private Vector3 targetDestination;
@@ -23,58 +25,78 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
     {
         teleportationProvider = FindObjectOfType<TeleportationProvider>();
         gameManager = FindObjectOfType<GameManager>();
-        CustomActionBasedControllerStable3[] controllerArray = CustomActionBasedControllerStable3.FindObjectsOfType<CustomActionBasedControllerStable3>(true);
-        
-        foreach (var controller in controllerArray)
+        if (SceneManager.GetActiveScene().name == "Baseline")
         {
-            if (controller.name.Equals("Teleport Interactor"))
+            ActionBasedController [] controllerArray =
+                ActionBasedController.FindObjectsOfType<ActionBasedController>(true);
+            foreach (var controller in controllerArray)
             {
-                rightHandController = controller;
+                if (controller.name.Equals("Teleport Interactor"))
+                {
+                    rightHandController = controller;
+                }
             }
+            selectAction = rightHandController.selectAction.action;
         }
-        selectAction = rightHandController.selectAction.action;
+        else
+        {
+            CustomActionBasedControllerStable3[] controllerArray = CustomActionBasedControllerStable3.FindObjectsOfType<CustomActionBasedControllerStable3>(true);
+            foreach (var controller in controllerArray)
+            {
+                if (controller.name.Equals("Teleport Interactor"))
+                {
+                    rightHandStableController = controller;
+                }
+            }
+            selectAction = rightHandStableController.selectAction.action;
+        }
     }
     void Update()
     {
         if (rayInteractor != null)
         {
             bool rayCastHit = rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hitInfo);
+            bool hitTeleportationAnchor = rayCastHit && hitInfo.collider.CompareTag("TeleportationAnchor");
 
-            // Add the current raycast hit status and information to the queue
+            // when successful teleportation -> dont store raycast
+            if (selectAction.triggered && hitTeleportationAnchor)
+            {
+                return;
+            }
+
+            // when unsuccessful teleportation -> store anchor position
+            if (hitTeleportationAnchor)
+            {
+            
+                GameObject hitObject = hitInfo.collider.gameObject;
+                targetDestination = hitObject.transform.position;
+                targetDestination.y += hitObject.transform.localScale.y/2;
+            }
+        
+            // when unsuccessful teleportation -> store raycast
             raycastHitQueue.Enqueue((rayCastHit, hitInfo));
-
-            // Keep the queue size within the frame buffer size
             if (raycastHitQueue.Count > frames)
             {
                 raycastHitQueue.Dequeue();
             }
             
-            bool hitTeleportationAnchor = rayCastHit && hitInfo.collider.CompareTag("TeleportationAnchor");
-            if (hitTeleportationAnchor)
-            {
-                
-                GameObject hitObject = hitInfo.collider.gameObject;
-                targetDestination = hitObject.transform.position;
-                targetDestination.y += hitObject.transform.localScale.y/2;
-            }
-
+            // when unsuccessful teleportation -> check if there was prior teleportationanchorhit
             if (!hitTeleportationAnchor && selectAction.triggered)
             {
                 CheckTeleportRequest();
             }
+        
         }
     }
 
     private void CheckTeleportRequest()
     {
-        // Variables to track the result of the raycast hits
         bool raycastHitValid = false;
-        Vector3 finalDestination = Vector3.zero;
         
-        // Iterate through the stored raycast hits in the queue using a traditional for loop
+        // Iterate through queue to check if anchor was stored
         foreach (var item in raycastHitQueue)
         {
-            if (item.hit)
+            if (item.hit && item.hitInfo.collider.CompareTag("TeleportationAnchor"))
             {
                 raycastHitValid = true;
                 break; 
@@ -89,7 +111,7 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
                 destinationPosition = targetDestination,
                 matchOrientation = MatchOrientation.WorldSpaceUp
             };
-            Debug.Log(targetDestination);
+            
             teleportationProvider.QueueTeleportRequest(teleportRequest);
             if (gameManager.GetCurrentTarget < gameManager.GetTargetCount)
             {
