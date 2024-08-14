@@ -24,7 +24,7 @@ public class DisplayVariantText : MonoBehaviour
     public void DisplayVariant((int, int, int) permutation)
     {
         string textToShow = $"Camera Type: {(CameraType)permutation.Item1}\nAnchor: {(CameraAnchor)permutation.Item2}\nMapping Function: {(GoGoAlgorithm)permutation.Item3}";
-        StartCoroutine(DisplayTextForDuration(textToShow, 5f));
+        StartCoroutine(DisplayTextForDuration(textToShow, 8f));
     }
     
     private IEnumerator DisplayTextForDuration(string text, float duration)
