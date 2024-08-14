@@ -74,6 +74,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         
         ApplySettingsFromLine(shuffledCombinations[0]);
         currentLineIndex++; // Move to the next line for future calls
+        
+        FindObjectOfType<DisplayVariantText>().DisplayVariant(shuffledCombinations[currentLineIndex]);
     }
     
     private void ApplySettingsFromLine((int, int, int) combination)
@@ -213,11 +215,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
         if (SceneManager.GetActiveScene().name == "Baseline" || currentLineIndex >= shuffledCombinations.Count)
         {
-            Debug.Log("end");
+            FindObjectOfType<DisplayVariantText>().DisplayEndText();
             return;
         }
 
         ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
+        FindObjectOfType<DisplayVariantText>().DisplayVariant(shuffledCombinations[currentLineIndex]);
         currentLineIndex++;
 
 
