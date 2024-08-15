@@ -169,8 +169,12 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             
             case GoGoAlgorithm.Sigmoid:
                 // SIGMOID
-                float sigmoidValue = 2f / (1f + Mathf.Exp(6-12*normalizedDeltaForward));
+                float sigmoidValue = 1f / (1f + Mathf.Exp(6-12*normalizedDeltaForward));
                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, sigmoidValue);
+            
+                // TANH
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance,(0.5f * (float)Math.Tanh(6f * normalizedDeltaForward - 3f) + 0.5f));
+            
             
             case GoGoAlgorithm.Power:
                 // QUADRATIC
