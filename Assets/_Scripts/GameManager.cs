@@ -73,9 +73,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         shuffledCombinations = latinSquareManager.GenerateAndShuffleCombinations(cameraTypes, panelAnchors, mappingFunction);
         
         ApplySettingsFromLine(shuffledCombinations[0]);
-        currentLineIndex++; // Move to the next line for future calls
-        
-        FindObjectOfType<DisplayVariantText>().DisplayVariant(shuffledCombinations[currentLineIndex]);
+        currentLineIndex++;
     }
     
     private void ApplySettingsFromLine((int, int, int) combination)
@@ -89,6 +87,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             cameraManager.UpdateCameraTypeAndAnchor();
             
             Debug.Log($"Applying Combination: CameraType={combination.Item1}, PanelAnchor={combination.Item2}, MappingFunction={combination.Item3}");
+            FindObjectOfType<DisplayVariantText>().DisplayVariant(combination);
         }
         else
         {
@@ -212,7 +211,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
-
         if (SceneManager.GetActiveScene().name == "Baseline" || currentLineIndex >= shuffledCombinations.Count)
         {
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
@@ -220,7 +218,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
 
         ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
-        FindObjectOfType<DisplayVariantText>().DisplayVariant(shuffledCombinations[currentLineIndex]);
         currentLineIndex++;
 
 

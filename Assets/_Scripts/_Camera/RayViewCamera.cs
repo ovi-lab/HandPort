@@ -4,8 +4,8 @@ using Unity.Mathematics;
 
 public class RayViewCamera : CameraPlacement
 {
-    public XRRayInteractor rayInteractor;
-    private Vector3 hitPoint;
+    // public XRRayInteractor rayInteractor;
+    // private Vector3 hitPoint;
     private LineRenderer lineRenderer;
     
     private float velocity;

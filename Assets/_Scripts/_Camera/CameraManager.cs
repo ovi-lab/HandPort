@@ -7,8 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 public enum CameraType
 {
     TopDownRay = 0,
-    RayView = 1,
-    HandView = 2
+    PerspectiveRay = 1,
+    PerspectiveHand = 2
 }
 
 public enum Resolution
@@ -19,16 +19,16 @@ public enum Resolution
 
 public enum CameraAnchor
 {
-    HMDAnchor = 0,
-    HandAnchor = 1,
+    HMD = 0,
+    Hand = 1,
 }
 public class CameraManager : MonoBehaviour
 {
     public readonly Dictionary<string, CameraType> stringToEnumConverter = new Dictionary<string, CameraType>()
     {
         { "TopDownRay", CameraType.TopDownRay },
-        { "RayView", CameraType.RayView },
-        { "HandView", CameraType.HandView }
+        { "RayView", CameraType.PerspectiveRay },
+        { "HandView", CameraType.PerspectiveHand }
     };
     public readonly Dictionary<string, Resolution> stringToEnumConverter1 = new Dictionary<string, Resolution>()
     {
@@ -37,8 +37,8 @@ public class CameraManager : MonoBehaviour
     };
     public readonly Dictionary<string, CameraAnchor> stringToEnumConverter2 = new Dictionary<string, CameraAnchor>()
     {
-        { "HMDAnchor", CameraAnchor.HMDAnchor },
-        { "HandAnchor", CameraAnchor.HandAnchor },
+        { "HMDAnchor", CameraAnchor.HMD },
+        { "HandAnchor", CameraAnchor.Hand },
 
     };
     public static Vector3 ParabolaPosition => parabolaPosition;

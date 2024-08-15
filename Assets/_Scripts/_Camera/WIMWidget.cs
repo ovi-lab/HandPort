@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Rendering;
 
+using UnityEngine;
 
 public class WIMWidget : MonoBehaviour
 {
@@ -38,11 +35,11 @@ public class WIMWidget : MonoBehaviour
             display = planes[(int)camManager.resolution];
             display.gameObject.SetActive(true);   
             display.transform.rotation = Quaternion.Euler(90, -90, 90);
-            if (anchorType == (int)CameraAnchor.HMDAnchor)
+            if (anchorType == (int)CameraAnchor.HMD)
             {
                 display.transform.localPosition = new Vector3(0f,0.2f,0.5f);
             }
-            else if(anchorType == (int)CameraAnchor.HandAnchor)
+            else if(anchorType == (int)CameraAnchor.Hand)
             {
                 display.transform.localPosition = new Vector3(0, -0.08f, 0.25f);
             }

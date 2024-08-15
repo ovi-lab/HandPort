@@ -11,7 +11,7 @@ public class ControlDirection : MonoBehaviour
             if (child != null)
             {
                 Vector3 parentRotation = transform.rotation.eulerAngles;
-                child.rotation = Quaternion.Euler(-parentRotation.x + 40, parentRotation.y - 180, 0f);
+                child.rotation = Quaternion.Euler(-parentRotation.x + 70, parentRotation.y - 180, 0f);
             }
         }
     }

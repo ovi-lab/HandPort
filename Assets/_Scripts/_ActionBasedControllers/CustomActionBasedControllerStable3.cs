@@ -163,16 +163,16 @@ namespace UnityEngine.XR.Interaction.Toolkit
                     float stabilityFactor =adapter.normalizedDeltaForward; // Inverse of normalizedDeltaForward
                     Vector3 direction = adapter.shoulderToWristDirection;
                     
-                    if (direction.sqrMagnitude > 0f)
-                    {
-                        // Ensure direction is not zero
-                        Quaternion targetRotation = Quaternion.LookRotation(direction);
-                        Vector3 targetEulerAngles = targetRotation.eulerAngles;
-                
-                        euler.x = Mathf.LerpAngle(euler.x, 330f, stabilityFactor);
-                        euler.y = Mathf.LerpAngle(euler.y, targetEulerAngles.y, stabilityFactor);
-                        euler.z = Mathf.LerpAngle(euler.z, targetEulerAngles.z, stabilityFactor);
-                    }
+                    // if (direction.sqrMagnitude > 0f)
+                    // {
+                    //     // Ensure direction is not zero
+                    //     Quaternion targetRotation = Quaternion.LookRotation(direction);
+                    //     Vector3 targetEulerAngles = targetRotation.eulerAngles;
+                    //
+                    //     euler.x = Mathf.LerpAngle(euler.x, 330f, stabilityFactor);
+                    //     euler.y = Mathf.LerpAngle(euler.y, targetEulerAngles.y, stabilityFactor);
+                    //     euler.z = Mathf.LerpAngle(euler.z, targetEulerAngles.z, stabilityFactor);
+                    // }
                     // Debug.Log(euler);
                 }
                 controllerState.rotation = Quaternion.Euler(euler);

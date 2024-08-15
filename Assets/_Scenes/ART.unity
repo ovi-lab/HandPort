@@ -307,7 +307,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.70710677, z: 0.70710677, w: 0}
   m_LocalPosition: {x: 0, y: 0.3, z: 0.8}
-  m_LocalScale: {x: 0.02, y: 0.0019999999, z: 0.015}
+  m_LocalScale: {x: 0.022, y: 0.0022, z: 0.0165}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1398318759}
@@ -1009,9 +1009,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b173bb77702b51e40a6a40fbbb10fdc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 10
+  heightOffset: 0
   horizontalOffset: 0
   cameraLookAngle: 90
+  rayInteractor: {fileID: 0}
+  hitPoint: {x: 0, y: 0, z: 0}
   miniMapIndicator: {fileID: 0}
 --- !u!20 &446560227
 Camera:
@@ -1109,9 +1111,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26127351b3c5d1f4c98f349a0c0912e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 10
-  horizontalOffset: 2
+  heightOffset: 0
+  horizontalOffset: 0
   cameraLookAngle: 55
+  rayInteractor: {fileID: 0}
+  hitPoint: {x: 0, y: 0, z: 0}
 --- !u!20 &450795426
 Camera:
   m_ObjectHideFlags: 0
@@ -1835,9 +1839,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718c3b00eedc84a4ba55d13c70615d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 10
+  heightOffset: 0
   horizontalOffset: 0
   cameraLookAngle: 90
+  rayInteractor: {fileID: 0}
+  hitPoint: {x: 0, y: 0, z: 0}
 --- !u!20 &754401496
 Camera:
   m_ObjectHideFlags: 0
@@ -2615,6 +2621,7 @@ MonoBehaviour:
   horizontalOffset: 0
   cameraLookAngle: 0
   rayInteractor: {fileID: 1112698599}
+  hitPoint: {x: 0, y: 0, z: 0}
 --- !u!1 &1003243795
 GameObject:
   m_ObjectHideFlags: 0
@@ -3247,7 +3254,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    m_Reference: {fileID: -6131295136447488360, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_SelectActionValue:
     m_UseReference: 1
     m_Action:
@@ -3259,7 +3266,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: -1758520528963094988, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    m_Reference: {fileID: 6558622148059887818, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_ActivateAction:
     m_UseReference: 1
     m_Action:
@@ -3716,10 +3723,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fad7a0b64d156d342b6693bc01b7aea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 1.5
-  horizontalOffset: 1
+  heightOffset: 0.5
+  horizontalOffset: 0.5
   cameraLookAngle: 0
-  rightHand: {fileID: 937927183}
+  rayInteractor: {fileID: 0}
+  hitPoint: {x: 0, y: 0, z: 0}
+  rightHand: {fileID: 297043991}
 --- !u!20 &1275939422
 Camera:
   m_ObjectHideFlags: 0
@@ -4152,9 +4161,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26127351b3c5d1f4c98f349a0c0912e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 5
-  horizontalOffset: 1
+  heightOffset: 10
+  horizontalOffset: 0
   cameraLookAngle: 90
+  rayInteractor: {fileID: 1112698599}
+  hitPoint: {x: 0, y: 0, z: 0}
 --- !u!20 &1552960948
 Camera:
   m_ObjectHideFlags: 0
@@ -5579,7 +5590,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: ' '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5733,7 +5744,7 @@ MonoBehaviour:
   teleportationProvider: {fileID: 2092479419}
   rayInteractor: {fileID: 1112698599}
   gameManager: {fileID: 2067615956}
-  frames: 50
+  frames: 5
 --- !u!114 &2067615960
 MonoBehaviour:
   m_ObjectHideFlags: 0

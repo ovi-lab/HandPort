@@ -11,7 +11,8 @@ public class DisplayVariantText : MonoBehaviour
     {
         if (permutationText == null)
         {
-            permutationText = GameObject.Find("VariantText").GetComponent<TextMeshProUGUI>();
+            permutationText = GameObject.Find("VariantText")?.GetComponent<TextMeshProUGUI>();
+            Debug.Log(permutationText);
         }
     }
 
@@ -23,6 +24,11 @@ public class DisplayVariantText : MonoBehaviour
     
     public void DisplayVariant((int, int, int) permutation)
     {
+        if (permutationText == null)
+        {
+            permutationText = GameObject.Find("VariantText")?.GetComponent<TextMeshProUGUI>();
+        }
+
         string textToShow = $"Camera Type: {(CameraType)permutation.Item1}\nAnchor: {(CameraAnchor)permutation.Item2}\nMapping Function: {(GoGoAlgorithm)permutation.Item3}";
         StartCoroutine(DisplayTextForDuration(textToShow, 8f));
     }

@@ -1,12 +1,15 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class CameraPlacement : MonoBehaviour
 {
     [SerializeField] protected float heightOffset;
     [SerializeField] protected float horizontalOffset;
     [SerializeField] protected float cameraLookAngle;
+    [SerializeField] protected XRRayInteractor rayInteractor;
     protected Vector3 targetPosition;
     protected Camera mainCamera;
+    [SerializeField] protected Vector3 hitPoint;
     
     protected void OnEnable()
     {
@@ -15,8 +18,14 @@ public class CameraPlacement : MonoBehaviour
 
     private void Update()
     {
-        targetPosition = CameraManager.ParabolaPosition;
-        PlaceCamera(targetPosition);
+
+        RaycastHit hitInfo;
+        if (rayInteractor.TryGetCurrent3DRaycastHit(out hitInfo))
+        {
+            hitPoint = hitInfo.point;
+        }
+        
+        PlaceCamera(hitPoint);
     }
 
     protected void PlaceCamera(Vector3 target)

@@ -5,9 +5,10 @@ using UnityEngine.XR.Hands;
 
 public enum GoGoAlgorithm
 {
-    FastForLowDistance = 0,
-    FastForMedDistance = 1,
-    FastForHighDistance = 2,
+    Power = 0,
+    Sigmoid = 1,
+    Root = 2,
+    Linear = 3,
 }
 public class GoGoDetachAdapterStable3 : MonoBehaviour
 {
@@ -39,8 +40,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         var handSubsystems = new List<XRHandSubsystem>();
         SubsystemManager.GetSubsystems(handSubsystems);
 
-        minDistance = originShoulderDistance + ellbowWristDistance;
-        maxDistance = originShoulderDistance + ellbowWristDistance + shoulderEllbowDistance;
+        minDistance =  ellbowWristDistance;
+        maxDistance = ellbowWristDistance + shoulderEllbowDistance;
 
         for (int i = 0; i < handSubsystems.Count; ++i)
         {
@@ -60,14 +61,14 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         {
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
-        positionFilter = new OneEuroFilter(minCutoff: 0.2f, beta: 0.02f, dCutoff: 0.7f, initialDt: Time.deltaTime);
+        positionFilter = new OneEuroFilter(minCutoff: 0.5f, beta: 0.02f, dCutoff: 1.0f, initialDt: Time.deltaTime);
     }
     
     public void SetInitialAdapterValues(float oSD, float sED, float eWD, float mVD)
     {
-        originShoulderDistance = oSD;
-        ellbowWristDistance = sED;
-        shoulderEllbowDistance = eWD;
+        originShoulderDistance = oSD-0.03f;
+        shoulderEllbowDistance = sED+0.04f;
+        ellbowWristDistance = eWD-0.04f;
         maxVirtDistance = mVD;
     }
 
@@ -142,7 +143,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 {
                     // Reset position of hand to original position
                     Vector3 resetPosition = xrOrigin.position;
-                    resetPosition = positionFilter.FilterPosition(resetPosition);
+                    //resetPosition = positionFilter.FilterPosition(resetPosition);
                     rightHand.transform.position = resetPosition;
                     
                     // Reset scale of hand
@@ -161,18 +162,23 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     {
         switch (goGoAlgorithm)
         {
-            case GoGoAlgorithm.FastForLowDistance:
+                
+            case GoGoAlgorithm.Root:
                 // ROOT
                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 2f/3f));
             
-            case GoGoAlgorithm.FastForMedDistance:
+            case GoGoAlgorithm.Sigmoid:
                 // SIGMOID
-                float sigmoidValue = 2f / (1f + Mathf.Exp(4-8*normalizedDeltaForward));
+                float sigmoidValue = 2f / (1f + Mathf.Exp(6-12*normalizedDeltaForward));
                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, sigmoidValue);
             
-            case GoGoAlgorithm.FastForHighDistance:
+            case GoGoAlgorithm.Power:
                 // QUADRATIC
                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, p));
+            
+            case GoGoAlgorithm.Linear:
+                // LINEAR
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, normalizedDeltaForward);
             
             default:
                 Debug.LogWarning("Unknown GoGoAlgorithm value");
