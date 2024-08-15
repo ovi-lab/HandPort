@@ -172,7 +172,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 
             case GoGoAlgorithm.Root:
                 // ROOT
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 2f/3f));
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 1f/2f));
             
             case GoGoAlgorithm.Sigmoid:
                 // SIGMOID
@@ -185,7 +185,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             
             case GoGoAlgorithm.Power:
                 // QUADRATIC
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 1.5f));
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 2f));
             
             case GoGoAlgorithm.Linear:
                 // LINEAR

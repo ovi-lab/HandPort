@@ -4168,7 +4168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26127351b3c5d1f4c98f349a0c0912e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightOffset: 10
+  heightOffset: 5
   horizontalOffset: 0
   cameraLookAngle: 90
   rayInteractor: {fileID: 1112698599}

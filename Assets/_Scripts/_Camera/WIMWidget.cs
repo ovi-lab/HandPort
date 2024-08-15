@@ -37,7 +37,7 @@ public class WIMWidget : MonoBehaviour
             display.transform.rotation = Quaternion.Euler(90, -90, 90);
             if (anchorType == (int)CameraAnchor.HMD)
             {
-                display.transform.localPosition = new Vector3(0f,0.2f,0.5f);
+                display.transform.localPosition = new Vector3(0f,0.1f,0.5f);
             }
             else if(anchorType == (int)CameraAnchor.Hand)
             {
