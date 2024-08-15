@@ -11,6 +11,8 @@ public class CameraPlacement : MonoBehaviour
     protected Camera mainCamera;
     [SerializeField] protected Vector3 hitPoint;
     
+    public Transform rightHandWrist;
+    
     protected void OnEnable()
     {
         mainCamera = Camera.main;
@@ -40,8 +42,8 @@ public class CameraPlacement : MonoBehaviour
     protected void PlaceCamera(Vector3 target, Vector3 forwardDirection)
     {
         forwardDirection = forwardDirection.normalized;
-        target.y += heightOffset; // Apply heightOffset
-        target.z -= horizontalOffset; // Apply horizontalOffset
+        target.y += heightOffset* rightHandWrist.localScale.y; // Apply heightOffset
+        target.z -= horizontalOffset* rightHandWrist.localScale.y; // Apply horizontalOffset
 
         transform.position = target;
 

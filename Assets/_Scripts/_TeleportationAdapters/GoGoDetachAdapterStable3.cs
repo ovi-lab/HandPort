@@ -27,13 +27,15 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     private float ellbowWristDistance;
     private float shoulderEllbowDistance;
     
-    private float p = 2.0f;
-    public float sigmoidGradient = 8f;
     public Transform rightHand;
     
     private OneEuroFilter positionFilter;
     public Transform rightHandScaleAnchor;
     public Vector3 shoulderToWristDirection;
+    
+    [SerializeField] public float minCufoff =1f;
+    [SerializeField] public float beta = 0.3f;
+    [SerializeField] public float dCutoff = 1f;
     
     void Start()
     {
@@ -61,9 +63,14 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         {
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
-        positionFilter = new OneEuroFilter(minCutoff: 0.5f, beta: 0.02f, dCutoff: 1.0f, initialDt: Time.deltaTime);
+        positionFilter = new OneEuroFilter(minCutoff: minCufoff, beta: beta, dCutoff: dCutoff, initialDt: Time.deltaTime);
     }
-    
+
+    private void OnValidate()
+    {
+        positionFilter = new OneEuroFilter(minCutoff: minCufoff, beta: beta, dCutoff: dCutoff, initialDt: Time.deltaTime);
+    }
+
     public void SetInitialAdapterValues(float oSD, float sED, float eWD, float mVD)
     {
         originShoulderDistance = oSD-0.03f;
@@ -178,7 +185,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             
             case GoGoAlgorithm.Power:
                 // QUADRATIC
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, p));
+                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 1.5f));
             
             case GoGoAlgorithm.Linear:
                 // LINEAR

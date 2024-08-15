@@ -1014,6 +1014,7 @@ MonoBehaviour:
   cameraLookAngle: 90
   rayInteractor: {fileID: 0}
   hitPoint: {x: 0, y: 0, z: 0}
+  rightHandWrist: {fileID: 0}
   miniMapIndicator: {fileID: 0}
 --- !u!20 &446560227
 Camera:
@@ -1116,6 +1117,7 @@ MonoBehaviour:
   cameraLookAngle: 55
   rayInteractor: {fileID: 0}
   hitPoint: {x: 0, y: 0, z: 0}
+  rightHandWrist: {fileID: 0}
 --- !u!20 &450795426
 Camera:
   m_ObjectHideFlags: 0
@@ -1844,6 +1846,7 @@ MonoBehaviour:
   cameraLookAngle: 90
   rayInteractor: {fileID: 0}
   hitPoint: {x: 0, y: 0, z: 0}
+  rightHandWrist: {fileID: 0}
 --- !u!20 &754401496
 Camera:
   m_ObjectHideFlags: 0
@@ -2622,6 +2625,7 @@ MonoBehaviour:
   cameraLookAngle: 0
   rayInteractor: {fileID: 1112698599}
   hitPoint: {x: 0, y: 0, z: 0}
+  rightHandWrist: {fileID: 2129469304}
 --- !u!1 &1003243795
 GameObject:
   m_ObjectHideFlags: 0
@@ -2899,10 +2903,12 @@ MonoBehaviour:
   goGoAlgorithm: 0
   xrOrigin: {fileID: 654248850}
   normalizedDeltaForward: 0
-  sigmoidGradient: 1
   rightHand: {fileID: 937927183}
   rightHandScaleAnchor: {fileID: 2129469304}
   shoulderToWristDirection: {x: 0, y: 0, z: 0}
+  minCufoff: 1
+  beta: 0.3
+  dCutoff: 1
 --- !u!210 &1112698603
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -3414,7 +3420,7 @@ MonoBehaviour:
   teleportationProvider: {fileID: 2092479419}
   rayInteractor: {fileID: 1112698599}
   gameManager: {fileID: 0}
-  frames: 50
+  frames: 5
 --- !u!1 &1127530181
 GameObject:
   m_ObjectHideFlags: 0
@@ -3724,11 +3730,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heightOffset: 0.5
-  horizontalOffset: 0.5
+  horizontalOffset: 1
   cameraLookAngle: 0
   rayInteractor: {fileID: 0}
   hitPoint: {x: 0, y: 0, z: 0}
-  rightHand: {fileID: 297043991}
+  rightHandWrist: {fileID: 2129469304}
+  rightHand: {fileID: 2129469304}
 --- !u!20 &1275939422
 Camera:
   m_ObjectHideFlags: 0
@@ -4166,6 +4173,7 @@ MonoBehaviour:
   cameraLookAngle: 90
   rayInteractor: {fileID: 1112698599}
   hitPoint: {x: 0, y: 0, z: 0}
+  rightHandWrist: {fileID: 2129469304}
 --- !u!20 &1552960948
 Camera:
   m_ObjectHideFlags: 0

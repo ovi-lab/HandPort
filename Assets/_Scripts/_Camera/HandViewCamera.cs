@@ -15,6 +15,7 @@ public class HandViewCamera : CameraPlacement
 
     void Update()
     {
+        
         if (rightHand == null)
         {
             return;
