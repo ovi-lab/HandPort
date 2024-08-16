@@ -58,7 +58,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
         cameraManager =FindObjectOfType<CameraManager>();
         selectActionCounter =FindObjectOfType<SelectActionCounter>();
-        if (SceneManager.GetActiveScene().name != "Baseline")
+        if (SceneManager.GetActiveScene().name == "ART")
         {
             ApplyRandomizedConditions();   
         }
@@ -102,7 +102,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         if (type == typeof(TargetConditions))
         {
             targetConditions = _values as TargetConditions;
-            SetupObstaclesWithTargetConditions();
+            if (SceneManager.GetActiveScene().name != "Test")
+            {
+                SetupObstaclesWithTargetConditions();
+            }
         }
         // else if (type == typeof(StudyConditions))
         // {
@@ -135,7 +138,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogWarning("ObstacleManager not found in scene.");
             return;
         }
-       //Debug.Log("Setting up obstacles with target conditions");
         
         targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.repetition, targetConditions.intermedidateObstacleDistance, targetConditions.intermedidateObstacleSize);
         InitialiseTargets();
@@ -211,7 +213,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
-        if (SceneManager.GetActiveScene().name == "Baseline" || currentLineIndex >= shuffledCombinations.Count)
+        if (SceneManager.GetActiveScene().name != "ART"  || currentLineIndex >= shuffledCombinations.Count)
         {
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
             return;
