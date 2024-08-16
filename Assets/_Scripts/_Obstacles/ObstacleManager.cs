@@ -9,7 +9,7 @@ public class ObstacleManager : MonoBehaviour
     [SerializeField] private GameObject intermediateObstaclePrefab;
     public Transform cameraOffset;
 
-    private Vector3 spawnPosition = new Vector3(0, 0.01f, 0);
+    private Vector3 spawnPosition = new Vector3(0, 0, 0);
     private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
 
     private float intermediateObstacleSize = 0.2f;

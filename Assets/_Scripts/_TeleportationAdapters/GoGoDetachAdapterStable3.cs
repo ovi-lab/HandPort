@@ -33,9 +33,9 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     public Transform rightHandScaleAnchor;
     public Vector3 shoulderToWristDirection;
     
-    [SerializeField] public float minCufoff =1f;
-    [SerializeField] public float beta = 0.3f;
-    [SerializeField] public float dCutoff = 1f;
+     private float minCufoff =0.5f;
+     private float beta = 0.5f;
+    private float dCutoff = 1f;
     
     void Start()
     {
@@ -66,14 +66,9 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         positionFilter = new OneEuroFilter(minCutoff: minCufoff, beta: beta, dCutoff: dCutoff, initialDt: Time.deltaTime);
     }
 
-    private void OnValidate()
-    {
-        positionFilter = new OneEuroFilter(minCutoff: minCufoff, beta: beta, dCutoff: dCutoff, initialDt: Time.deltaTime);
-    }
-
     public void SetInitialAdapterValues(float oSD, float sED, float eWD, float mVD)
     {
-        originShoulderDistance = oSD-0.03f;
+        originShoulderDistance = oSD-0.05f;
         shoulderEllbowDistance = sED+0.04f;
         ellbowWristDistance = eWD-0.04f;
         maxVirtDistance = mVD;

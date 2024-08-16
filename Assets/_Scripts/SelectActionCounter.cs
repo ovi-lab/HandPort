@@ -6,7 +6,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class SelectActionCounter : MonoBehaviour
 {
-    private CustomActionBasedControllerStable3 rightHandController;
+    private CustomActionBasedControllerStable3 rightHandStableController;
+    private ActionBasedController rightHandController;
+    
     private InputAction selectAction; 
     private int selectActionCount = 0;
     
@@ -15,24 +17,39 @@ public class SelectActionCounter : MonoBehaviour
 
     void Awake()
     {
-        CustomActionBasedControllerStable3[] controllerArray = CustomActionBasedControllerStable3.FindObjectsOfType<CustomActionBasedControllerStable3>(true);
-        foreach (var controller in controllerArray)
+        if (SceneManager.GetActiveScene().name == "Baseline")
         {
-            if (controller.name.Equals("Teleport Interactor"))
+            ActionBasedController [] controllerArray = ActionBasedController.FindObjectsOfType<ActionBasedController>(true);
+            foreach (var controller in controllerArray)
             {
-                rightHandController = controller;
+                if (controller.name.Equals("Teleport Interactor"))
+                {
+                    rightHandController = controller;
+                }
             }
+            selectAction = rightHandController.selectAction.action;
         }
-        
+        else
+        {
+            CustomActionBasedControllerStable3[] controllerArray = CustomActionBasedControllerStable3.FindObjectsOfType<CustomActionBasedControllerStable3>(true);
+            foreach (var controller in controllerArray)
+            {
+                if (controller.name.Equals("Teleport Interactor"))
+                {
+                    rightHandStableController = controller;
+                }
+            }
+            selectAction = rightHandStableController.selectAction.action;
+        }
     }
 
     void Update()
     {
-        if (rightHandController != null)
+        if (rightHandController != null || rightHandStableController != null)
         {
-            selectAction = rightHandController.selectAction.action;
             if (selectAction.triggered)
             {
+
                 float currentTime = Time.time;
                 
                 // Check if enough time has passed since the last action
@@ -54,6 +71,6 @@ public class SelectActionCounter : MonoBehaviour
         {
             return count-1;
         }
-        return count+1;
+        return count-1;
     }
 }

@@ -72,8 +72,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         
         shuffledCombinations = latinSquareManager.GenerateAndShuffleCombinations(cameraTypes, panelAnchors, mappingFunction);
         
-        ApplySettingsFromLine(shuffledCombinations[0]);
-        currentLineIndex++;
+        ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
     }
     
     private void ApplySettingsFromLine((int, int, int) combination)
@@ -218,9 +217,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
             return;
         }
-
-        ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
         currentLineIndex++;
+        ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
 
 
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
@@ -247,7 +245,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
                        $"Scene: {SceneManager.GetActiveScene().name}, " +
-                       $"Latin Square Combination: {shuffledCombinations[currentLineIndex].ToString()}, " +
+                       $"ART Variant: {shuffledCombinations[currentLineIndex].ToString()}, " +
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
                        $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
