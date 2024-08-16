@@ -54,6 +54,6 @@ public class SelectActionCounter : MonoBehaviour
         {
             return count-1;
         }
-        return count;
+        return count+1;
     }
 }

@@ -246,6 +246,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         if (SceneManager.GetActiveScene().name != "Baseline")
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
+                       $"Scene: {SceneManager.GetActiveScene().name}, " +
                        $"Latin Square Combination: {shuffledCombinations[currentLineIndex].ToString()}, " +
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
@@ -254,6 +255,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         else
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
+                       $"Scene: {SceneManager.GetActiveScene().name}, "+
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
                        $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
