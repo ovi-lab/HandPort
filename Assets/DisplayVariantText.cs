@@ -12,7 +12,6 @@ public class DisplayVariantText : MonoBehaviour
         if (permutationText == null)
         {
             permutationText = GameObject.Find("VariantText")?.GetComponent<TextMeshProUGUI>();
-            Debug.Log(permutationText);
         }
     }
 
