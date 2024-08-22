@@ -1,30 +1,79 @@
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class LatinSquareManager
-
 {
-    // Generates all possible combinations of the provided sets
-    private List<(int, int, int)> GenerateAllCombinations(int[] set1, int[] set2, int[] set3)
+    public List<List<(int, int, int)>> GenerateCombinations(int[] cameraTypes, int[] panelAnchors,
+        int[] mappingFunctions)
     {
-        var combinations = new List<(int, int, int)>();
+        var patterns = GeneratePattern();
+        var extendedPatterns = new List<List<(int, int, int)>>();
+        var rand = new System.Random();
 
-        foreach (var item1 in set1)
+        // Generate extended patterns
+        foreach (var row in patterns)
         {
-            foreach (var item2 in set2)
+            var extendedRow = new List<(int, int, int)>();
+            var mappingFunctionList = mappingFunctions.ToList();
+
+            foreach (var pair in row)
             {
-                foreach (var item3 in set3)
+                var shuffledMappingFunctions = mappingFunctionList.OrderBy(x => rand.Next()).ToArray();
+                foreach (var mappingFunction in shuffledMappingFunctions)
                 {
-                    combinations.Add((item1, item2, item3));
+                    extendedRow.Add((pair.Item1, pair.Item2, mappingFunction));
                 }
             }
+        
+            extendedPatterns.Add(extendedRow);
         }
 
-        return combinations;
+        // Debugging output
+        foreach (var row in extendedPatterns)
+        {
+            string rowString = string.Join("\t", row.Select(t => $"({t.Item1}, {t.Item2}, {t.Item3})"));
+            Debug.Log(rowString);
+        }
+
+        return extendedPatterns;
     }
     
+    
+    private List<List<(int, int)>> GeneratePattern()
+    {
+        var pattern = new List<List<(int, int)>>
+        {
+            new List<(int, int)>
+            {
+                (0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)
+            },
+            new List<(int, int)>
+            {
+                (0, 1), (0, 0), (2, 1), (2, 0), (1, 1), (1, 0)
+            },
+            new List<(int, int)>
+            {
+                (1, 0), (1, 1), (0, 0), (0, 1), (2, 0), (2, 1)
+            },
+            new List<(int, int)>
+            {
+                (1, 1), (1, 0), (2, 1), (2, 0), (0, 1), (0, 0)
+            },
+            new List<(int, int)>
+            {
+                (2, 0), (2, 1), (0, 0), (0, 1), (1, 0), (1, 1)
+            },
+            new List<(int, int)>
+            {
+                (2, 1), (2, 0), (1, 1), (1, 0), (0, 1), (0, 0)
+            }
+        };
+
+        return pattern;
+    }
+
     private List<(int, float)> GenerateAllCombinations(int[] set1, float[] set2)
     {
         var combinations = new List<(int, float)>();
@@ -53,30 +102,7 @@ public class LatinSquareManager
         var rand = new System.Random();
         return combinations.OrderBy(x => rand.Next()).ToList();
     }
-
-    // Generates and shuffles the combinations
-    public List<(int, int, int)> GenerateAndShuffleCombinations(int[] set1, int[] set2, int[] set3)
-    {
-        // Generate all combinations
-        var combinations = GenerateAllCombinations(set1, set2, set3);
-
-        // Log all combinations
-        string combinationsLog = "All Combinations:\n";
-        combinationsLog = combinations.Aggregate(combinationsLog, (current, combination) =>
-            current + $"{combination.Item1}, {combination.Item2}, {combination.Item3}\n");
-        //Debug.Log(combinationsLog);
-
-        // Generate a balanced permutation of the combinations
-        var balancedCombinations = GenerateBalancedCombinations(combinations);
-
-        // Log the balanced combinations
-        string balancedCombinationsLog = "Balanced Combinations:\n";
-        balancedCombinationsLog = balancedCombinations.Aggregate(balancedCombinationsLog, (current, combination) =>
-            current + $"{combination.Item1}, {combination.Item2}, {combination.Item3}\n");
-        //Debug.Log(balancedCombinationsLog);
-
-        return balancedCombinations;
-    }
+    
     
     public List<(int, float)> GenerateAndShuffleCombinations(int[] set1, float[] set2, int repetition)
     {

@@ -40,8 +40,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     
     private LatinSquareManager latinSquareManager = new LatinSquareManager();
     private SelectActionCounter selectActionCounter;
-    private List<(int, int, int)> shuffledCombinations;
-    private int currentLineIndex = 0;
+    private List<List<(int, int, int)>> combinations;
+    private int currentRowIndex = 0;
     public XROrigin xrOrigin;
 
     private List<float> taskCompletionTimes = new List<float>();
@@ -63,24 +63,18 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
         cameraManager =FindObjectOfType<CameraManager>();
         selectActionCounter =FindObjectOfType<SelectActionCounter>();
-        if (SceneManager.GetActiveScene().name == "ART")
-        {
-            ApplyRandomizedConditions();   
-        }
-        
         teleportationProvider = FindObjectOfType<TeleportationProvider>();
-        
     }
     
     private void ApplyRandomizedConditions()
     {
         int[] cameraTypes = Enum.GetValues(typeof(CameraType)).Cast<int>().ToArray();
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
-        int[] mappingFunction = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
+        int[] mappingFunctions = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
         
-        shuffledCombinations = latinSquareManager.GenerateAndShuffleCombinations(cameraTypes, panelAnchors, mappingFunction);
+        combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
         
-        ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
+        ApplySettingsFromLine(combinations[participantConditions.participantID - 1][currentRowIndex]);
     }
     
     private void ApplySettingsFromLine((int, int, int) combination)
@@ -126,6 +120,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             adapterConditions = _values as AdapterConditions;
             SetupAdapterWithAdapterConditions();
+            if (SceneManager.GetActiveScene().name == "ART")
+            {
+                ApplyRandomizedConditions();   
+            }
         }
         else
         {
@@ -264,13 +262,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
-        if (SceneManager.GetActiveScene().name != "ART"  || currentLineIndex >= shuffledCombinations.Count)
+        if (SceneManager.GetActiveScene().name != "ART"  || currentRowIndex >= combinations.Count)
         {
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
             return;
         }
-        currentLineIndex++;
-        ApplySettingsFromLine(shuffledCombinations[currentLineIndex]);
+        
+        currentRowIndex++;
+        ApplySettingsFromLine(combinations[participantConditions.participantID][currentRowIndex]);
 
 
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
@@ -299,7 +298,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
                        $"Scene: {SceneManager.GetActiveScene().name}, " +
-                       $"ART Variant: {shuffledCombinations[currentLineIndex].ToString()}, " +
+                       $"ART Variant: {combinations[currentRowIndex].ToString()}, " +
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
                        $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
