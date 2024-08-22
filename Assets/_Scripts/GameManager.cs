@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Firebase.Database;
 using UnityEngine;
@@ -49,6 +50,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     public int GetCurrentTarget => currentTarget;
     public int GetTargetCount => targets.Count;
+    
+    private float trialDuration = 15f; // Set this to the desired duration for each trial
+    private Coroutine trialTimerCoroutine;
+    public TeleportationProvider teleportationProvider;
 
     protected override void Awake()
     {
@@ -62,6 +67,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             ApplyRandomizedConditions();   
         }
+        
+        teleportationProvider = FindObjectOfType<TeleportationProvider>();
+        
     }
     
     private void ApplyRandomizedConditions()
@@ -165,50 +173,94 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             target.gameObject.SetActive(false);
         }
         targets[currentTarget].gameObject.SetActive(true);
+
+        // Start the trial timer when the first target is enabled
+        StartTrialTimer();
     }
 
     public void EnableNextTarget(SelectExitEventArgs arg0)
     {
+        if (trialTimerCoroutine != null)
+        {
+            StopCoroutine(trialTimerCoroutine);
+        }
+
         if (currentTarget == targets.Count - 1)
         {
-            if (currentTarget % 2 == 1) 
+            if (currentTarget % 2 == 1)
             {
                 float endTime = Time.time;
-                float completionTime = endTime - startTime; // Calculate the time taken between targets
-                taskCompletionTimes.Add(completionTime); // Store the final completion time
+                float completionTime = endTime - startTime;
+                if (completionTime > trialDuration)
+                {
+                    completionTime = -1;
+                }
+                taskCompletionTimes.Add(completionTime);
                 int attempt = selectActionCounter.GetSelectActionCount();
                 numberOfAttempts.Add(attempt);
                 Debug.Log($"Time to complete task {currentTarget-1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
             }
-            
+
             LogData();
             ResetTargetsAndXROrigin();
             return;
         }
-        if(nextTarget < targets.Count)
+
+        if (nextTarget < targets.Count)
         {
-            // STORE TASK COMPLETION TIME
-            if (currentTarget % 2 == 0) 
+            if (currentTarget % 2 == 0)
             {
                 startTime = Time.time;
             }
-            else if (currentTarget % 2 == 1) 
+            else if (currentTarget % 2 == 1)
             {
                 float endTime = Time.time;
-                float completionTime = endTime - startTime; // Calculate the time taken between targets
-                taskCompletionTimes.Add(completionTime); // Store the completion time
+                float completionTime = endTime - startTime;
+                if (completionTime > trialDuration)
+                {
+                    completionTime = -1;
+                }
+                taskCompletionTimes.Add(completionTime);
                 int attempt = selectActionCounter.GetSelectActionCount();
                 numberOfAttempts.Add(attempt);
                 Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
                 startTime = 0;
             }
 
-            // ENABLE NEXT TARGET
             targets[currentTarget].gameObject.SetActive(false);
             targets[nextTarget].gameObject.SetActive(true);
             currentTarget++;
             nextTarget = currentTarget + 1;
+
+            // Start the timer for the next target
+            StartTrialTimer();
         }
+    }
+    private void StartTrialTimer()
+    {
+        if (trialTimerCoroutine != null)
+        {
+            StopCoroutine(trialTimerCoroutine);
+        }
+        trialTimerCoroutine = StartCoroutine(TrialTimer());
+    }
+
+    private IEnumerator TrialTimer()
+    {
+        yield return new WaitForSeconds(trialDuration);
+        //Debug.Log($"Time ran out for task {currentTarget}, moving to the next target.");
+
+        Vector3 targetDestination = targets[currentTarget].transform.position;
+        targetDestination.y += targets[currentTarget].transform.localScale.y/2;
+        
+        var teleportRequest = new TeleportRequest
+        {
+            destinationPosition = targetDestination,
+            matchOrientation = MatchOrientation.WorldSpaceUp
+        };
+        teleportationProvider.QueueTeleportRequest(teleportRequest);
+        
+        EnableNextTarget(new SelectExitEventArgs()); 
     }
     public void ResetTargetsAndXROrigin()
     {
@@ -229,6 +281,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         currentTarget = 0;
         nextTarget = 1;
         SetupObstaclesWithTargetConditions();
+        
+        StartTrialTimer();
     }
 
     private void LogData()
@@ -238,7 +292,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         // Convert DistanceSizeCombinations to a string format
         string distanceSizeCombinationString = string.Join(", ", 
             obstacleManager.GetDistanceSizeCombinations()
-                .Select(pair => $"{pair.distance}:{pair.size}")
+                .Select(pair => $"{pair.distance},{pair.size}")
         );
         string logEntry = "";
         if (SceneManager.GetActiveScene().name != "Baseline")

@@ -3064,7 +3064,7 @@ MonoBehaviour:
   m_SnapEndpointIfAvailable: 1
   m_LineBendRatio: 0.5
   m_OverrideInteractorLineOrigin: 1
-  m_LineOriginTransform: {fileID: 0}
+  m_LineOriginTransform: {fileID: 2085758907}
   m_LineOriginOffset: 0
 --- !u!120 &1112698605
 LineRenderer:
