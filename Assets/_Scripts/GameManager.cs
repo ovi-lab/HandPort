@@ -74,7 +74,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         
         combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
         
-        ApplySettingsFromLine(combinations[participantConditions.participantID - 1][currentRowIndex]);
+        ApplySettingsFromLine(combinations[participantConditions.participantID% 6 - 1][currentRowIndex]);
     }
     
     private void ApplySettingsFromLine((int, int, int) combination)
@@ -269,7 +269,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
         
         currentRowIndex++;
-        ApplySettingsFromLine(combinations[participantConditions.participantID][currentRowIndex]);
+        ApplySettingsFromLine(combinations[participantConditions.participantID% 6-1][currentRowIndex]);
 
 
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
