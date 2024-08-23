@@ -6378,6 +6378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targets: []
   xrOrigin: {fileID: 0}
+  teleportationProvider: {fileID: 1784775032}
 --- !u!4 &2067615957
 Transform:
   m_ObjectHideFlags: 0
