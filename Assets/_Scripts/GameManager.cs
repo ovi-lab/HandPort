@@ -64,18 +64,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         cameraManager =FindObjectOfType<CameraManager>();
         selectActionCounter =FindObjectOfType<SelectActionCounter>();
         teleportationProvider = FindObjectOfType<TeleportationProvider>();
-    }
-    
-    private void ApplyRandomizedConditions()
-    {
+        
         int[] cameraTypes = Enum.GetValues(typeof(CameraType)).Cast<int>().ToArray();
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
         int[] mappingFunctions = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
         
         combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
-        
-        ApplySettingsFromLine(combinations[participantConditions.participantID% 6 - 1][currentRowIndex]);
     }
+    
     
     private void ApplySettingsFromLine((int, int, int) combination)
     {
@@ -122,7 +118,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             SetupAdapterWithAdapterConditions();
             if (SceneManager.GetActiveScene().name == "ART")
             {
-                ApplyRandomizedConditions();   
+                ApplySettingsFromLine(combinations[participantConditions.participantID% 6 - 1][currentRowIndex]);   
             }
         }
         else
@@ -298,7 +294,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
                        $"Scene: {SceneManager.GetActiveScene().name}, " +
-                       $"ART Variant: {combinations[currentRowIndex].ToString()}, " +
+                       $"ART Variant: {combinations[participantConditions.participantID% 6-1][currentRowIndex]}, " +
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
                        $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
