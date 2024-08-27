@@ -72,6 +72,20 @@ public class LatinSquareManager
         return extendedPatterns;
     }
     
+    public List<List<int>> GenerateMappingCombinations(
+        int[] mappingFunctions)
+    {
+        var pattern = GenerateMappingPattern();
+        foreach (var row in pattern)
+        {
+            // Convert the row into a string representation, formatting each integer.
+            string rowString = string.Join("\t", row.Select(num => num.ToString()));
+            Debug.Log(rowString);
+        }
+        
+        return pattern;
+    }
+    
     private List<List<(int, int)>> GeneratePattern()
     {
         var pattern = new List<List<(int, int)>>
@@ -105,6 +119,26 @@ public class LatinSquareManager
         };
 
         return pattern;
+    }
+    
+    private List<List<int>> GenerateMappingPattern()
+    {
+        // Initialize a list of lists with integer elements
+        var pattern = new List<List<int>>
+        {
+            new List<int> { 0, 1, 3, -1, 2 },
+            new List<int> { 3, 2, 0, -1, 1 },
+            new List<int> { -1, 2, 1, 3, 0 },
+            new List<int> { 1, 0, -1, 3, 2 },
+            new List<int> { 3, 0, 2, 1, -1 },
+            new List<int> { 2, -1, 3, 1, 0 },
+            new List<int> { 1, -1, 0, 2, 3 },
+            new List<int> { 0, 3, 1, 2, -1 },
+            new List<int> { 2, 3, -1, 0, 1 },
+            new List<int> { -1, 1, 2, 0, 3 }
+        };
+
+        return pattern; // Return the generated list of lists
     }
     
     

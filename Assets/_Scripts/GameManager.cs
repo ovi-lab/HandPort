@@ -5,6 +5,7 @@ using Firebase.Database;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using System.Linq;
+using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine.SceneManagement;
 
@@ -41,6 +42,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private LatinSquareManager latinSquareManager = new LatinSquareManager();
     private SelectActionCounter selectActionCounter;
     private List<List<(int, int, int)>> combinations;
+    private List<List<int>> mappingCombinations;
     private int currentRowIndex = 0;
     public XROrigin xrOrigin;
 
@@ -70,6 +72,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         int[] mappingFunctions = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
         
         combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
+        // mappingCombinations = latinSquareManager.GenerateMappingCombinations(mappingFunctions);
     }
     
     
@@ -89,6 +92,21 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         else
         {
             Debug.LogError("CameraManager not found in the scene.");
+        }
+    }
+    
+    private void ApplySettingsFromLine(int combination)
+    {
+        if (combination > -1)
+        {
+            teleportAdapter.goGoAlgorithm = (GoGoAlgorithm)combination;
+            
+            Debug.Log($"Applying Algorithm={combination}");
+            FindObjectOfType<DisplayVariantText>().DisplayVariant(combination);
+        }
+        else
+        {
+            Debug.Log("BASELINE");
         }
     }
     
@@ -118,7 +136,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             SetupAdapterWithAdapterConditions();
             if (SceneManager.GetActiveScene().name == "ART")
             {
-                ApplySettingsFromLine(combinations[participantConditions.participantID% 6 - 1][currentRowIndex]);   
+                ApplySettingsFromLine(combinations[participantConditions.participantID% 6 - 1][currentRowIndex]);  
+            } else if (SceneManager.GetActiveScene().name == "ART2")
+            {
+                // ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
             }
         }
         else
@@ -258,14 +279,17 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
-        if (SceneManager.GetActiveScene().name != "ART"  || currentRowIndex >= combinations.Count)
+        // if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex >= mappingCombinations.Count)
+        if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex >= combinations.Count)
         {
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
             return;
         }
         
         currentRowIndex++;
+
         ApplySettingsFromLine(combinations[participantConditions.participantID% 6-1][currentRowIndex]);
+        // ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
 
 
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
@@ -290,7 +314,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 .Select(pair => $"{pair.distance},{pair.size}")
         );
         string logEntry = "";
-        if (SceneManager.GetActiveScene().name != "Baseline")
+        if (SceneManager.GetActiveScene().name == "ART")
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
                        $"Scene: {SceneManager.GetActiveScene().name}, " +
@@ -299,8 +323,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
                        $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
         }
-        else
+        else if (SceneManager.GetActiveScene().name == "ART2")
         {
+            logEntry = $"Participant ID: {participantConditions.participantID}, " +
+                       $"Scene: {SceneManager.GetActiveScene().name}, " +
+                       $"ART Variant: {mappingCombinations[participantConditions.participantID-1][currentRowIndex]}, " +
+                       $"Distance Size Combination: {distanceSizeCombinationString}, " +
+                       $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
+                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+        }
+        else {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
                        $"Scene: {SceneManager.GetActiveScene().name}, "+
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +

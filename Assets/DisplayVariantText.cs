@@ -32,6 +32,18 @@ public class DisplayVariantText : MonoBehaviour
         StartCoroutine(DisplayTextForDuration(textToShow, 8f));
     }
     
+    public void DisplayVariant(int mapping)
+    {
+        if (permutationText == null)
+        {
+            permutationText = GameObject.Find("VariantText")?.GetComponent<TextMeshProUGUI>();
+        }
+
+        string textToShow = $"Mapping Function: {(GoGoAlgorithm)mapping}";
+        StartCoroutine(DisplayTextForDuration(textToShow, 8f));
+    }
+
+    
     private IEnumerator DisplayTextForDuration(string text, float duration)
     {
         permutationText.text = text;
