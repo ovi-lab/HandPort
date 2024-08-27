@@ -7,6 +7,8 @@ public class ObstacleManager : MonoBehaviour
 {
     [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private GameObject intermediateObstaclePrefab;
+    [SerializeField] private GameObject intermediateObstacleArrowPrefab;
+    [SerializeField] private GameObject obstacleArrowPrefab;
     public Transform cameraOffset;
 
     private Vector3 spawnPosition = new Vector3(0, 0, 0);
@@ -65,11 +67,14 @@ public class ObstacleManager : MonoBehaviour
 
         float adjustedZ = Mathf.Sqrt(Mathf.Pow(intermediateObstacleDistance, 2) - Mathf.Pow(heightDifference, 2));
         spawnPosition.z += adjustedZ;
-        spawnPosition.y = terrainHeight + 0.5f * intermediateObstacleSize;
+        spawnPosition.y = terrainHeight + 0.5f * 0.2f;
 
         var intermediateObstacle = Instantiate(intermediateObstaclePrefab, spawnPosition, Quaternion.identity);
-        intermediateObstacle.transform.localScale = Vector3.one * intermediateObstacleSize;
+        intermediateObstacle.transform.localScale = new Vector3(1,0.2f,1) * intermediateObstacleSize;
         var intermediateAnchor = intermediateObstacle.GetComponent<TeleportationAnchor>();
+        var intermediateObstacleArrow = Instantiate(intermediateObstacleArrowPrefab, spawnPosition, Quaternion.identity);
+        intermediateObstacleArrow.transform.SetParent(intermediateObstacle.transform);
+        
         obstacles.Add(intermediateAnchor);
         intermediateObstacle.transform.SetParent(parent.transform);
 
@@ -87,13 +92,16 @@ public class ObstacleManager : MonoBehaviour
 
         float adjustedZ = Mathf.Sqrt(Mathf.Pow(currentDistance, 2) - Mathf.Pow(horizontalOffset, 2) - Mathf.Pow(heightDifference, 2));
         spawnPosition += new Vector3(horizontalOffset, 0, adjustedZ);
-        spawnPosition.y = terrainHeight + 0.5f * currentSize;
+        spawnPosition.y =  terrainHeight + 0.5f * 0.2f;
 
         var randomObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
-        randomObstacle.transform.localScale = Vector3.one * currentSize;
+        randomObstacle.transform.localScale = new Vector3(1,0.2f,1) * currentSize;
         var randomAnchor = randomObstacle.GetComponent<TeleportationAnchor>();
+        var obstacleArrow = Instantiate(obstacleArrowPrefab, spawnPosition, Quaternion.identity);
+        obstacleArrow.transform.SetParent(randomObstacle.transform);
+        
         obstacles.Add(randomAnchor);
-        randomObstacle.transform.SetParent(parent.transform);
+        randomObstacle.transform.SetParent(randomObstacle.transform);
 
         previousHeight = terrainHeight;
     }

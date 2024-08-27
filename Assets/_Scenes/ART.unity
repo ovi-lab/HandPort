@@ -306,7 +306,7 @@ Transform:
   m_GameObject: {fileID: 89682530}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.70710677, z: 0.70710677, w: 0}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0.8}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0.8}
   m_LocalScale: {x: 0.022, y: 0.0022, z: 0.0165}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2508,6 +2508,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 6997833716616865178, guid: 8c3cd5531613b924a924432ad5f5cfc5, type: 3}
   intermediateObstaclePrefab: {fileID: 6997833716616865178, guid: 5d9572cf72219ce4096d043157a43225, type: 3}
+  intermediateObstacleArrowPrefab: {fileID: 8343167407413159200, guid: 001002f506b151642a27db71d9727d90, type: 3}
+  obstacleArrowPrefab: {fileID: 8343167407413159200, guid: 69a3f9c81ba106f4fad0afee19ff9ec1, type: 3}
   cameraOffset: {fileID: 354698113}
 --- !u!4 &938803020
 Transform:
@@ -2900,7 +2902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b575ca1df3723d4da6043bccb589976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goGoAlgorithm: 0
+  goGoAlgorithm: 3
   xrOrigin: {fileID: 654248850}
   normalizedDeltaForward: 0
   rightHand: {fileID: 937927183}
