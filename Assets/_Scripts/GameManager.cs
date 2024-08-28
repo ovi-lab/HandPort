@@ -57,6 +57,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private Coroutine trialTimerCoroutine;
     public TeleportationProvider teleportationProvider;
 
+    public GameObject rightHandBase;
+    public GameObject rightHand;
+    public GameObject previewWindow;
+    
+
     protected override void Awake()
     {
         base.Awake();
@@ -71,8 +76,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
         int[] mappingFunctions = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
         
-        combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
-        // mappingCombinations = latinSquareManager.GenerateMappingCombinations(mappingFunctions);
+        // combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
+        mappingCombinations = latinSquareManager.GenerateMappingCombinations(mappingFunctions);
     }
     
     
@@ -97,8 +102,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     
     private void ApplySettingsFromLine(int combination)
     {
+        
         if (combination > -1)
         {
+            previewWindow.SetActive(true);
+            rightHandBase.SetActive(false);
+            rightHand.SetActive(true);
             teleportAdapter.goGoAlgorithm = (GoGoAlgorithm)combination;
             
             Debug.Log($"Applying Algorithm={combination}");
@@ -106,7 +115,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
         else
         {
+            rightHand.SetActive(false);
+            rightHandBase.SetActive(true);
+            
+            previewWindow.SetActive(false);
+            
             Debug.Log("BASELINE");
+            FindObjectOfType<DisplayVariantText>().DisplayVariant("Baseline");
         }
     }
     
@@ -136,10 +151,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             SetupAdapterWithAdapterConditions();
             if (SceneManager.GetActiveScene().name == "ART")
             {
-                ApplySettingsFromLine(combinations[participantConditions.participantID% 6 - 1][currentRowIndex]);  
+                ApplySettingsFromLine(combinations[participantConditions.participantID%-1 ][currentRowIndex]);  
             } else if (SceneManager.GetActiveScene().name == "ART2")
             {
-                // ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
+                ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
             }
         }
         else
@@ -279,17 +294,17 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
-        // if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex >= mappingCombinations.Count)
-        if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex >= combinations.Count)
+        if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex == mappingCombinations[participantConditions.participantID - 1].Count-1)
+        // if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex >= combinations.Count)
         {
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
             return;
         }
         
         currentRowIndex++;
-
-        ApplySettingsFromLine(combinations[participantConditions.participantID% 6-1][currentRowIndex]);
-        // ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
+        
+        // ApplySettingsFromLine(combinations[participantConditions.participantID-1][currentRowIndex]);
+        ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
 
 
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
@@ -318,7 +333,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
                        $"Scene: {SceneManager.GetActiveScene().name}, " +
-                       $"ART Variant: {combinations[participantConditions.participantID% 6-1][currentRowIndex]}, " +
+                       $"ART Variant: {combinations[participantConditions.participantID-1][currentRowIndex]}, " +
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
                        $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 

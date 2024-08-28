@@ -3260,6 +3260,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 6997833716616865178, guid: 8c3cd5531613b924a924432ad5f5cfc5, type: 3}
   intermediateObstaclePrefab: {fileID: 6997833716616865178, guid: 5d9572cf72219ce4096d043157a43225, type: 3}
+  intermediateObstacleArrowPrefab: {fileID: 8343167407413159200, guid: 001002f506b151642a27db71d9727d90, type: 3}
+  obstacleArrowPrefab: {fileID: 8343167407413159200, guid: 69a3f9c81ba106f4fad0afee19ff9ec1, type: 3}
   cameraOffset: {fileID: 354698113}
 --- !u!4 &938803020
 Transform:
@@ -5731,7 +5733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1405693584
 Transform:
   m_ObjectHideFlags: 0
@@ -5881,7 +5883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GroupName: 
-  m_InteractionManager: {fileID: 0}
+  m_InteractionManager: {fileID: 1365153841}
   m_StartingGroupMembers:
   - {fileID: 1012395892}
   m_StartingInteractionOverridesMap: []
@@ -8132,6 +8134,8 @@ MonoBehaviour:
   targets: []
   xrOrigin: {fileID: 654248851}
   teleportationProvider: {fileID: 2092479419}
+  rightHandBase: {fileID: 1405693583}
+  rightHand: {fileID: 937927178}
 --- !u!4 &2067615957
 Transform:
   m_ObjectHideFlags: 0
