@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -13338,6 +13338,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 6997833716616865178, guid: 8c3cd5531613b924a924432ad5f5cfc5, type: 3}
   intermediateObstaclePrefab: {fileID: 6997833716616865178, guid: 5d9572cf72219ce4096d043157a43225, type: 3}
+  intermediateObstacleArrowPrefab: {fileID: 0}
+  obstacleArrowPrefab: {fileID: 0}
   cameraOffset: {fileID: 354698113}
 --- !u!4 &938803020
 Transform:
@@ -19057,7 +19059,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a60dbeb496471f45a8b30270fafa5c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayInteractor: {fileID: 1112698599}
+  rayInteractor1: {fileID: 1112698599}
+  rayInteractor2: {fileID: 1588931366}
 --- !u!114 &1365153841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19980,7 +19983,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a60dbeb496471f45a8b30270fafa5c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayInteractor: {fileID: 1588931366}
+  rayInteractor1: {fileID: 0}
+  rayInteractor2: {fileID: 0}
 --- !u!4 &1400828114
 Transform:
   m_ObjectHideFlags: 0
