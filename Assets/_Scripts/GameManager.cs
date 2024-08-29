@@ -120,7 +120,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             
             previewWindow.SetActive(false);
             
-            Debug.Log("BASELINE");
+            //Debug.Log("BASELINE");
             FindObjectOfType<DisplayVariantText>().DisplayVariant("Baseline");
         }
     }
