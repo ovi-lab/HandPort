@@ -49,19 +49,16 @@ public class FirebaseManager : MonoBehaviour
         }
     }
     
-    public static void LogData(string logData)
+    public static void LogData(string logData, string key)
     {
-        // Create a unique key for each log entry
-        string key = realtimeDB.Child("log").Push().Key;
         
-        // Prepare the data to push as a dictionary
         var logEntryDict = new Dictionary<string, object>
         {
-            { "logData", logData }
+            { key, logData }
         };
         
         // Push data to Firebase
-        RealtimeDB.Child("log").Child(key).SetValueAsync(logEntryDict).ContinueWith(task =>
+        RealtimeDB.Child("log").SetValueAsync(logEntryDict).ContinueWith(task =>
         {
             if (task.IsFaulted)
             {

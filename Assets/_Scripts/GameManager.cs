@@ -329,6 +329,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 .Select(pair => $"{pair.distance},{pair.size}")
         );
         string logEntry = "";
+        string key = participantConditions.participantID+SceneManager.GetActiveScene().name;
         if (SceneManager.GetActiveScene().name == "ART")
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
@@ -340,12 +341,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
         else if (SceneManager.GetActiveScene().name == "ART2")
         {
-            logEntry = $"Participant ID: {participantConditions.participantID}, " +
-                       $"Scene: {SceneManager.GetActiveScene().name}, " +
-                       $"ART Variant: {mappingCombinations[participantConditions.participantID-1][currentRowIndex]}, " +
-                       $"Distance Size Combination: {distanceSizeCombinationString}, " +
-                       $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
-                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+            logEntry = $"{participantConditions.participantID}, " +
+                       $"{(GoGoAlgorithm)mappingCombinations[participantConditions.participantID-1][currentRowIndex]}, " +
+                       $"{distanceSizeCombinationString}, " +
+                       $"{string.Join(", ", taskCompletionTimes)}, " +
+                       $"{string.Join(", ", numberOfAttempts)}, " +
+                       $"{string.Join(", ", adapterConditions.ellbowWristDistance)}, " + 
+                       $"{string.Join(", ", adapterConditions.shoulderEllbowDistance)}, " + 
+                       $"{string.Join(", ", adapterConditions.originShoulderDistance)}, "; 
         }
         else {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
@@ -356,7 +359,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
         
         Debug.Log(logEntry);
-        FirebaseManager.LogData(logEntry);
+        FirebaseManager.LogData(logEntry, key);
 
         // Clear the list for the next block
         taskCompletionTimes.Clear();
