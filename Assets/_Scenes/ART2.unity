@@ -2647,7 +2647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1fa5f039c6cf7c4b94a9b53ee76b7f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraDisplayType: 2
+  cameraDisplayType: 0
   resolution: 0
   anchor: 1
   cameras:
@@ -5325,7 +5325,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1275939421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6050,7 +6050,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1552960947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8136,6 +8136,7 @@ MonoBehaviour:
   teleportationProvider: {fileID: 2092479419}
   rightHandBase: {fileID: 1405693583}
   rightHand: {fileID: 937927178}
+  previewWindow: {fileID: 89682530}
 --- !u!4 &2067615957
 Transform:
   m_ObjectHideFlags: 0
