@@ -109,8 +109,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             rightHandBase.SetActive(false);
             rightHand.SetActive(true);
             teleportAdapter.goGoAlgorithm = (GoGoAlgorithm)combination;
-            
+
             Debug.Log($"Applying Algorithm={combination}");
+            Debug.Log($"TeleportAdapter using Algorithm:{teleportAdapter.goGoAlgorithm}");
             FindObjectOfType<DisplayVariantText>().DisplayVariant(combination);
         }
         else
