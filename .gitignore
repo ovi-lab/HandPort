@@ -2,6 +2,7 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+/.idea
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -70,3 +71,22 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Rider
+# Rider auto-generates .iml files, and contentModel.xml
+**/.idea/**/*.iml
+**/.idea/**/contentModel.xml
+**/.idea/**/modules.xml
+.idea
+
+# Exclude Firebase JSON files
+*.json
+
+# Exclude Firebase folder
+/[Aa]ssets/Editor Default Resources/
+/[Aa]ssets/ExternalDependencyManager/
+/[Aa]ssets/Firebase/
+/[Aa]ssets/Parse/
+/[Aa]ssets/Plugins/
+/[Aa]ssets/StreamingAssets/google-services-desktop.json.meta. i d e a  
+ 

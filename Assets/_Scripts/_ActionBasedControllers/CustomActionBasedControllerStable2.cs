@@ -257,7 +257,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
         private bool previousRayStabilized = false;
         private float stableEulerX = 0f;
         private float stableEulerZ = 0f;
-        private float stableEulerY = 0f;
+        // private float stableEulerY = 0f;
 
         /// <inheritdoc />
         protected override void OnEnable()

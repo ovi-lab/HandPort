@@ -41,7 +41,7 @@ MonoBehaviour:
   - 
   - 
   - 
-  - 
+  - BlockTeleport
   - Interactable
   - Gaze
   - Teleport
