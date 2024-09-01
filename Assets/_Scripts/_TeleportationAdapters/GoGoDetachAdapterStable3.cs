@@ -14,36 +14,38 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
 {
     public GoGoAlgorithm goGoAlgorithm;
 
-    private XRHandSubsystem m_HandSubsystem;
+
+    [Header("Reference Transforms")]
     public Transform xrOrigin;
-    private  float minVirtDistance = 0f;
-    private float maxVirtDistance;
-
-    public float normalizedDeltaForward = 0f;
-    private float minDistance;
-    private float maxDistance;
-
-    private float originShoulderDistance;
-    private float elbowWristDistance;
-    private float shoulderElbowDistance;
-
     public Transform rightHand;
-
-    private OneEuroFilter positionFilter;
     public Transform rightHandScaleAnchor;
-    public Vector3 shoulderToWristDirection;
 
-     private float minCufoff =0.3f;
-     private float beta = 3f;
-    private float dCutoff = 1f;
+    [Header("Go Go Parameters")]
+    public float normalizedDeltaForward = 0f;
+    [SerializeField] float handMovementThreshold = 0.01f;
+    [SerializeField] private float minVirtDistance = 0f;
+    [SerializeField] private float maxVirtDistance;
+    [SerializeField] private float minDistance;
+    [SerializeField] private float maxDistance;
 
-    public float handMovementThreshold = 0.01f;
+    [Header("One Euro Filter")]
+    [SerializeField] private float minCufoff =0.3f;
+    [SerializeField] private float beta = 3f;
+    [SerializeField] private float dCutoff = 1f;
+    private OneEuroFilter positionFilter;
+
+    [Header("Participant Measurements")]
+    [SerializeField] private float originShoulderDistance;
+    [SerializeField] private float elbowWristDistance;
+    [SerializeField] private float shoulderElbowDistance;
+    [SerializeField] public Vector3 shoulderToWristDirection;
+
+    private XRHandSubsystem m_HandSubsystem;
     private float previousNormDeltaForward = 0f;
-
     private Vector3 currentWristPos;
     private Vector3 targetWristPos;
-    public int interpolationFramesCount = 45;
-    int elapsedFrames = 0;
+    private int interpolationFramesCount = 45;
+    private int elapsedFrames = 0;
     private Vector3 previousTargetWristPos;
 
     void Start()
@@ -204,9 +206,6 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 // SIGMOID
                 float sigmoidValue = 1f / (1f + Mathf.Exp(6-12*normalizedDeltaForward));
                 return Mathf.Lerp(minVirtDistance, maxVirtDistance, sigmoidValue);
-
-                // TANH
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance,(0.5f * (float)Math.Tanh(6f * normalizedDeltaForward - 3f) + 0.5f));
 
             case GoGoAlgorithm.Power:
                 // QUADRATIC
