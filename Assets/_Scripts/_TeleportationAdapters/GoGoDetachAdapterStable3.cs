@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Hands;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public enum GoGoAlgorithm
 {
@@ -13,11 +14,10 @@ public enum GoGoAlgorithm
 public class GoGoDetachAdapterStable3 : MonoBehaviour
 {
     public GoGoAlgorithm goGoAlgorithm;
-
-
     [Header("Reference Transforms")]
     public Transform xrOrigin;
     public Transform rightHand;
+    public Transform rightHandInPlace;
     public Transform rightHandScaleAnchor;
 
     [Header("Go Go Parameters")]
@@ -40,26 +40,32 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     [SerializeField] private float shoulderElbowDistance;
     [SerializeField] public Vector3 shoulderToWristDirection;
 
-    private XRHandSubsystem m_HandSubsystem;
     private float previousNormDeltaForward = 0f;
+    private int interpolationFramesCount = 0;
+    private int elapsedFrames = 0;
+    private bool granularMode;
+    private Camera mainCamera;
+    private CustomActionBasedControllerStable3 controller;
     private Vector3 currentWristPos;
     private Vector3 targetWristPos;
-    private int interpolationFramesCount = 45;
-    private int elapsedFrames = 0;
     private Vector3 previousTargetWristPos;
-
+    private Vector3 previousHandPos;
+    private Vector3 currentHandPos;
+    private Vector3 granularModeAnchor;
+    private XRHandSubsystem m_HandSubsystem;
     void Start()
     {
+        mainCamera = Camera.main;
         currentWristPos = Vector3.zero;
+        controller = GetComponent<CustomActionBasedControllerStable3>();
         var handSubsystems = new List<XRHandSubsystem>();
         SubsystemManager.GetSubsystems(handSubsystems);
 
         minDistance =  elbowWristDistance;
         maxDistance = elbowWristDistance + shoulderElbowDistance;
 
-        for (int i = 0; i < handSubsystems.Count; ++i)
+        foreach (XRHandSubsystem handSubsystem in handSubsystems)
         {
-            var handSubsystem = handSubsystems[i];
             if (handSubsystem.running)
             {
                 m_HandSubsystem = handSubsystem;
@@ -100,49 +106,56 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         }
     }
 
+
     private void ScaleUpWristPos()
     {
         if (m_HandSubsystem.rightHand.isTracked)
         {
-            var wristJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.Wrist);
+            XRHandJoint wristJoint = m_HandSubsystem.rightHand.GetJoint(XRHandJointID.Wrist);
             if (wristJoint.TryGetPose(out Pose wristPose))
             {
-                Vector3 worldWristPosition = xrOrigin.transform.TransformPoint(wristPose.position);
+                Vector3 worldWristPosition = positionFilter.FilterPosition(xrOrigin.transform.TransformPoint(wristPose.position));
                 worldWristPosition.y = 0;
 
                 // Calculate shoulderToWristDirection
                 Vector3 XZOriginPos = new Vector3(xrOrigin.position.x, 0f, xrOrigin.position.z);
-                shoulderToWristDirection = worldWristPosition - (XZOriginPos + Camera.main.transform.right * originShoulderDistance);
+                shoulderToWristDirection = worldWristPosition - (XZOriginPos + mainCamera.transform.right * originShoulderDistance);
                 shoulderToWristDirection.y = 0;
                 shoulderToWristDirection.Normalize();
 
                 // Calculate the direction from the adjusted xrOrigin to the wrist
-                Vector3 xrToWristDirection = worldWristPosition - XZOriginPos;
-                xrToWristDirection.y = 0;
+                Vector3 xrOriginToWristDirection = worldWristPosition - XZOriginPos;
+                xrOriginToWristDirection.y = 0;
 
                 // Project xrToWristDirection onto shoulderToWristDirection
-                float deltaForward = Vector3.Dot(xrToWristDirection, shoulderToWristDirection);
+                float deltaForward = Vector3.Dot(xrOriginToWristDirection, shoulderToWristDirection);
                 float clampedDeltaForward = Mathf.Clamp(deltaForward, minDistance, maxDistance);
 
                 // Normalize DeltaForward
                 normalizedDeltaForward = Mathf.InverseLerp(minDistance, maxDistance, clampedDeltaForward);
                 normalizedDeltaForward = Mathf.Clamp(normalizedDeltaForward, 0f, 1f);
 
-                //Debug.Log(Math.Abs(normalizedDeltaForward - previousNormDeltaForward) );
-
-                if (Math.Abs(normalizedDeltaForward - previousNormDeltaForward)  > handMovementThreshold)
+                if (normalizedDeltaForward > 0.01)
                 {
                     // Project NormalizedDeltaForward onto virtualDistance
                     float virtualDistance = CalculateVirtDistance();
+                    shoulderToWristDirection.Scale(new Vector3(virtualDistance, virtualDistance, virtualDistance));
 
-                    // Calculate new position to hand
-                    targetWristPos = worldWristPosition + shoulderToWristDirection  * virtualDistance;
-                    targetWristPos.y = xrOrigin.transform.position.y;
+                    if (granularMode)
+                    {
+                        targetWristPos = granularModeAnchor + (rightHandInPlace.position - xrOrigin.position);
+                        targetWristPos.y = xrOrigin.transform.position.y;
+                    }
+                    else
+                    {
+                        targetWristPos = positionFilter.FilterPosition(worldWristPosition) + shoulderToWristDirection;
+                        targetWristPos.y = xrOrigin.transform.position.y;
+                    }
 
                     previousNormDeltaForward = normalizedDeltaForward;
 
                     // Scale hand visualisation
-                    float scaleFactor = 1+ virtualDistance / 10;
+                    float scaleFactor = 1 + virtualDistance / 10;
                     rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
                 }
                 else if (normalizedDeltaForward <= 0.01)
@@ -150,8 +163,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     // // Reset position of hand to original position
                     targetWristPos = xrOrigin.position;
                     //rightHand.transform.position = resetPosition;
-                    //
-                    // // Reset scale of hand
+
+                    // Reset scale of hand
                     rightHandScaleAnchor.transform.localScale = Vector3.one;
                 }
             }
@@ -164,61 +177,40 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
 
     void Update()
     {
+        rightHand.transform.position = targetWristPos;
 
-        if (targetWristPos != previousTargetWristPos)
+        bool leftPinchTriggered = controller.selectAction.action.triggered;
+        if (leftPinchTriggered)
         {
-            currentWristPos = rightHand.transform.position;
-
-            elapsedFrames = 0;
-
-            // Update previousTargetWristPos to the new target
-            previousTargetWristPos = targetWristPos;
+            granularModeAnchor = rightHand.transform.position + (rightHandInPlace.position - xrOrigin.position);
         }
+        float leftPinchActivation = controller.selectActionValue.action.ReadValue<float>();
+        granularMode = leftPinchActivation > 0.99f;
 
-        if (targetWristPos != currentWristPos)
-        {
-            float interpolationRatio = (float)elapsedFrames / interpolationFramesCount;
-            Vector3 interpolatedPosition = Vector3.Lerp(currentWristPos, targetWristPos, interpolationRatio);
-            rightHand.transform.position = interpolatedPosition;
-            elapsedFrames++;
 
-            currentWristPos = interpolatedPosition;
-
-            if (elapsedFrames >= interpolationFramesCount)
-            {
-                rightHand.transform.position = targetWristPos;
-                elapsedFrames = 0;
-                currentWristPos = targetWristPos;
-            }
-        }
     }
 
     private float CalculateVirtDistance()
     {
+        float lerpValue = 0;
         switch (goGoAlgorithm)
         {
-
             case GoGoAlgorithm.Root:
-                // ROOT
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 1f/2f));
-
+                lerpValue = Mathf.Pow(normalizedDeltaForward, 1f / 2f);
+                break;
             case GoGoAlgorithm.Sigmoid:
-                // SIGMOID
-                float sigmoidValue = 1f / (1f + Mathf.Exp(6-12*normalizedDeltaForward));
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, sigmoidValue);
-
+                lerpValue = 1f / (1f + Mathf.Exp(6 - 12 * normalizedDeltaForward));
+                break;
             case GoGoAlgorithm.Power:
-                // QUADRATIC
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, Mathf.Pow(normalizedDeltaForward, 2f));
-
+                lerpValue = Mathf.Pow(normalizedDeltaForward, 2f);
+                break;
             case GoGoAlgorithm.Linear:
-                // LINEAR
-                return Mathf.Lerp(minVirtDistance, maxVirtDistance, normalizedDeltaForward);
-
+                lerpValue = normalizedDeltaForward;
+                break;
             default:
                 Debug.LogWarning("Unknown GoGoAlgorithm value");
                 break;
         }
-        return 0;
+        return Mathf.Lerp(minVirtDistance, maxVirtDistance, lerpValue);
     }
 }
