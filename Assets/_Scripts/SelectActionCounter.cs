@@ -6,14 +6,16 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class SelectActionCounter : MonoBehaviour
 {
+    public float MicroAdjustTime => microAdjustTime;
     private CustomActionBasedControllerStable3 rightHandStableController;
     private ActionBasedController rightHandController;
-    
-    private InputAction selectAction; 
+    private InputAction selectAction;
     private int selectActionCount = 0;
-    
-    [SerializeField] private float cooldownTime = 0.2f;
     private float lastSelectTime = -Mathf.Infinity;
+    private float microAdjustTime = 0f;
+    private bool lastFramePressed;
+    [SerializeField] private float cooldownTime = 0.2f;
+
 
     void Awake()
     {
@@ -51,7 +53,7 @@ public class SelectActionCounter : MonoBehaviour
             {
 
                 float currentTime = Time.time;
-                
+
                 // Check if enough time has passed since the last action
                 if (currentTime - lastSelectTime >= cooldownTime)
                 {
@@ -60,9 +62,21 @@ public class SelectActionCounter : MonoBehaviour
                     lastSelectTime = currentTime;
                 }
             }
+
+            bool isPinchPressed = selectAction.IsPressed();
+            if (isPinchPressed && !lastFramePressed)
+            {
+                microAdjustTime = 0;
+            }
+            if (isPinchPressed)
+            {
+                microAdjustTime += Time.deltaTime;
+            }
+
+            lastFramePressed = isPinchPressed;
         }
     }
-    
+
     public int GetSelectActionCount()
     {
         int count = selectActionCount;

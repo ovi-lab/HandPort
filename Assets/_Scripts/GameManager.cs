@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     public List<TeleportationAnchor> targets;
-    
+
     public GameObject CurrentTarget
     {
         get
@@ -35,13 +35,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     // private DatabaseReference studySettings;
     private ObstacleManager obstacleManager;
     private GoGoDetachAdapterStable3 teleportAdapter;
-    
+
     // private StudyConditions studyConditions;
     private TargetConditions targetConditions;
     private ParticipantConditions participantConditions;
     private AdapterConditions adapterConditions;
     private CameraManager cameraManager;
-    
+
     private LatinSquareManager latinSquareManager = new LatinSquareManager();
     private SelectActionCounter selectActionCounter;
     private List<List<(int, int, int)>> combinations;
@@ -55,7 +55,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     public int GetCurrentTarget => currentTarget;
     public int GetTargetCount => targets.Count;
-    
+
     private float trialDuration = 15f; // Set this to the desired duration for each trial
     private Coroutine trialTimerCoroutine;
     public TeleportationProvider teleportationProvider;
@@ -63,7 +63,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public GameObject rightHandBase;
     public GameObject rightHand;
     public GameObject previewWindow;
-    
+
 
     protected override void Awake()
     {
@@ -72,19 +72,18 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         obstacleManager = FindObjectOfType<ObstacleManager>();
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
         cameraManager =FindObjectOfType<CameraManager>();
-        selectActionCounter =FindObjectOfType<SelectActionCounter>();
+        selectActionCounter = FindObjectOfType<SelectActionCounter>();
         teleportationProvider = FindObjectOfType<TeleportationProvider>();
-        
+
         int[] cameraTypes = Enum.GetValues(typeof(CameraType)).Cast<int>().ToArray();
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
         int[] mappingFunctions = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
-        
+
         // combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
         mappingCombinations = latinSquareManager.GenerateMappingCombinations(mappingFunctions);
-        LogHeader();
     }
-    
-    
+
+
     private void ApplySettingsFromLine((int, int, int) combination)
     {
         if (cameraManager != null)
@@ -94,7 +93,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             teleportAdapter.goGoAlgorithm = (GoGoAlgorithm)combination.Item3;
 
             cameraManager.UpdateCameraTypeAndAnchor();
-            
+
             Debug.Log($"Applying Combination: CameraType={combination.Item1}, PanelAnchor={combination.Item2}, MappingFunction={combination.Item3}");
             FindObjectOfType<DisplayVariantText>().DisplayVariant(combination);
         }
@@ -103,10 +102,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogError("CameraManager not found in the scene.");
         }
     }
-    
+
     private void ApplySettingsFromLine(int combination)
     {
-        
+
         if (combination > -1)
         {
             previewWindow.SetActive(true);
@@ -122,14 +121,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         {
             rightHand.SetActive(false);
             rightHandBase.SetActive(true);
-            
-
-            
             //Debug.Log("BASELINE");
             FindObjectOfType<DisplayVariantText>().DisplayVariant("Baseline");
         }
     }
-    
+
     public void ApplySettings<T>(T _values)
     {
         Type type = typeof(T);
@@ -152,10 +148,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             SetupAdapterWithAdapterConditions();
             if (SceneManager.GetActiveScene().name == "ART")
             {
-                ApplySettingsFromLine(combinations[participantConditions.participantID%-1 ][currentRowIndex]);  
+                ApplySettingsFromLine(combinations[participantConditions.participantID%-1 ][currentRowIndex]);
             } else if (SceneManager.GetActiveScene().name == "ART2")
             {
-                ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
+                ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]);
             }
         }
         else
@@ -163,7 +159,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogWarning("Unsupported settings type.");
         }
     }
-    
+
     private void SetupObstaclesWithTargetConditions()
     {
         if (targetConditions == null)
@@ -176,7 +172,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogWarning("ObstacleManager not found in scene.");
             return;
         }
-        
+
         targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.repetition, targetConditions.intermedidateObstacleDistance, targetConditions.intermedidateObstacleSize);
         InitialiseTargets();
     }
@@ -206,7 +202,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         targets[currentTarget].gameObject.SetActive(true);
 
         // Start the trial timer when the first target is enabled
-        StartTrialTimer();
+        //StartTrialTimer();
     }
 
     public void EnableNextTarget(SelectExitEventArgs arg0)
@@ -231,7 +227,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 numberOfAttempts.Add(attempt);
                 Debug.Log($"Time to complete task {currentTarget-1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
             }
-            
+
             LogData();
             ResetTargetsAndXROrigin();
             return;
@@ -242,6 +238,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             if (currentTarget % 2 == 0)
             {
                 startTime = Time.time;
+                // Start the timer for the next target
+                //StartTrialTimer();
             }
             else if (currentTarget % 2 == 1)
             {
@@ -264,8 +262,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             currentTarget++;
             nextTarget = currentTarget + 1;
 
-            // Start the timer for the next target
-            StartTrialTimer();
+
         }
     }
     private void StartTrialTimer()
@@ -284,15 +281,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
         Vector3 targetDestination = targets[currentTarget].transform.position;
         targetDestination.y += targets[currentTarget].transform.localScale.y/2;
-        
+
         var teleportRequest = new TeleportRequest
         {
             destinationPosition = targetDestination,
             matchOrientation = MatchOrientation.WorldSpaceUp
         };
         teleportationProvider.QueueTeleportRequest(teleportRequest);
-        
-        EnableNextTarget(new SelectExitEventArgs()); 
+
+        EnableNextTarget(new SelectExitEventArgs());
     }
     public void ResetTargetsAndXROrigin()
     {
@@ -302,31 +299,31 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
             return;
         }
-        
+
         currentRowIndex++;
-        
+
         // ApplySettingsFromLine(combinations[participantConditions.participantID-1][currentRowIndex]);
-        ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]); 
+        ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]);
 
 
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
         Vector3 newPosition = new Vector3(0, terrainHeight+1.5F, -0.01f);
         xrOrigin.MoveCameraToWorldLocation(newPosition);
         xrOrigin.MatchOriginUpCameraForward(Vector3.up, Vector3.forward);
-        
+
         currentTarget = 0;
         nextTarget = 1;
         SetupObstaclesWithTargetConditions();
-        
-        StartTrialTimer();
+
+        //StartTrialTimer();
     }
 
     private void LogData()
     {
         if (!participantConditions.recordData) return;
-        
+
         // Convert DistanceSizeCombinations to a string format
-        string distanceSizeCombinationString = string.Join(", ", 
+        string distanceSizeCombinationString = string.Join(", ",
             obstacleManager.GetDistanceSizeCombinations()
                 .Select(pair => $"{pair.distance},{pair.size}")
         );
@@ -339,7 +336,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                        $"ART Variant: {combinations[participantConditions.participantID-1][currentRowIndex]}, " +
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
-                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}";
         }
         else if (SceneManager.GetActiveScene().name == "ART2")
         {
@@ -347,19 +344,20 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                        $"{(GoGoAlgorithm)mappingCombinations[participantConditions.participantID-1][currentRowIndex]}, " +
                        $"{distanceSizeCombinationString}, " +
                        $"{string.Join(", ", taskCompletionTimes)}, " +
+                       $"{string.Join(", ", selectActionCounter.MicroAdjustTime)}, " +
                        $"{string.Join(", ", numberOfAttempts)}, " +
-                       $"{string.Join(", ", adapterConditions.ellbowWristDistance)}, " + 
-                       $"{string.Join(", ", adapterConditions.shoulderEllbowDistance)}, " + 
-                       $"{string.Join(", ", adapterConditions.originShoulderDistance)}, "; 
+                       $"{string.Join(", ", adapterConditions.ellbowWristDistance)}, " +
+                       $"{string.Join(", ", adapterConditions.shoulderEllbowDistance)}, " +
+                       $"{string.Join(", ", adapterConditions.originShoulderDistance)}, ";
         }
         else {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
                        $"Scene: {SceneManager.GetActiveScene().name}, "+
                        $"Distance Size Combination: {distanceSizeCombinationString}, " +
                        $"Task Completion Times: {string.Join(", ", taskCompletionTimes)}, " +
-                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}"; 
+                       $"Number of Attempts: {string.Join(", ", numberOfAttempts)}";
         }
-        
+
         Debug.Log(logEntry);
         FirebaseManager.LogData(logEntry, key);
 
@@ -372,7 +370,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         string key =  DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
         string header = $"Participant ID, " + "Mapping Function, " + "Distance, Size, " + "TaskCompletionTime, " +
-                        "Number of Attempts, " + "ElbowWristDistance, " + "ShoulderElbowDistance, " +
+                        "MicroAdjust Time, " +"Number of Attempts, " + "ElbowWristDistance, " + "ShoulderElbowDistance, " +
                         "OriginShoulderDistance, ";
         FirebaseManager.LogData(header, key);
     }
@@ -421,7 +419,7 @@ public static class FirebaseDataToPrimitives
         };
         return targetConditions;
     }
-    
+
     public static ParticipantConditions ToParticipantConditions(DataSnapshot initialSettings)
     {
         ParticipantConditions participantConditions = new ParticipantConditions
@@ -433,7 +431,7 @@ public static class FirebaseDataToPrimitives
         };
         return participantConditions;
     }
-    
+
     public static AdapterConditions ToAdapterConditions(DataSnapshot initialSettings)
     {
         AdapterConditions adapterConditions = new AdapterConditions
