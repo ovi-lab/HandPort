@@ -105,13 +105,16 @@ public class CameraManager : MonoBehaviour
     }
     private Vector3 GetCurrentPoint()
     {
-        foreach (var ray in rayInteractors)
+        foreach (XRRayInteractor ray in rayInteractors)
         {
             if(ray.TryGetCurrent3DRaycastHit(out RaycastHit raycastHitPoint))
             {
+                if(!ray.gameObject.activeInHierarchy) continue;
+                Debug.Log(ray.name);
                 return raycastHitPoint.point;
             }
         }
+        Debug.LogWarning("Not getting position");
         return Vector3.zero;
     }
     private void OnValidate()
@@ -145,7 +148,7 @@ public class CameraManager : MonoBehaviour
     public void UpdateCameraTypeAndAnchor()
     {
         // change camera
-        foreach (var cam in cameras)
+        foreach (CameraPlacement cam in cameras)
         { 
             cam.gameObject.SetActive(false);
         }

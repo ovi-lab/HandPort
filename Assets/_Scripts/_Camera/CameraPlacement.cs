@@ -7,10 +7,10 @@ public class CameraPlacement : MonoBehaviour
     [SerializeField] protected float horizontalOffset;
     [SerializeField] protected float cameraLookAngle;
     [SerializeField] protected XRRayInteractor rayInteractor;
+    [SerializeField] protected Vector3 hitPoint;
     protected Vector3 targetPosition;
     protected Camera mainCamera;
-    [SerializeField] protected Vector3 hitPoint;
-    
+
     public Transform rightHandWrist;
     
     protected void OnEnable()
@@ -27,7 +27,7 @@ public class CameraPlacement : MonoBehaviour
             hitPoint = hitInfo.point;
         }
         
-        PlaceCamera(hitPoint);
+        PlaceCamera(CameraManager.ParabolaPosition);
     }
 
     protected void PlaceCamera(Vector3 target)

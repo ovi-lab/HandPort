@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 
 public class WIMWidget : MonoBehaviour
@@ -10,9 +11,11 @@ public class WIMWidget : MonoBehaviour
     [SerializeField] public Transform[] planes;
     private bool isInitialized = false;
     private CameraManager camManager;
+    private Camera mainCamera;
 
     private void Start()
     {
+        mainCamera = Camera.main;
         InitializeDisplay();
         isInitialized = true;
     }
@@ -22,6 +25,7 @@ public class WIMWidget : MonoBehaviour
         if (!isInitialized) return;
         InitializeDisplay();
     }
+
 
     public void InitializeDisplay()
     {
