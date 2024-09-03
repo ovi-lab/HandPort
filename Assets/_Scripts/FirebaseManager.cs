@@ -18,7 +18,7 @@ public class FirebaseManager : MonoBehaviour
         participantID = 1;
         realtimeDB = FirebaseDatabase.DefaultInstance.RootReference;
         StartCoroutine(ApplyInitialSettings());
-        realtimeDB.ValueChanged += OnValueChanged;
+        realtimeDB.Child("State").ValueChanged += OnValueChanged;
     }
 
     private void OnValueChanged(object sender, ValueChangedEventArgs e)
@@ -58,7 +58,10 @@ public class FirebaseManager : MonoBehaviour
         };
         
         // Push data to Firebase
-        RealtimeDB.Child("log").SetValueAsync(logEntryDict).ContinueWith(task =>
+        
+        Debug.Log(">>>>>>>" + logData);
+        
+        RealtimeDB.Child("log").Child(key).SetValueAsync(logData).ContinueWith(task =>
         {
             if (task.IsFaulted)
             {

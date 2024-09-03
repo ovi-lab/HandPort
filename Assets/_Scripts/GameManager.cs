@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Firebase.Database;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -231,7 +232,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 numberOfAttempts.Add(attempt);
                 Debug.Log($"Time to complete task {currentTarget-1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
             }
-
+            
             LogData();
             ResetTargetsAndXROrigin();
             return;
@@ -256,6 +257,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 numberOfAttempts.Add(attempt);
                 Debug.Log($"Time to complete task {currentTarget - 1} to {currentTarget}: {completionTime} seconds, number of attempts: {attempt}");
                 startTime = 0;
+                LogData();
             }
 
             targets[currentTarget].gameObject.SetActive(false);
@@ -330,7 +332,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 .Select(pair => $"{pair.distance},{pair.size}")
         );
         string logEntry = "";
-        string key = participantConditions.participantID+SceneManager.GetActiveScene().name;
+        string key =  DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
         if (SceneManager.GetActiveScene().name == "ART")
         {
             logEntry = $"Participant ID: {participantConditions.participantID}, " +
