@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,10 +13,10 @@ public class FirebaseManager : MonoBehaviour
     public static DatabaseReference RealtimeDB => realtimeDB;
     private static DatabaseReference realtimeDB;
     private static int participantID;
-    
+
     void Start()
     {
-        participantID = 1;
+        
         realtimeDB = FirebaseDatabase.DefaultInstance.RootReference;
         StartCoroutine(ApplyInitialSettings());
         realtimeDB.Child("State").ValueChanged += OnValueChanged;
@@ -46,6 +47,8 @@ public class FirebaseManager : MonoBehaviour
             GameManager.Instance.ApplySettings(targetConditions);
             GameManager.Instance.ApplySettings(participantConditions);
             GameManager.Instance.ApplySettings(adapterConditions);
+            GameManager.Instance.LogHeader();
+            participantID = GameManager.Instance.ParticipantID;
         }
     }
     
@@ -61,7 +64,7 @@ public class FirebaseManager : MonoBehaviour
         
         Debug.Log(">>>>>>>" + logData);
         
-        RealtimeDB.Child("log").Child(key).SetValueAsync(logData).ContinueWith(task =>
+        RealtimeDB.Child("log").Child(participantID.ToString()).Child(key).SetValueAsync(logData).ContinueWith(task =>
         {
             if (task.IsFaulted)
             {
@@ -73,6 +76,8 @@ public class FirebaseManager : MonoBehaviour
             }
         });
     }
+    
+    
 }
 [System.Serializable]
 public class LogEntry

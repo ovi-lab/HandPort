@@ -29,6 +29,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
+    public int ParticipantID => participantConditions.participantID;
+
     private int currentTarget = 0, nextTarget;
     // private DatabaseReference studySettings;
     private ObstacleManager obstacleManager;
@@ -79,6 +81,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         
         // combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
         mappingCombinations = latinSquareManager.GenerateMappingCombinations(mappingFunctions);
+        LogHeader();
     }
     
     
@@ -120,7 +123,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             rightHand.SetActive(false);
             rightHandBase.SetActive(true);
             
-            previewWindow.SetActive(false);
+
             
             //Debug.Log("BASELINE");
             FindObjectOfType<DisplayVariantText>().DisplayVariant("Baseline");
@@ -139,10 +142,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 SetupObstaclesWithTargetConditions();
             }
         }
-        // else if (type == typeof(StudyConditions))
-        // {
-        //     studyConditions = _values as StudyConditions;
-        // }
         else if (type == typeof(ParticipantConditions))
         {
             participantConditions = _values as ParticipantConditions;
@@ -368,16 +367,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         taskCompletionTimes.Clear();
         numberOfAttempts.Clear();
     }
+
+    public void LogHeader()
+    {
+        string key =  DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+        string header = $"Participant ID, " + "Mapping Function, " + "Distance, Size, " + "TaskCompletionTime, " +
+                        "Number of Attempts, " + "ElbowWristDistance, " + "ShoulderElbowDistance, " +
+                        "OriginShoulderDistance, ";
+        FirebaseManager.LogData(header, key);
+    }
 }
-
-
-// [Serializable]
-// public class StudyConditions
-// {
-//     public string[] cameraTypes;
-//     public string[] panelAnchors;
-//     public string[] handVisualisations;
-// }
 
 [Serializable]
 public class TargetConditions
@@ -410,17 +409,6 @@ public class AdapterConditions
 
 public static class FirebaseDataToPrimitives
 {
-    // public static StudyConditions ToStudyConditions(DataSnapshot initialSettings)
-    // {
-    //     StudyConditions studyConditions = new StudyConditions
-    //     {
-    //         cameraTypes = ParseArray<string>(initialSettings.Child("cameraType")),
-    //         panelAnchors = ParseArray<string>(initialSettings.Child("panelAnchor")),
-    //         handVisualisations = ParseArray<string>(initialSettings.Child("handVisualisation"))
-    //     };
-    //     return studyConditions;
-    // }
-    
     public static TargetConditions ToTargetConditions(DataSnapshot initialSettings)
     {
         TargetConditions targetConditions = new TargetConditions

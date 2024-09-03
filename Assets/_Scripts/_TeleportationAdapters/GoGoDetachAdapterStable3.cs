@@ -155,13 +155,14 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     {
                         targetWristPos = positionFilter.FilterPosition(worldWristPosition) + shoulderToWristDirection;
                         targetWristPos.y = xrOrigin.transform.position.y;
+                        float scaleFactor = 1 + virtualDistance / 10;
+                        rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
                     }
 
                     previousNormDeltaForward = normalizedDeltaForward;
 
                     // Scale hand visualisation
-                    float scaleFactor = 1 + virtualDistance / 10;
-                    rightHandScaleAnchor.transform.localScale = new Vector3(scaleFactor,scaleFactor,scaleFactor);
+                    
                 }
                 else if (normalizedDeltaForward <= 0.01)
                 {

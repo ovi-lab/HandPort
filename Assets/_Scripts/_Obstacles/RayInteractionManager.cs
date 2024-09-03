@@ -7,7 +7,7 @@ public class RayInteractorManager : MonoBehaviour
 {
     public XRRayInteractor rayInteractor1; // First XRRayInteractor
     public XRRayInteractor rayInteractor2; // Second XRRayInteractor
-    private HighlightOnHover currentHighlightedObject = null;
+    private HighlightOnHover currentHighlightedObject;
 
     void Update()
     {

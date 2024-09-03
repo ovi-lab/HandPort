@@ -17,10 +17,10 @@ public class ObstacleManager : MonoBehaviour
     private float intermediateObstacleSize = 0.2f;
     private float intermediateObstacleDistance = 2;
 
-    private int[] largeDistanceOffsets = new int[] { -10, -5, -2, 2, 5, 10 };
-    private int[] smallDistanceOffsets = new int[] { -1, 1 };
+    private int[] largeDistanceOffsets = { -10, -5, -2, 2, 5, 10 };
+    private int[] smallDistanceOffsets = { -1, 1 };
 
-    private List<(int distance, float size)> distanceSizePairs = new List<(int, float)>();
+    private List<(int distance, float size)> distanceSizePairs = new();
 
     private LatinSquareManager latinSquareManager = new LatinSquareManager();
 
@@ -33,7 +33,7 @@ public class ObstacleManager : MonoBehaviour
         ClearObstacles();
 
         // Create an empty GameObject to hold colliders
-        GameObject teleportationAnchors = new GameObject("TeleportationAnchors");
+        GameObject teleportationAnchors = new("TeleportationAnchors");
         distanceSizePairs = latinSquareManager.GenerateAndShuffleCombinations(distances, sizes, repetition);
 
         // Set up new obstacles based on the shuffled pairs
@@ -98,6 +98,7 @@ public class ObstacleManager : MonoBehaviour
         randomObstacle.transform.localScale = new Vector3(1,0.2f,1) * currentSize;
         var randomAnchor = randomObstacle.GetComponent<TeleportationAnchor>();
         var obstacleArrow = Instantiate(obstacleArrowPrefab, spawnPosition, Quaternion.identity);
+        obstacleArrow.transform.position += new Vector3(0, 0.5f, 0);
         obstacleArrow.transform.SetParent(randomObstacle.transform);
         
         obstacles.Add(randomAnchor);
