@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2537,6 +2537,7 @@ MonoBehaviour:
   - {fileID: 1275939421}
   rayInteractors:
   - {fileID: 1112698599}
+  - {fileID: 1012395892}
   renderTexture43: {fileID: 8400000, guid: dddd286cf7288b64e99388926ad926b1, type: 2}
   renderTexture169: {fileID: 8400000, guid: 22cb678a70194d04c9224980852683fa, type: 2}
 --- !u!4 &768731611
@@ -3291,7 +3292,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: -6131295136447488360, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_SelectActionValue:
     m_UseReference: 1
     m_Action:
@@ -3303,7 +3304,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: 6558622148059887818, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    m_Reference: {fileID: -1758520528963094988, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_ActivateAction:
     m_UseReference: 1
     m_Action:
@@ -3978,7 +3979,6 @@ GameObject:
   - component: {fileID: 1112698603}
   - component: {fileID: 1112698601}
   - component: {fileID: 1112698606}
-  - component: {fileID: 1112698607}
   m_Layer: 0
   m_Name: Teleport Interactor
   m_TagString: Untagged
@@ -4659,19 +4659,6 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 0}
---- !u!114 &1112698607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1112698598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3d4b4eb6e1dade46a3877aa6fd938f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftPinchInputActionReference: {fileID: -6131295136447488360, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!1 &1116595977
 GameObject:
   m_ObjectHideFlags: 0
