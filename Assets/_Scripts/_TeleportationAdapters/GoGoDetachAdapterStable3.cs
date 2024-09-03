@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.Hands;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -14,6 +16,8 @@ public enum GoGoAlgorithm
 public class GoGoDetachAdapterStable3 : MonoBehaviour
 {
     public GoGoAlgorithm goGoAlgorithm;
+    public InputActionReference middleFingerPinch;
+    public InputActionReference middleFingerPinchStrength;
     [Header("Reference Transforms")]
     public Transform xrOrigin;
     public Transform rightHand;
@@ -41,26 +45,27 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     [SerializeField] public Vector3 shoulderToWristDirection;
 
     private float previousNormDeltaForward = 0f;
-    private int interpolationFramesCount = 0;
-    private int elapsedFrames = 0;
     private bool granularMode;
     private Camera mainCamera;
     private CustomActionBasedControllerStable3 controller;
     private Vector3 currentWristPos;
+    private bool wasLastFramePressed;
     private Vector3 targetWristPos;
     private Vector3 previousTargetWristPos;
     private Vector3 previousHandPos;
     private Vector3 currentHandPos;
     private Vector3 granularModeAnchor;
     private XRHandSubsystem m_HandSubsystem;
+
     void Start()
     {
         mainCamera = Camera.main;
         currentWristPos = Vector3.zero;
         controller = GetComponent<CustomActionBasedControllerStable3>();
+
+
         var handSubsystems = new List<XRHandSubsystem>();
         SubsystemManager.GetSubsystems(handSubsystems);
-
         minDistance =  elbowWristDistance;
         maxDistance = elbowWristDistance + shoulderElbowDistance;
 
@@ -177,19 +182,31 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
 
     void Update()
     {
-        rightHand.transform.position = targetWristPos;
 
-        bool leftPinchTriggered = controller.selectAction.action.triggered;
-        if (leftPinchTriggered)
+        float leftPinchPressedValue = controller.selectAction.action.ReadValue<float>();
+        bool leftPinchPressed = controller.selectAction.action.IsPressed();
+
+        if (leftPinchPressedValue > 0.9f)
+        {
+            granularMode = true;
+        }
+        else
+        {
+            StartCoroutine(GranularModeBuffer());
+        }
+        if (leftPinchPressed && wasLastFramePressed == false)
         {
             granularModeAnchor = rightHand.transform.position + (rightHandInPlace.position - xrOrigin.position);
         }
-        float leftPinchActivation = controller.selectActionValue.action.ReadValue<float>();
-        granularMode = leftPinchActivation > 0.99f;
-
-
+        wasLastFramePressed = leftPinchPressed;
+        rightHand.transform.position = targetWristPos;
     }
 
+    private IEnumerator GranularModeBuffer()
+    {
+        yield return new WaitForSeconds(0.3f);
+        granularMode = false;
+    }
     private float CalculateVirtDistance()
     {
         float lerpValue = 0;

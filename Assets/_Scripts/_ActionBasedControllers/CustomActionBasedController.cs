@@ -60,7 +60,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             get => m_IsTrackedAction;
             set => SetInputActionProperty(ref m_IsTrackedAction, value);
         }
-        
+
         [SerializeField]
         protected InputActionProperty m_TrackingStateAction = new InputActionProperty(new InputAction("Tracking State", expectedControlType: "Integer"));
         /// <summary>
@@ -88,7 +88,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             get => m_SelectAction;
             set => SetInputActionProperty(ref m_SelectAction, value);
         }
-        
+
         [SerializeField]
         protected InputActionProperty m_SelectActionValue = new InputActionProperty(new InputAction("Select Value", expectedControlType: "Axis"));
         /// <summary>
@@ -118,7 +118,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             get => m_ActivateAction;
             set => SetInputActionProperty(ref m_ActivateAction, value);
         }
-        
+
         [SerializeField]
         protected InputActionProperty m_ActivateActionValue = new InputActionProperty(new InputAction("Activate Value", expectedControlType: "Axis"));
         /// <summary>
@@ -148,7 +148,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             get => m_UIPressAction;
             set => SetInputActionProperty(ref m_UIPressAction, value);
         }
-        
+
         [SerializeField]
         protected InputActionProperty m_UIPressActionValue = new InputActionProperty(new InputAction("UI Press Value", expectedControlType: "Axis"));
         /// <summary>
@@ -381,7 +381,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             if (rotAction != null && (controllerState.inputTrackingState & InputTrackingState.Rotation) != 0)
             {
                 Quaternion rotation = rotAction.ReadValue<Quaternion>();
-                
+
                 // Extract yaw (rotation around the up axis)
                 Vector3 euler = rotation.eulerAngles;
                 euler.x = 0; // Remove pitch
@@ -397,7 +397,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             base.UpdateInput(controllerState);
             if (controllerState == null)
                 return;
-            
+
             // Warn the user if using referenced actions and they are disabled
             if (!m_HasCheckedDisabledInputReferenceActions &&
                 (m_SelectAction.action != null || m_ActivateAction.action != null || m_UIPressAction.action != null))
@@ -419,7 +419,7 @@ namespace UnityEngine.XR.Interaction.Toolkit
             var selectValueAction = m_SelectActionValue.action;
             if (selectValueAction == null || selectValueAction.bindings.Count <= 0)
                 selectValueAction = m_SelectAction.action;
-            controllerState.selectInteractionState.SetFrameState(IsPressed(m_SelectAction.action), ReadValue(selectValueAction));
+            controllerState.selectInteractionState.SetFrameState(m_SelectAction.action.triggered, ReadValue(selectValueAction));
 
             var activateValueAction = m_ActivateActionValue.action;
             if (activateValueAction == null || activateValueAction.bindings.Count <= 0)

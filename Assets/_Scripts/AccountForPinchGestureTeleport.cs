@@ -7,17 +7,17 @@ using UnityEngine.SceneManagement;
 
 public class AccountForPinchGestureTeleport : MonoBehaviour
 {
-    
+
     public TeleportationProvider teleportationProvider;
     public XRRayInteractor rayInteractor;
     public GameManager gameManager;
-    
+
     private CustomActionBasedControllerStable3 rightHandStableController;
     private ActionBasedController rightHandController;
-    private InputAction selectAction; 
+    private InputAction selectAction;
     private bool rayCastHit = false;
     private Vector3 targetDestination;
-    
+
     public int frames = 200;
     private Queue<(bool hit, RaycastHit hitInfo)> raycastHitQueue = new Queue<(bool, RaycastHit)>();
 
@@ -27,8 +27,7 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         if (SceneManager.GetActiveScene().name == "Baseline")
         {
-            ActionBasedController [] controllerArray =
-                ActionBasedController.FindObjectsOfType<ActionBasedController>(true);
+            ActionBasedController [] controllerArray = FindObjectsOfType<ActionBasedController>(true);
             foreach (var controller in controllerArray)
             {
                 if (controller.name.Equals("Teleport Interactor"))
@@ -67,39 +66,39 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
             // when unsuccessful teleportation -> store anchor position
             if (hitTeleportationAnchor)
             {
-            
+
                 GameObject hitObject = hitInfo.collider.gameObject;
                 targetDestination = hitObject.transform.position;
                 targetDestination.y += hitObject.transform.localScale.y/2;
             }
-        
+
             // when unsuccessful teleportation -> store raycast
             raycastHitQueue.Enqueue((rayCastHit, hitInfo));
             if (raycastHitQueue.Count > frames)
             {
                 raycastHitQueue.Dequeue();
             }
-            
+
             // when unsuccessful teleportation -> check if there was prior teleportationanchorhit
             if (!hitTeleportationAnchor && selectAction.triggered)
             {
                 CheckTeleportRequest();
             }
-        
+
         }
     }
 
     private void CheckTeleportRequest()
     {
         bool raycastHitValid = false;
-        
+
         // Iterate through queue to check if anchor was stored
         foreach (var item in raycastHitQueue)
         {
             if (item.hit && item.hitInfo.collider.CompareTag("TeleportationAnchor"))
             {
                 raycastHitValid = true;
-                break; 
+                break;
             }
         }
 
@@ -111,11 +110,11 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
                 destinationPosition = targetDestination,
                 matchOrientation = MatchOrientation.WorldSpaceUp
             };
-            
+
             teleportationProvider.QueueTeleportRequest(teleportRequest);
             if (gameManager.GetCurrentTarget < gameManager.GetTargetCount)
             {
-                gameManager.EnableNextTarget(new SelectExitEventArgs());   
+                gameManager.EnableNextTarget(new SelectExitEventArgs());
             }
             if (gameManager.GetCurrentTarget == 0)
             {
@@ -124,7 +123,7 @@ public class AccountForPinchGestureTeleport : MonoBehaviour
                     destinationPosition = Vector3.zero,
                     matchOrientation = MatchOrientation.WorldSpaceUp
                 };
-            
+
                 teleportationProvider.QueueTeleportRequest(teleportReset);
             }
         }
