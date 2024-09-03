@@ -4035,7 +4035,7 @@ MonoBehaviour:
   m_OnSelectExited:
     m_PersistentCalls:
       m_Calls: []
-  m_SelectActionTrigger: 0
+  m_SelectActionTrigger: 1
   m_HideControllerOnSelect: 0
   m_AllowHoveredActivate: 0
   m_TargetPriorityMode: 0
@@ -4144,13 +4144,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goGoAlgorithm: 0
+  middleFingerPinch: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  middleFingerPinchStrength: {fileID: -1758520528963094988, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   xrOrigin: {fileID: 654248850}
-  normalizedDeltaForward: 0
   rightHand: {fileID: 937927183}
+  rightHandInPlace: {fileID: 3395978643002551522}
   rightHandScaleAnchor: {fileID: 2129469304}
-  shoulderToWristDirection: {x: 0, y: 0, z: 0}
+  normalizedDeltaForward: 0
   handMovementThreshold: 0.015
-  interpolationFramesCount: 0
+  minVirtDistance: 0
+  maxVirtDistance: 0
+  minDistance: 0
+  maxDistance: 0
+  minCufoff: 0.3
+  beta: 3
+  dCutoff: 1
+  originShoulderDistance: 0
+  elbowWristDistance: 0
+  shoulderElbowDistance: 0
+  shoulderToWristDirection: {x: 0, y: 0, z: 0}
 --- !u!210 &1112698603
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -4654,15 +4666,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1112698598}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc5804f476047b3449655c807715fdfa, type: 3}
+  m_Script: {fileID: 11500000, guid: f3d4b4eb6e1dade46a3877aa6fd938f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teleportationProvider: {fileID: 2092479419}
-  rayInteractor: {fileID: 1112698599}
-  gameManager: {fileID: 0}
-  frames: 5
+  leftPinchInputActionReference: {fileID: -6131295136447488360, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!1 &1116595977
 GameObject:
   m_ObjectHideFlags: 0

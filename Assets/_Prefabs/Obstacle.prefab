@@ -120,7 +120,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
-  m_Colliders: []
+  m_Colliders:
+  - {fileID: 7328728456235724200}
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -214,7 +215,7 @@ MonoBehaviour:
   m_MatchDirectionalInput: 0
   m_TeleportTrigger: 1
   m_FilterSelectionByHitNormal: 0
-  m_UpNormalToleranceDegrees: 30
+  m_UpNormalToleranceDegrees: 10
   m_Teleporting:
     m_PersistentCalls:
       m_Calls: []
