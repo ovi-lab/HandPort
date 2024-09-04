@@ -71,7 +71,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         nextTarget = currentTarget + 1;
         obstacleManager = FindObjectOfType<ObstacleManager>();
         teleportAdapter = FindObjectOfType<GoGoDetachAdapterStable3>( true);
-        cameraManager =FindObjectOfType<CameraManager>();
+        cameraManager = FindObjectOfType<CameraManager>();
         selectActionCounter = FindObjectOfType<SelectActionCounter>();
         teleportationProvider = FindObjectOfType<TeleportationProvider>();
 
@@ -229,6 +229,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             }
 
             LogData();
+            FindObjectOfType<DisplayVariantText>().DisplayVariant("Take Some Rest");
             //ResetTargetsAndXROrigin();
             return;
         }

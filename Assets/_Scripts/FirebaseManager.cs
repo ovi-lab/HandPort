@@ -54,8 +54,9 @@ public class FirebaseManager : MonoBehaviour
             if (participantConditions.nextBlock)
             {
                 TriggerNextBlock?.Invoke();
-                FirebaseDatabase.DefaultInstance.RootReference.Child("participantSettings").Child("nextBlock")
+                FirebaseDatabase.DefaultInstance.RootReference.Child("State").Child("participantSettings").Child("nextBlock")
                     .SetValueAsync(false);
+
             }
         }
 
