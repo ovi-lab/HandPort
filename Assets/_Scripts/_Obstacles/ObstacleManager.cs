@@ -119,6 +119,10 @@ public class ObstacleManager : MonoBehaviour
 
     public List<(int distance, float size)> GetDistanceSizeCombinations()
     {
-        return distanceSizePairs;
+
+        List<(int distance, float size)> distanceSizePair = new();
+        distanceSizePair.Add(distanceSizePairs[0]);
+        distanceSizePairs.RemoveAt(0);
+        return distanceSizePair;
     }
 }
