@@ -970,7 +970,7 @@
                 {
                     "name": "",
                     "id": "ac1217ca-6238-42bb-a044-edf6880489ff",
-                    "path": "<MetaAimHand>{LeftHand}/middlePressed",
+                    "path": "<MetaAimHand>{LeftHand}/indexPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Generic XR Controller",
@@ -981,7 +981,7 @@
                 {
                     "name": "",
                     "id": "e20864b7-9b68-45b0-90fd-f58409477b8d",
-                    "path": "<MetaAimHand>{LeftHand}/pinchStrengthMiddle",
+                    "path": "<MetaAimHand>{LeftHand}/pinchStrengthIndex",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Generic XR Controller",

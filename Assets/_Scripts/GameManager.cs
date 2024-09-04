@@ -9,6 +9,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.Interaction.Toolkit.Inputs;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -64,7 +65,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public GameObject rightHand;
     public GameObject previewWindow;
 
-
+    [SerializeField] private XRInputModalityManager _modalityManager;
     protected override void Awake()
     {
         base.Awake();
@@ -81,6 +82,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         FirebaseManager.TriggerNextBlock.AddListener(ResetTargetsAndXROrigin);
         // combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
         mappingCombinations = latinSquareManager.GenerateMappingCombinations(mappingFunctions);
+        if (_modalityManager == null)
+        {
+            _modalityManager = FindObjectOfType<XRInputModalityManager>();
+        }
     }
 
 
@@ -105,9 +110,17 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void ApplySettingsFromLine(int combination)
     {
-
-        if (combination > -1)
+        if(combination == -1)
         {
+            _modalityManager.rightHand = rightHandBase;
+            previewWindow.SetActive(true);
+            rightHand.SetActive(false);
+            rightHandBase.SetActive(true);
+            FindObjectOfType<DisplayVariantText>().DisplayVariant("Baseline");
+        }
+        else
+        {
+            _modalityManager.rightHand = rightHand;
             previewWindow.SetActive(true);
             rightHandBase.SetActive(false);
             rightHand.SetActive(true);
@@ -117,13 +130,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.Log($"TeleportAdapter using Algorithm:{teleportAdapter.goGoAlgorithm}");
             FindObjectOfType<DisplayVariantText>().DisplayVariant(combination);
         }
-        else
-        {
-            rightHand.SetActive(false);
-            rightHandBase.SetActive(true);
-            //Debug.Log("BASELINE");
-            FindObjectOfType<DisplayVariantText>().DisplayVariant("Baseline");
-        }
+
     }
 
     public void ApplySettings<T>(T _values)

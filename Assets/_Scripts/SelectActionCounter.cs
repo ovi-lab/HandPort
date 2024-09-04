@@ -33,7 +33,7 @@ public class SelectActionCounter : MonoBehaviour
         }
         else
         {
-            CustomActionBasedControllerStable3[] controllerArray = CustomActionBasedControllerStable3.FindObjectsOfType<CustomActionBasedControllerStable3>(true);
+            CustomActionBasedControllerStable3[] controllerArray = FindObjectsOfType<CustomActionBasedControllerStable3>(true);
             foreach (var controller in controllerArray)
             {
                 if (controller.name.Equals("Teleport Interactor"))
