@@ -113,7 +113,6 @@ public class CameraManager : MonoBehaviour
                 return raycastHitPoint.point;
             }
         }
-        Debug.LogWarning("Not getting position");
         return Vector3.zero;
     }
     private void OnValidate()
