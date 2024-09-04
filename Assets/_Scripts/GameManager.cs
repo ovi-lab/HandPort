@@ -78,7 +78,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         int[] cameraTypes = Enum.GetValues(typeof(CameraType)).Cast<int>().ToArray();
         int[] panelAnchors = Enum.GetValues(typeof(CameraAnchor)).Cast<int>().ToArray();
         int[] mappingFunctions = Enum.GetValues(typeof(GoGoAlgorithm)).Cast<int>().ToArray();
-
+        FirebaseManager.TriggerNextBlock.AddListener(ResetTargetsAndXROrigin);
         // combinations = latinSquareManager.GenerateCombinations(cameraTypes, panelAnchors, mappingFunctions);
         mappingCombinations = latinSquareManager.GenerateMappingCombinations(mappingFunctions);
     }
@@ -229,7 +229,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             }
 
             LogData();
-            ResetTargetsAndXROrigin();
+            //ResetTargetsAndXROrigin();
             return;
         }
 
@@ -261,8 +261,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             targets[nextTarget].gameObject.SetActive(true);
             currentTarget++;
             nextTarget = currentTarget + 1;
-
-
         }
     }
     private void StartTrialTimer()
@@ -288,7 +286,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             matchOrientation = MatchOrientation.WorldSpaceUp
         };
         teleportationProvider.QueueTeleportRequest(teleportRequest);
-
         EnableNextTarget(new SelectExitEventArgs());
     }
     public void ResetTargetsAndXROrigin()
@@ -394,6 +391,7 @@ public class ParticipantConditions
     public int maxParticipant;
     public bool reset;
     public bool recordData;
+    public bool nextBlock;
 }
 
 [Serializable]
@@ -427,7 +425,8 @@ public static class FirebaseDataToPrimitives
             participantID = Convert.ToInt32(initialSettings.Child("participantID").Value.ToString()),
             maxParticipant = Convert.ToInt32(initialSettings.Child("maxParticipant").Value.ToString()),
             reset = Convert.ToBoolean(initialSettings.Child("reset").Value.ToString()),
-            recordData = Convert.ToBoolean(initialSettings.Child("recordData").Value.ToString())
+            recordData = Convert.ToBoolean(initialSettings.Child("recordData").Value.ToString()),
+            nextBlock =  Convert.ToBoolean(initialSettings.Child("nextBlock").Value.ToString())
         };
         return participantConditions;
     }

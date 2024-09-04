@@ -50,22 +50,22 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private RenderTexture renderTexture43;
     [SerializeField] private RenderTexture renderTexture169;
-    
+
     private static Vector3 parabolaPosition;
     private Camera mainCamera;
     private static GameObject currentCameraGameObject;
-    private WIMWidget wimWidget; 
+    private WIMWidget wimWidget;
     private bool wimInitialized = false;
-    
+
     private void Start()
     {
         // choose camera
         foreach (CameraPlacement cam in cameras)
-        { 
+        {
             cam.gameObject.SetActive(false);
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
-        
+
         // choose resolution texture
         if ((int)resolution == 0)
         {
@@ -83,7 +83,7 @@ public class CameraManager : MonoBehaviour
                 cameraComponent.targetTexture = renderTexture169;
             }
         }
-        
+
         // choose anchor
         InitializeWIMWidget();
         wimWidget.anchorType = ((int)anchor);
@@ -98,7 +98,7 @@ public class CameraManager : MonoBehaviour
     {
         cameraDisplayType = stringToEnumConverter[minimapCameraType];
         foreach (CameraPlacement cam in cameras)
-        { 
+        {
             cam.gameObject.SetActive(false);
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
@@ -110,7 +110,6 @@ public class CameraManager : MonoBehaviour
             if(ray.TryGetCurrent3DRaycastHit(out RaycastHit raycastHitPoint))
             {
                 if(!ray.gameObject.activeInHierarchy) continue;
-                Debug.Log(ray.name);
                 return raycastHitPoint.point;
             }
         }
@@ -120,7 +119,7 @@ public class CameraManager : MonoBehaviour
     private void OnValidate()
     {
         UpdateCameraTypeAndAnchor();
-            
+
         // change resolution texture
         if (resolution == Resolution.Res43)
         {
@@ -129,7 +128,7 @@ public class CameraManager : MonoBehaviour
                 Camera cameraComponent = cam.GetComponent<Camera>();
                 cameraComponent.targetTexture = renderTexture43;
             }
-        } else if (resolution == Resolution.Res169) 
+        } else if (resolution == Resolution.Res169)
         {
             foreach (CameraPlacement cam in cameras)
             {
@@ -149,11 +148,11 @@ public class CameraManager : MonoBehaviour
     {
         // change camera
         foreach (CameraPlacement cam in cameras)
-        { 
+        {
             cam.gameObject.SetActive(false);
         }
         cameras[(int)cameraDisplayType].gameObject.SetActive(true);
-        
+
         // change resolution plane & anchor
         if (!wimInitialized) return;
         wimWidget.display.SetParent(wimWidget.transform);
