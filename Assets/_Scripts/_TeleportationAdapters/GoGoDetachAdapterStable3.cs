@@ -36,7 +36,11 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     [SerializeField] private float minCufoff =0.3f;
     [SerializeField] private float beta = 3f;
     [SerializeField] private float dCutoff = 1f;
+    [SerializeField] private float minCufoff2 =0.3f;
+    [SerializeField] private float beta2 = 3f;
+    [SerializeField] private float dCutoff2 = 1f;
     private OneEuroFilter positionFilter;
+    private OneEuroFilter gogoHandFilter;
 
     [Header("Participant Measurements")]
     [SerializeField] private float originShoulderDistance;
@@ -87,6 +91,14 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
             Debug.LogWarning("No running XRHandSubsystem found.");
         }
         positionFilter = new OneEuroFilter(minCutoff: minCufoff, beta: beta, dCutoff: dCutoff, initialDt: Time.deltaTime);
+        gogoHandFilter =
+            new OneEuroFilter(minCutoff: minCufoff2, beta: beta2, dCutoff: dCutoff2, initialDt: Time.deltaTime);
+    }
+
+    private void OnValidate()
+    {
+        gogoHandFilter =
+            new OneEuroFilter(minCutoff: minCufoff2, beta: beta2, dCutoff: dCutoff2, initialDt: Time.deltaTime);
     }
 
     public void SetInitialAdapterValues(float oSD, float sED, float eWD, float mVD)
@@ -162,7 +174,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                     previousNormDeltaForward = normalizedDeltaForward;
 
                     // Scale hand visualisation
-                    
+
                 }
                 else if (normalizedDeltaForward <= 0.01)
                 {
@@ -187,19 +199,20 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         float leftPinchPressedValue = controller.selectAction.action.ReadValue<float>();
         bool leftPinchPressed = controller.selectAction.action.IsPressed();
 
-        if (leftPinchPressedValue > 0.9f)
-        {
-            granularMode = true;
-        }
-        else
-        {
-            StartCoroutine(GranularModeBuffer());
-        }
-        if (leftPinchPressed && wasLastFramePressed == false)
+        granularMode = leftPinchPressedValue > 0.85f;
+
+        if (leftPinchPressed && !wasLastFramePressed)
         {
             granularModeAnchor = rightHand.transform.position + (rightHandInPlace.position - xrOrigin.position);
         }
+
+        if (!leftPinchPressed && wasLastFramePressed)
+        {
+            StartCoroutine(GranularModeBuffer());
+        }
+
         wasLastFramePressed = leftPinchPressed;
+        targetWristPos = gogoHandFilter.FilterPosition(targetWristPos);
         rightHand.transform.position = targetWristPos;
     }
 

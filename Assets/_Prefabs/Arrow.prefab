@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2418615375201463647}
   - component: {fileID: 8159150361180033376}
   - component: {fileID: 4256384458682596258}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 0.006500003
   m_Center: {x: 0, y: -0.002, z: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 4129596266679649003}
   - component: {fileID: 7670699472714972690}
   - component: {fileID: 4477334520055318792}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.005500003
   m_Height: 0.0100000035
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 8343167407413159202}
   - component: {fileID: 8343167407413159201}
   - component: {fileID: 8343167407413159203}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,8 +241,8 @@ Transform:
   m_GameObject: {fileID: 8343167407413159200}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 7, y: 7, z: 7}
+  m_LocalPosition: {x: 0, y: 4.06, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4978570559794932741}

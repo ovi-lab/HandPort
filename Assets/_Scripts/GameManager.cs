@@ -415,14 +415,12 @@ public static class FirebaseDataToPrimitives
 {
     public static TargetConditions ToTargetConditions(DataSnapshot initialSettings)
     {
-        TargetConditions targetConditions = new TargetConditions
-        {
-            targetDistances = ParseArray<int>(initialSettings.Child("targetDistance")),
-            targetSizes = ParseArray<float>(initialSettings.Child("targetSize")),
-            repetition = Convert.ToInt32(initialSettings.Child("repetition").Value.ToString()),
-            intermedidateObstacleSize = Convert.ToSingle(initialSettings.Child("intermedidateObstacleSize").Value.ToString()),
-            intermedidateObstacleDistance = Convert.ToInt32(initialSettings.Child("intermedidateObstacleDistance").Value.ToString())
-        };
+        TargetConditions targetConditions = new TargetConditions();
+        targetConditions.targetDistances = ParseArray<int>(initialSettings.Child("targetDistance"));
+        targetConditions.targetSizes = ParseArray<float>(initialSettings.Child("targetSize"));
+        targetConditions.repetition = Convert.ToInt32(initialSettings.Child("repetition").Value.ToString());
+        targetConditions.intermedidateObstacleSize = Convert.ToSingle(initialSettings.Child("intermedidateObstacleSize").Value.ToString());
+        targetConditions.intermedidateObstacleDistance = Convert.ToInt32(initialSettings.Child("intermedidateObstacleDistance").Value.ToString());
         return targetConditions;
     }
 

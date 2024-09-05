@@ -58,7 +58,7 @@ public class ObstacleManager : MonoBehaviour
         }
         obstacles.Clear();
     }
-    
+
     private void SpawnIntermediateObstacle(ref float previousHeight, GameObject parent)
     {
         Vector3 tempSpawnPosition = spawnPosition + new Vector3(0, 0, intermediateObstacleDistance);
@@ -74,7 +74,7 @@ public class ObstacleManager : MonoBehaviour
         var intermediateAnchor = intermediateObstacle.GetComponent<TeleportationAnchor>();
         var intermediateObstacleArrow = Instantiate(intermediateObstacleArrowPrefab, spawnPosition, Quaternion.identity);
         intermediateObstacleArrow.transform.SetParent(intermediateObstacle.transform);
-        
+
         obstacles.Add(intermediateAnchor);
         intermediateObstacle.transform.SetParent(parent.transform);
 
@@ -98,15 +98,15 @@ public class ObstacleManager : MonoBehaviour
         randomObstacle.transform.localScale = new Vector3(1,0.2f,1) * currentSize;
         var randomAnchor = randomObstacle.GetComponent<TeleportationAnchor>();
         var obstacleArrow = Instantiate(obstacleArrowPrefab, spawnPosition, Quaternion.identity);
-        obstacleArrow.transform.position += new Vector3(0, 0.5f, 0);
+        obstacleArrow.transform.position += new Vector3(0, 0.5f, 1);
         obstacleArrow.transform.SetParent(randomObstacle.transform);
-        
+
         obstacles.Add(randomAnchor);
         randomObstacle.transform.SetParent(randomObstacle.transform);
 
         previousHeight = terrainHeight;
     }
-    
+
     private void LogLatinSquare(List<(int distance, float size)> pairs)
     {
         var logString = "Latin Square:\n";

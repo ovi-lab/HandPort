@@ -17,7 +17,6 @@ public class FirebaseManager : MonoBehaviour
 
     void Start()
     {
-
         realtimeDB = FirebaseDatabase.DefaultInstance.RootReference;
         StartCoroutine(ApplyInitialSettings());
         realtimeDB.Child("State").ValueChanged += OnValueChanged;
@@ -39,6 +38,7 @@ public class FirebaseManager : MonoBehaviour
 
         if (targetSettings.Exists && participantSettings.Exists && adapterSettings.Exists)
         {
+
             // StudyConditions studyConditions = FirebaseDataToPrimitives.ToStudyConditions(studySettings);
             TargetConditions targetConditions = FirebaseDataToPrimitives.ToTargetConditions(targetSettings);
             ParticipantConditions participantConditions = FirebaseDataToPrimitives.ToParticipantConditions(participantSettings);

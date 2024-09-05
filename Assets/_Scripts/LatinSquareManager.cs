@@ -26,7 +26,7 @@ public class LatinSquareManager
     //                 extendedRow.Add((pair.Item1, pair.Item2, mappingFunction));
     //             }
     //         }
-    //     
+    //
     //         extendedPatterns.Add(extendedRow);
     //     }
     //
@@ -39,7 +39,7 @@ public class LatinSquareManager
     //
     //     return extendedPatterns;
     // }
-    
+
     public List<List<(int, int, int)>> GenerateCombinations(int[] cameraTypes, int[] panelAnchors,
         int[] mappingFunctions)
     {
@@ -58,7 +58,7 @@ public class LatinSquareManager
                 var shuffledMappingFunctions = mappingFunctionList.OrderBy(x => rand.Next()).ToArray();
                 extendedRow.Add((pair.Item1, pair.Item2, 3));
             }
-        
+
             extendedPatterns.Add(extendedRow);
         }
 
@@ -71,7 +71,7 @@ public class LatinSquareManager
 
         return extendedPatterns;
     }
-    
+
     public List<List<int>> GenerateMappingCombinations(
         int[] mappingFunctions)
     {
@@ -82,10 +82,10 @@ public class LatinSquareManager
             string rowString = string.Join("\t", row.Select(num => num.ToString()));
             Debug.Log(rowString);
         }
-        
+
         return pattern;
     }
-    
+
     private List<List<(int, int)>> GeneratePattern()
     {
         var pattern = new List<List<(int, int)>>
@@ -120,12 +120,13 @@ public class LatinSquareManager
 
         return pattern;
     }
-    
+
     private List<List<int>> GenerateMappingPattern()
     {
         // Initialize a list of lists with integer elements
         var pattern = new List<List<int>>
         {
+            // -1 = BaseLine, 0 = Power, 1 = Sigmoid,  2 = Root, 3 = Linear
             new List<int> { 0, 1, 3, -1, 2 },
             new List<int> { 3, 2, 0, -1, 1 },
             new List<int> { -1, 2, 1, 3, 0 },
@@ -140,8 +141,8 @@ public class LatinSquareManager
 
         return pattern; // Return the generated list of lists
     }
-    
-    
+
+
     // private List<List<(int, int)>> GeneratePattern()
     // {
     //     var pattern = new List<List<(int, int)>>
@@ -196,15 +197,15 @@ public class LatinSquareManager
         var rand = new System.Random();
         return combinations.OrderBy(x => rand.Next()).ToList();
     }
-    
+
     private List<(int, float)> GenerateBalancedCombinations(List<(int, float)> combinations)
     {
         // Ensure the list is shuffled in a way to cover all possible combinations
         var rand = new System.Random();
         return combinations.OrderBy(x => rand.Next()).ToList();
     }
-    
-    
+
+
     public List<(int, float)> GenerateAndShuffleCombinations(int[] set1, float[] set2, int repetition)
     {
         // Generate all combinations
