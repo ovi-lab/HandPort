@@ -158,7 +158,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 ApplySettingsFromLine(combinations[participantConditions.participantID%-1 ][currentRowIndex]);
             } else if (SceneManager.GetActiveScene().name == "ART2")
             {
-                ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]);
+
+                //TODO: (participantConditions.participantID - 1)%10 replace this with a variable everywhere
+                ApplySettingsFromLine(mappingCombinations[(participantConditions.participantID - 1)%10][currentRowIndex]);
             }
         }
         else
@@ -306,7 +308,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void ResetTargetsAndXROrigin()
     {
-        if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex == mappingCombinations[participantConditions.participantID - 1].Count-1)
+        if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex == mappingCombinations[(participantConditions.participantID - 1)%10].Count-1)
         // if (SceneManager.GetActiveScene().name != "ART"  && SceneManager.GetActiveScene().name != "ART2"|| currentRowIndex >= combinations.Count)
         {
             FindObjectOfType<DisplayVariantText>().DisplayEndText();
@@ -316,7 +318,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         currentRowIndex++;
 
         // ApplySettingsFromLine(combinations[participantConditions.participantID-1][currentRowIndex]);
-        ApplySettingsFromLine(mappingCombinations[participantConditions.participantID - 1][currentRowIndex]);
+        ApplySettingsFromLine(mappingCombinations[(participantConditions.participantID - 1)%10][currentRowIndex]);
 
 
         float terrainHeight = Terrain.activeTerrain.SampleHeight(Vector3.zero);
@@ -354,7 +356,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         else if (SceneManager.GetActiveScene().name == "ART2")
         {
             logEntry = $"{participantConditions.participantID}, " +
-                       $"{(GoGoAlgorithm)mappingCombinations[participantConditions.participantID-1][currentRowIndex]}, " +
+                       $"{(GoGoAlgorithm)mappingCombinations[(participantConditions.participantID-1)%10][currentRowIndex]}, " +
                        $"{distanceSizeCombinationString}, " +
                        $"{string.Join(", ", taskCompletionTimes)}, " +
                        $"{string.Join(", ", selectActionCounter.MicroAdjustTime)}, " +
