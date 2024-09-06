@@ -12,7 +12,7 @@ public class ObstacleManager : MonoBehaviour
     public Transform cameraOffset;
 
     private Vector3 spawnPosition = new Vector3(0, 0, 0);
-    private List<TeleportationAnchor> obstacles = new List<TeleportationAnchor>();
+    private List<BaseTeleportationInteractable> obstacles = new List<BaseTeleportationInteractable>();
 
     private float intermediateObstacleSize = 0.2f;
     private float intermediateObstacleDistance = 2;
@@ -24,7 +24,8 @@ public class ObstacleManager : MonoBehaviour
 
     private LatinSquareManager latinSquareManager = new LatinSquareManager();
 
-    public List<TeleportationAnchor> SetObstacleParameters(int[] distances, float[] sizes, int repetition, int intermediateDistance, float intermediateSize)
+    public List<BaseTeleportationInteractable> SetObstacleParameters(int[] distances, float[] sizes, int repetition,
+        int intermediateDistance, float intermediateSize)
     {
         intermediateObstacleSize = intermediateSize;
         intermediateObstacleDistance = intermediateDistance;
@@ -54,6 +55,7 @@ public class ObstacleManager : MonoBehaviour
     {
         foreach (var obstacle in obstacles)
         {
+            if (obstacle == null) continue;
             Destroy(obstacle.gameObject);
         }
         obstacles.Clear();
@@ -71,7 +73,7 @@ public class ObstacleManager : MonoBehaviour
 
         var intermediateObstacle = Instantiate(intermediateObstaclePrefab, spawnPosition, Quaternion.identity);
         intermediateObstacle.transform.localScale = new Vector3(1,0.2f,1) * intermediateObstacleSize;
-        var intermediateAnchor = intermediateObstacle.GetComponent<TeleportationAnchor>();
+        var intermediateAnchor = intermediateObstacle.GetComponent<BaseTeleportationInteractable>();
         var intermediateObstacleArrow = Instantiate(intermediateObstacleArrowPrefab, spawnPosition, Quaternion.identity);
         intermediateObstacleArrow.transform.SetParent(intermediateObstacle.transform);
 
@@ -96,7 +98,7 @@ public class ObstacleManager : MonoBehaviour
 
         var randomObstacle = Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity);
         randomObstacle.transform.localScale = new Vector3(1,0.2f,1) * currentSize;
-        var randomAnchor = randomObstacle.GetComponent<TeleportationAnchor>();
+        var randomAnchor = randomObstacle.GetComponent<BaseTeleportationInteractable>();
         var obstacleArrow = Instantiate(obstacleArrowPrefab, spawnPosition, Quaternion.identity);
         obstacleArrow.transform.position += new Vector3(0, 0.5f, 1);
         obstacleArrow.transform.SetParent(randomObstacle.transform);
