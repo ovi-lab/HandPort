@@ -57,7 +57,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public int GetCurrentTarget => currentTarget;
     public int GetTargetCount => targets.Count;
 
-    private float trialDuration = 15f; // Set this to the desired duration for each trial
+    private float trialDuration = 200f; // Set this to the desired duration for each trial
     private Coroutine trialTimerCoroutine;
     public TeleportationProvider teleportationProvider;
 

@@ -156,6 +156,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
                 {
                     // Project NormalizedDeltaForward onto virtualDistance
                     float virtualDistance = CalculateVirtDistance();
+                    float posX = Mathf.Lerp(minVirtDistance, maxVirtDistance, normalizedDeltaForward);
+                    float posY = Mathf.Lerp(minVirtDistance, maxVirtDistance, normalizedDeltaForward);
                     shoulderToWristDirection.Scale(new Vector3(virtualDistance, virtualDistance, virtualDistance));
 
                     if (granularMode)
@@ -244,4 +246,5 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
         }
         return Mathf.Lerp(minVirtDistance, maxVirtDistance, lerpValue);
     }
+
 }

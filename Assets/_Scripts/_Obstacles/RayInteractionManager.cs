@@ -23,10 +23,16 @@ public class RayInteractorManager : MonoBehaviour
         {
             hitDetected = true;
             HighlightOnHover highlightable = hit1.collider.GetComponent<HighlightOnHover>();
+            Vector3 hitNormal = hit1.normal;
             if (highlightable != null)
             {
                 newHighlightedObject = highlightable;
                 activeRayInteractor = rayInteractor1;
+                if (Vector3.Angle(Vector3.up, hitNormal) > 20)
+                {
+                    Debug.LogWarning($"{Vector3.Angle(Vector3.up, hitNormal)}");
+                    return;
+                }
             }
         }
 
@@ -35,8 +41,15 @@ public class RayInteractorManager : MonoBehaviour
         {
             hitDetected = true;
             HighlightOnHover highlightable = hit2.collider.GetComponent<HighlightOnHover>();
+            Vector3 hitNormal = hit2.normal;
+
             if (highlightable != null)
             {
+                if (Vector3.Angle(Vector3.up, hitNormal) > 20)
+                {
+                    Debug.LogWarning($"{Vector3.Angle(Vector3.up, hitNormal)}");
+                    return;
+                }
                 // Use the second ray interactor's hit if it is the most recent or the same as the first one
                 if (newHighlightedObject == null || activeRayInteractor == rayInteractor1)
                 {
@@ -45,6 +58,7 @@ public class RayInteractorManager : MonoBehaviour
                 }
             }
         }
+
 
         // Manage highlighting based on the new highlighted object
         if (newHighlightedObject != null)
