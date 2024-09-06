@@ -13,7 +13,7 @@ using UnityEngine.XR.Interaction.Toolkit.Inputs;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
-    public List<TeleportationAnchor> targets;
+    public List<BaseTeleportationInteractable> targets;
 
     public GameObject CurrentTarget
     {
@@ -180,7 +180,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             return;
         }
 
-        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes, targetConditions.repetition, targetConditions.intermedidateObstacleDistance, targetConditions.intermedidateObstacleSize);
+        targets = obstacleManager.SetObstacleParameters(targetConditions.targetDistances, targetConditions.targetSizes,
+            targetConditions.repetition, targetConditions.intermedidateObstacleDistance,
+            targetConditions.intermedidateObstacleSize);
+        int counter = 0;
+        foreach (var target in targets)
+        {
+            Debug.Assert(target != null, $"AY YUO {counter}");
+            counter++;
+        }
         InitialiseTargets();
     }
     private void SetupAdapterWithAdapterConditions()
@@ -201,7 +209,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
     public void InitialiseTargets()
     {
-        foreach (TeleportationAnchor target in targets)
+        foreach (BaseTeleportationInteractable target in targets)
         {
             target.selectExited.AddListener(EnableNextTarget);
             target.gameObject.SetActive(false);

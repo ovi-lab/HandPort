@@ -1083,11 +1083,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 270537530}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fbb8d65d92907940adf13308de1b8d1, type: 3}
+  m_Script: {fileID: 11500000, guid: ee661fc3d149471ba5a8d28a9331773f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
-  m_Colliders: []
+  m_Colliders:
+  - {fileID: 78057477}
+  - {fileID: 401839008}
+  - {fileID: 1803157677}
+  - {fileID: 1563027008}
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -3037,7 +3041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 663582c396113a948b69af969e1fdd50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstaclePrefab: {fileID: 6997833716616865178, guid: 8c3cd5531613b924a924432ad5f5cfc5, type: 3}
+  obstaclePrefab: {fileID: 6997833716616865178, guid: a2e948a7e70faec4a87da2ec13b6133f, type: 3}
   intermediateObstaclePrefab: {fileID: 6997833716616865178, guid: 5d9572cf72219ce4096d043157a43225, type: 3}
   intermediateObstacleArrowPrefab: {fileID: 8343167407413159200, guid: 001002f506b151642a27db71d9727d90, type: 3}
   obstacleArrowPrefab: {fileID: 8343167407413159200, guid: 69a3f9c81ba106f4fad0afee19ff9ec1, type: 3}
@@ -3542,7 +3546,7 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   m_InvalidColorGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0, b: 0, a: 0}
+    key0: {r: 1, g: 0, b: 0, a: 1}
     key1: {r: 1, g: 0, b: 0, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -5689,11 +5693,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d299502104b064388841ec2adf6def, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Target: {fileID: 1012395887}
+  m_Target: {fileID: 1116595978}
   m_AimTargetObject: {fileID: 1012395892}
-  m_UseLocalSpace: 1
-  m_AngleStabilization: 80
-  m_PositionStabilization: 200
+  m_UseLocalSpace: 0
+  m_AngleStabilization: 20
+  m_PositionStabilization: 0.25
 --- !u!1 &1552960946
 GameObject:
   m_ObjectHideFlags: 0
