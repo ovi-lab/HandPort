@@ -31,6 +31,8 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
     [SerializeField] private float maxVirtDistance;
     [SerializeField] private float minDistance;
     [SerializeField] private float maxDistance;
+    [SerializeField] private float granularMappingScale = 3f;
+
 
     [Header("One Euro Filter")]
     [SerializeField] private float minCufoff =0.3f;
@@ -162,7 +164,7 @@ public class GoGoDetachAdapterStable3 : MonoBehaviour
 
                     if (granularMode)
                     {
-                        targetWristPos = granularModeAnchor + (rightHandInPlace.position - xrOrigin.position);
+                        targetWristPos = granularModeAnchor + (rightHandInPlace.position - xrOrigin.position)*granularMappingScale;
                         targetWristPos.y = xrOrigin.transform.position.y;
                     }
                     else

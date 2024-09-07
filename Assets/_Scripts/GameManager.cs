@@ -235,10 +235,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             {
                 float endTime = Time.time;
                 float completionTime = endTime - startTime;
-                if (completionTime > trialDuration)
-                {
-                    completionTime = -1;
-                }
                 taskCompletionTimes.Add(completionTime);
                 int attempt = selectActionCounter.GetSelectActionCount();
                 numberOfAttempts.Add(attempt);
